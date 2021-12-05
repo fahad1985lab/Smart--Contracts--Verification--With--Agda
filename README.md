@@ -1,1 +1,1 @@
-# SmartContractsUsingAgda
+# Smart Contracts Using Agda
