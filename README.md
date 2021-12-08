@@ -1,7 +1,7 @@
 # Verification of Smart Contracts in Bitcoin in Agda using Weakest Pre-Conditions
 
 
- Code in Agda
+## Code in Agda
 1. All Agda Code
   [ScriptTester](/ScriptTester/)
   
