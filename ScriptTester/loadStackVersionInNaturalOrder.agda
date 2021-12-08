@@ -1,0 +1,48 @@
+{- OPTIONS --allow-unsolved-metas #-}
+open import basicBitcoinDataType
+
+module loadStackVersionInNaturalOrder (param : GlobalParameters) where
+
+-- loads all files from verificationStackScripts and needed files from other directories in a natural order
+
+-- basic private library
+
+open import libraries.listLib
+open import libraries.natLib
+open import libraries.boolLib
+open import libraries.andLib
+open import libraries.miscLib
+open import libraries.maybeLib
+
+
+open import exampleBasicData
+open import stack
+open import semanticBasicOperations param
+open import stackPredicate
+open import instructionBasic
+open import instruction
+open import ledger param
+open import hoareTripleStack param
+open import stackSemanticsInstructions param
+
+open import verificationStackScripts.stackState
+open import verificationStackScripts.sPredicate
+open import verificationStackScripts.stackInstruction
+open import verificationStackScripts.stackSemanticsInstructionsBasic param
+open import verificationStackScripts.semanticsStackInstructions param
+open import verificationStackScripts.stackVerificationLemmas param
+open import verificationStackScripts.stackVerificationLemmasPart2 param
+open import verificationStackScripts.stackHoareTriple param
+open import verificationStackScripts.hoareTripleStackBasic param
+open import verificationStackScripts.verificationMultiSigBasic param
+
+open import verificationP2PKHbasic param
+open import verificationStackScripts.stackVerificationP2PKH param
+open import verificationStackScripts.stackVerificationP2PKHindexed param
+open import verificationStackScripts.stackVerificationP2PKHUsingEqualityOfPrograms param
+open import verificationStackScripts.verificationMultiSigBasicSymbolicExecution param
+open import verificationStackScripts.stackVerificationP2PKHsymbolicExecution param
+open import verificationStackScripts.stackVerificationP2PKHextractedProgram param
+open import verificationStackScripts.verificationMultiSigBasicEqualityOfProgram param
+open import verificationStackScripts.verificationMultiSigBasic param
+open import verificationMultiSig param
