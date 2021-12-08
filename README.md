@@ -1,4 +1,5 @@
-# Smart Contracts Verification With Agda
+# Verification of Smart Contracts in Bitcoin in Agda using Weakest Pre-Conditions
+
 
  Code in Agda
 1. All Agda Code
