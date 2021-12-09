@@ -29,7 +29,6 @@ open import stack
 open import stackPredicate
 open import instruction
 open import instructionBasic
-
 open import semanticBasicOperations param
 
 
@@ -54,53 +53,53 @@ instruction-6 = opDup
 accept-0Basic : StackPredicate
 accept-0Basic = acceptStateˢ
 
---acceptone
-acceptˢ₁ : StackPredicate
-acceptˢ₁ time m [] = ⊥
-acceptˢ₁ time m (sig ∷ []) = ⊥
-acceptˢ₁ time m ( pubKey  ∷ sig ∷ st) = IsSigned m  sig pubKey
+--accept one
+accept₁ˢ : StackPredicate
+accept₁ˢ time m [] = ⊥
+accept₁ˢ time m (sig ∷ []) = ⊥
+accept₁ˢ time m ( pubKey  ∷ sig ∷ st) = IsSigned m  sig pubKey
 
-acceptˢ₂Core : Time → Msg → ℕ → ℕ → ℕ → Set
-acceptˢ₂Core time m zero pubKey sig = ⊥
-acceptˢ₂Core time m (suc x) pubKey sig =  IsSigned  m sig pubKey
+accept₂ˢCore : Time → Msg → ℕ → ℕ → ℕ → Set
+accept₂ˢCore time m zero pubKey sig = ⊥
+accept₂ˢCore time m (suc x) pubKey sig =  IsSigned  m sig pubKey
 
---acceptTwo
-acceptˢ₂ : StackPredicate
-acceptˢ₂ time m [] = ⊥
-acceptˢ₂ time m (x ∷ []) = ⊥
-acceptˢ₂ time m (x ∷ x₁ ∷ []) = ⊥
-acceptˢ₂ time m (x ∷ pubKey ∷ sig ∷ rest) = acceptˢ₂Core time m x pubKey sig
+--accept Two
+accept₂ˢ : StackPredicate
+accept₂ˢ time m [] = ⊥
+accept₂ˢ time m (x ∷ []) = ⊥
+accept₂ˢ time m (x ∷ x₁ ∷ []) = ⊥
+accept₂ˢ time m (x ∷ pubKey ∷ sig ∷ rest) = accept₂ˢCore time m x pubKey sig
 
 
---acceptThree
-acceptˢ₃ : StackPredicate
-acceptˢ₃ time m [] = ⊥
-acceptˢ₃ time m (x ∷ []) = ⊥
-acceptˢ₃ time m (x ∷ x₁ ∷ []) = ⊥
-acceptˢ₃ time m (x ∷ x₁ ∷ x2 ∷ []) = ⊥
-acceptˢ₃ time m (pbkh2 ∷ pbkh1 ∷ pubKey ∷ sig ∷ rest)
+--accept Three
+accept₃ˢ : StackPredicate
+accept₃ˢ time m [] = ⊥
+accept₃ˢ time m (x ∷ []) = ⊥
+accept₃ˢ time m (x ∷ x₁ ∷ []) = ⊥
+accept₃ˢ time m (x ∷ x₁ ∷ x2 ∷ []) = ⊥
+accept₃ˢ time m (pbkh2 ∷ pbkh1 ∷ pubKey ∷ sig ∷ rest)
      =  (pbkh2 ≡  pbkh1) ∧ IsSigned  m sig pubKey
 
 
---acceptFour
-acceptˢ₄ : ( pubKey : ℕ ) → StackPredicate
-acceptˢ₄ pbkh1 time m [] = ⊥
-acceptˢ₄ pbkh1 time m (x ∷ []) = ⊥
-acceptˢ₄ pbkh1 time m (x ∷ x1  ∷ []) = ⊥
-acceptˢ₄ pbkh1 time m ( pbkh2   ∷ pubKey ∷ sig ∷ st)
+--accept Four
+accept₄ˢ : ( pubKey : ℕ ) → StackPredicate
+accept₄ˢ pbkh1 time m [] = ⊥
+accept₄ˢ pbkh1 time m (x ∷ []) = ⊥
+accept₄ˢ pbkh1 time m (x ∷ x1  ∷ []) = ⊥
+accept₄ˢ pbkh1 time m ( pbkh2   ∷ pubKey ∷ sig ∷ st)
         = (pbkh2 ≡  pbkh1) ∧  IsSigned  m sig pubKey
 
 
---acceptFive
-acceptˢ₅ : ( pubKey : ℕ ) → StackPredicate
-acceptˢ₅  pbkh1 time m [] = ⊥
-acceptˢ₅  pbkh1 time m (x ∷ []) = ⊥
-acceptˢ₅  pbkh1 time m (x ∷ x₁ ∷ []) = ⊥
-acceptˢ₅  pbkh1 time m ( pubKey1   ∷ pubKey ∷ sig ∷ st)
+--accept Five
+accept₅ˢ : ( pubKey : ℕ ) → StackPredicate
+accept₅ˢ  pbkh1 time m [] = ⊥
+accept₅ˢ  pbkh1 time m (x ∷ []) = ⊥
+accept₅ˢ  pbkh1 time m (x ∷ x₁ ∷ []) = ⊥
+accept₅ˢ  pbkh1 time m ( pubKey1   ∷ pubKey ∷ sig ∷ st)
        =  (hashFun pubKey1 ≡  pbkh1) ∧  IsSigned   m  sig  pubKey
 
 
---weakestprecondition
+--weakest precondition
 wPreCondP2PKHˢ : (pbkh : ℕ ) → StackPredicate
 wPreCondP2PKHˢ  pbkh  time  m  []                    =  ⊥
 wPreCondP2PKHˢ  pbkh  time  m  (x ∷ [])              =  ⊥
@@ -109,7 +108,7 @@ wPreCondP2PKHˢ  pbkh  time  m  ( pubKey ∷ sig ∷ st)  =
 
 
 
-correct3Aux1 : (x : ℕ)(rest : List ℕ)(time : Time)(msg : Msg) → acceptˢ₂ time msg (x ∷ rest)
+correct3Aux1 : (x : ℕ)(rest : List ℕ)(time : Time)(msg : Msg) → accept₂ˢ time msg (x ∷ rest)
                →  isTrueNat x
 correct3Aux1 zero (zero ∷ []) time msg accept = accept
 correct3Aux1 zero (zero ∷ x ∷ rest) time msg accept = accept
@@ -119,19 +118,19 @@ correct3Aux1 (suc x) (x₁ ∷ rest) time msg accept = tt
 
 
 correct3Aux2 : ( x pubKey sig : ℕ )( rest : List ℕ)(time : Time)(m : Msg)
-                → acceptˢ₂ time m (x ∷ pubKey ∷ sig ∷ rest)
+                → accept₂ˢ time m (x ∷ pubKey ∷ sig ∷ rest)
                 → IsSigned  m sig pubKey
 correct3Aux2 (suc x) pubkey sig rest time m accept = accept
 
 
 
 lemmaCorrect3From1 : (x z t : ℕ)(time : Time )(m : Msg)
-                    →  acceptˢ₂Core time m x z t → isTrueNat x
+                    →  accept₂ˢCore time m x z t → isTrueNat x
 lemmaCorrect3From1 (suc x) z t time m p = tt
 
 
 lemmaCorrect3From : (x y z t : ℕ)(time : Time)(m : Msg)
-                    →  acceptˢ₂Core time m (compareNaturals x y) z t → x ≡ y
+                    →  accept₂ˢCore time m (compareNaturals x y) z t → x ≡ y
 lemmaCorrect3From x y z t time m p = compareNatToEq x  y (lemmaCorrect3From1 (compareNaturals x y) z t time m p)
 
 
