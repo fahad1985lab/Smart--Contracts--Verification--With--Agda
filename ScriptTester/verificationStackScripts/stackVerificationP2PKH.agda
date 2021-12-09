@@ -46,19 +46,19 @@ accept-0 = stackPred2SPred accept-0Basic
 
 
 accept₁ : StackStatePred
-accept₁  = stackPred2SPred acceptˢ₁
+accept₁  = stackPred2SPred accept₁ˢ
 
 accept₂ : StackStatePred
-accept₂ = stackPred2SPred acceptˢ₂
+accept₂ = stackPred2SPred accept₂ˢ
 
 accept₃ : StackStatePred
-accept₃ = stackPred2SPred acceptˢ₃
+accept₃ = stackPred2SPred accept₃ˢ
 
 accept₄ : ℕ → StackStatePred
-accept₄ pbk  = stackPred2SPred (acceptˢ₄ pbk)
+accept₄ pbk  = stackPred2SPred (accept₄ˢ pbk)
 
 accept₅ : ℕ → StackStatePred
-accept₅ pbk  = stackPred2SPred (acceptˢ₅ pbk)
+accept₅ pbk  = stackPred2SPred (accept₅ˢ pbk)
 
 -- accept-6 : ℕ → StackStatePred
 -- accept-6 pbkHash  = stackPred2SPred (wPreCondP2PKHˢ pbkHash)
@@ -74,6 +74,7 @@ correct-1-to ⟨ time , msg₁ , pbk  ∷ sig ∷ st ⟩ p =  boolToNatNotFalseL
 correct-1-from : (s : StackState) → (accept-0 ⁺) (⟦ opCheckSig ⟧s s ) → accept₁ s
 correct-1-from ⟨ time , msg₁ , pbk ∷ sig ∷ stack₁  ⟩ p = boolToNatNotFalseLemma2 (isSigned  msg₁ sig pbk) p
 
+--correct two
 correct-1 : < accept₁ >iff  ([ opCheckSig ]) < acceptState >
 correct-1 .==> = correct-1-to
 correct-1 .<== = correct-1-from
@@ -85,9 +86,8 @@ correct-2-to ⟨ time , msg₁ , suc x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p = p
 correct-2-from : (s : StackState) → (accept₁ ⁺) (⟦ opVerify ⟧s s ) → accept₂ s
 correct-2-from ⟨ time , msg₁ , suc x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p = p
 
-
+--correct two
 correct-2 : < accept₂ >iff  ([ opVerify ]) < accept₁ >
-
 correct-2 .==> = correct-2-to
 correct-2 .<== = correct-2-from
 
@@ -103,9 +103,8 @@ correct-3-from ⟨ time , msg₁ , x ∷ x₁ ∷ pbk ∷ sig ∷ stack₁  ⟩ 
         q = correct3Aux2 (compareNaturals x x₁) pbk sig stack₁ time msg₁ p
       in (conj refl q)
 
-
+--correct three
 correct-3 : < accept₃ >iff  ([ opEqual ]) < accept₂ >
-
 correct-3 .==> = correct-3-to
 correct-3 .<== = correct-3-from
 
@@ -116,7 +115,7 @@ correct-4-to pbk ⟨ currentTime₁ , msg₁ , .pbk ∷ x₁ ∷ x₂ ∷ stack�
 correct-4-from : ( pbk : ℕ ) →  (s : StackState) → (accept₃ ⁺) (⟦ opPush pbk ⟧s s ) → accept₄ pbk  s
 correct-4-from pbk ⟨ currentTime₁ , msg₁ , .pbk ∷ x₁ ∷ x₂ ∷ stack₁   ⟩ (conj refl and4) = conj refl and4
 
-
+--correct four
 correct-4 :( pbk : ℕ ) →  < accept₄ pbk >iff  ([ opPush pbk ]) < accept₃ >
 correct-4 pbk .==> = correct-4-to pbk
 correct-4 pbk .<== = correct-4-from pbk
@@ -128,7 +127,7 @@ correct-5-to pbk ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ (conj 
 correct-5-from : ( pbk : ℕ ) →  (s : StackState)  → (( accept₄ pbk) ⁺) (⟦ opHash ⟧s s ) → accept₅ pbk  s
 correct-5-from .(hashFun x) ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ (conj refl checkSig) = conj refl checkSig
 
-
+--correct five
 correct-5 :( pbk : ℕ ) →  < accept₅ pbk >iff  ([ opHash  ]) < accept₄ pbk >
 correct-5 pbk .==> = correct-5-to pbk
 correct-5 pbk .<== = correct-5-from pbk
@@ -141,7 +140,7 @@ correct-6-to pbkHash ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p 
 correct-6-from : ( pbkHash : ℕ ) →  (s : StackState)  → (( accept₅ pbkHash) ⁺) (⟦ opDup ⟧s s ) → wPreCondP2PKH pbkHash  s
 correct-6-from pbkHash ⟨ time , msg₁ , x ∷ x₁ ∷ stack₁ ⟩ p = p
 
-
+--correct six
 correct-6 :( pbk : ℕ ) →  < wPreCondP2PKH pbk >iff  ([ opDup  ]) < accept₅ pbk >
 correct-6 pbk .==> = correct-6-to pbk
 correct-6 pbk .<== = correct-6-from pbk
@@ -149,8 +148,8 @@ correct-6 pbk .<== = correct-6-from pbk
 
 
 scriptP2PKHbas : (pbkh : ℕ) → BitcoinScriptBasic
+--scriptp pkh
 scriptP2PKHbas pbkh = opDup ∷ opHash ∷ (opPush pbkh) ∷ opEqual ∷ opVerify ∷ [ opCheckSig ]
-
 
 {- Reminder  from stackPredicate.agda
 
@@ -186,8 +185,7 @@ wPreCondP2PKHˢ pbkh time m ( pbK ∷ sig ∷ st)
 -- wPreCondP2PKH pbkh = accept-6 pbkh
 
 
---main theorem P2PKH
-
+--main theorem
 theoremP2PKH : (pbkh : ℕ) → < wPreCondP2PKH pbkh >iff scriptP2PKHbas pbkh < acceptState >
 theoremP2PKH pbkh  = wPreCondP2PKH pbkh <><>⟨ [ opDup ]   ⟩⟨  correct-6  pbkh  ⟩
                      accept₅  pbkh  <><>⟨  [  opHash ]       ⟩⟨  correct-5  pbkh  ⟩

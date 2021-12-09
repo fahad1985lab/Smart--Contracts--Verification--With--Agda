@@ -33,8 +33,7 @@ open import verificationStackScripts.stackState
 open import verificationStackScripts.sPredicate
 
 
---semantics Stack Instructions semantic
-
+--semantics Stack Instructions 
 ⟦_⟧s : InstructionBasic → StackState → Maybe StackState
 ⟦ opEqual ⟧s = liftStackToStackStateTransformer'  executeStackEquality
 ⟦ opAdd ⟧s = liftStackToStackStateTransformer' executeStackAdd
@@ -55,6 +54,9 @@ open import verificationStackScripts.sPredicate
 
 ⟦_⟧s⁺ : InstructionBasic → Maybe StackState → Maybe StackState
 ⟦ op ⟧s⁺ t = t >>= ⟦ op ⟧s
+-- ⟦ op ⟧s⁺ nothing = nothing
+-- ⟦ op ⟧s⁺ (just s ) = ⟦ op ⟧s s
+
 
 ⟦_⟧ : BitcoinScriptBasic → StackState → Maybe StackState
 ⟦ []  ⟧  = just

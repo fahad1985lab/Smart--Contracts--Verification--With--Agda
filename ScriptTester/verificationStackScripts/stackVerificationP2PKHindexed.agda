@@ -1,4 +1,3 @@
---@PREFIX@verficationptopkh
 open import basicBitcoinDataType
 
 module verificationStackScripts.stackVerificationP2PKHindexed (param : GlobalParameters) where
@@ -63,11 +62,11 @@ script' pubKeyHash (suc n) p
 
 conditionBasic : (pubKeyHash : ℕ)  (n : ℕ) → n ≤ 6 → StackPredicate
 conditionBasic pubKeyHash 0 _ = acceptStateˢ
-conditionBasic pubKeyHash 1 _ = acceptˢ₁
-conditionBasic pubKeyHash 2 _ = acceptˢ₂
-conditionBasic pubKeyHash 3 _ = acceptˢ₃
-conditionBasic pubKeyHash 4 _ = acceptˢ₄ pubKeyHash
-conditionBasic pubKeyHash 5 _ = acceptˢ₅ pubKeyHash
+conditionBasic pubKeyHash 1 _ = accept₁ˢ
+conditionBasic pubKeyHash 2 _ = accept₂ˢ
+conditionBasic pubKeyHash 3 _ = accept₃ˢ
+conditionBasic pubKeyHash 4 _ = accept₄ˢ pubKeyHash
+conditionBasic pubKeyHash 5 _ = accept₅ˢ pubKeyHash
 conditionBasic pubKeyHash 6 _ = wPreCondP2PKHˢ pubKeyHash
 
 condition : (pubKeyHash : ℕ)  (n : ℕ) → n ≤ 6 → (s : StackState) → Set
