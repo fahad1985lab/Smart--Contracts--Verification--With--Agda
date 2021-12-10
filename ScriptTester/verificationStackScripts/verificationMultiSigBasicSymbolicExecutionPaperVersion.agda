@@ -52,12 +52,11 @@ private
   postulate stack₁ : List ℕ
   postulate sig₂ sig₁ dummy : ℕ
 
--- --@BEGIN@complexmultisig
+--complexmultisig
 -- multiSigScript2-4ᵇ : (pbk1 pbk2 pbk3 pbk4 :  ℕ) → BitcoinScriptBasic
 -- multiSigScript2-4ᵇ pbk1 pbk2 pbk3 pbk4 =
 --        (opPush 2) ∷ (opPush pbk1) ∷  (opPush pbk2) ∷  (opPush pbk3) ∷  (opPush pbk4) ∷ (opPush 4) ∷   opMultiSig ∷ []
--- --@END
-
+-- 
 -- multiSigScript2-4 : (pbk1 pbk2 pbk3 pbk4 :  ℕ) → BitcoinScriptBasic
 -- multiSigScript2-4 pbk1 pbk2 pbk3 pbk4 =
 --        (opPush 2) ∷ (opPush pbk1) ∷  (opPush pbk2) ∷  (opPush pbk3) ∷  (opPush pbk4) ∷ (opPush 4) ∷   opMultiSig ∷ []
@@ -65,7 +64,7 @@ private
 
 --multisig symbolic
 multisigScript-2-4-symbolic =
-        ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ stack₁
+        ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ stack₁
 
 {- evaluated we get
 
@@ -74,36 +73,34 @@ executeMultiSig3 msg₁ (pbk₁ ∷ pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) 2 stack
 -}
 
 --result multisig
-
 test2 : Maybe Stack
-test2 =
-      executeMultiSig3 msg₁ (pbk₁ ∷ pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) 2 stack₁ []
+test2 =  executeMultiSig3 msg₁ (pbk₁ ∷ pbk₂ ∷ pbk₃ ∷ [ pbk₄ ]) 2 stack₁ []
 
 
 -- now we try out stack₁ = []
 
-multisigScript-2-4-symbolic-empty = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ []
+multisigScript-2-4-symbolic-empty = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ []
 
 {-
 result nothing
 -}
 
-multisigScript-2-4-symbolic-1stackelement = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ (sig₂ ∷ [])
+multisigScript-2-4-symbolic-1stackelement = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁  [ sig₂ ]
 
 {-
 result nothing
 -}
 
-multisigScript-2-4-symbolic-2stackelement = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ (sig₂ ∷ sig₁ ∷ [])
+multisigScript-2-4-symbolic-2stackelement = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ (sig₂ ∷ [ sig₁ ])
 
 {-
 result nothing
 -}
 
+--stack has three element
 multisigScript-2-4-symbolic-3stackelement =
---@BEGININLINE@stackhasthreeelement
-  ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ (sig₂ ∷ sig₁ ∷ dummy ∷ stack₁)
---@END
+  ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ (sig₂ ∷ sig₁ ∷ dummy ∷ stack₁)
+
 {-
 just
 (boolToNat
@@ -132,13 +129,13 @@ compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ 
 
 topElementMultisigScript-2-4-symbolic-3' : Bool
 topElementMultisigScript-2-4-symbolic-3' =
-   compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) sig₁  (isSigned msg₁ sig₁ pbk₁)
+   compareSigsMultiSigAux msg₁ [ sig₂ ] (pbk₂ ∷ pbk₃ ∷ [ pbk₄ ]) sig₁  (isSigned msg₁ sig₁ pbk₁)
 
+--compare Sigmulti
 topElementMultisigScript-2-4-symbolic-3 : Bool
 topElementMultisigScript-2-4-symbolic-3 =
---@BEGININLINE@compareSigmulti
-   compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) sig₁  (isSigned msg₁ sig₁ pbk₁)
---@END
+   compareSigsMultiSigAux msg₁ [ sig₂ ] (pbk₂ ∷ pbk₃ ∷ [ pbk₄ ]) sig₁  (isSigned msg₁ sig₁ pbk₁)
+
 
 testEqual : topElementMultisigScript-2-4-symbolic-3' ≡ topElementMultisigScript-2-4-symbolic-3
 testEqual = refl
@@ -161,27 +158,27 @@ We now make a casedistinction on (isSigned msg₁ sig₁ pbk₁)
 
 
 
-multisigAuxStep1True = compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) sig₁ true
+multisigAuxStep1True = compareSigsMultiSigAux msg₁ [ sig₂ ] (pbk₂ ∷ pbk₃ ∷ [ pbk₄ ]) sig₁ true
 {-
   compareSigsMultiSigAux msg₁ [] (pbk₃ ∷ pbk₄ ∷ []) sig₂ (isSigned msg₁ sig₂ pbk₂)
 -}
 
-multisigAuxStep1TrueStep2True = compareSigsMultiSigAux msg₁ [] (pbk₃ ∷ pbk₄ ∷ []) sig₂ true
+multisigAuxStep1TrueStep2True = compareSigsMultiSigAux msg₁ [] (pbk₃ ∷ [ pbk₄ ]) sig₂ true
 
 {- returns true -}
 
-multisigAuxStep1TrueStep2False = compareSigsMultiSigAux msg₁ [] (pbk₃ ∷ pbk₄ ∷ []) sig₂ false
+multisigAuxStep1TrueStep2False = compareSigsMultiSigAux msg₁ [] (pbk₃ ∷ [ pbk₄ ]) sig₂ false
 
 {- returns
    compareSigsMultiSigAux msg₁ [] (pbk₄ ∷ []) sig₂ (isSigned msg₁ sig₂ pbk₃)
 -}
 
-multisigAuxStep1TrueStep2FalseStep3True = compareSigsMultiSigAux msg₁ [] (pbk₄ ∷ []) sig₂ true
+multisigAuxStep1TrueStep2FalseStep3True = compareSigsMultiSigAux msg₁ [] [ pbk₄ ] sig₂ true
 
 
 {- returns true -}
 
-multisigAuxStep1TrueStep2FalseStep3False = compareSigsMultiSigAux msg₁ [] (pbk₄ ∷ []) sig₂ false
+multisigAuxStep1TrueStep2FalseStep3False = compareSigsMultiSigAux msg₁ [] [ pbk₄ ] sig₂ false
 
 {- returns
     compareSigsMultiSigAux msg₁ [] [] sig₂ (isSigned msg₁ sig₂ pbk₄)
@@ -195,7 +192,7 @@ multisigAuxStep1TrueStep2FalseStep3FalseStep4False = compareSigsMultiSigAux msg�
 
 {- returns false -}
 
-multisigAuxStep1False = compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) sig₁ false
+multisigAuxStep1False = compareSigsMultiSigAux msg₁ [ sig₂ ] (pbk₂ ∷ pbk₃ ∷ [ pbk₄ ]) sig₁ false
 
 {- returns
 
@@ -203,17 +200,17 @@ multisigAuxStep1False = compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₂ �
 
 -}
 
-multisigAuxStep1FalseStep2True  = compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₃ ∷ pbk₄ ∷ []) sig₁ true
+multisigAuxStep1FalseStep2True  = compareSigsMultiSigAux msg₁ [ sig₂ ] (pbk₃ ∷  [ pbk₄ ]) sig₁ true
 
 {- returns
      compareSigsMultiSigAux msg₁ [] (pbk₄ ∷ []) sig₂ (isSigned msg₁ sig₂ pbk₃)
 -}
 
-multisigAuxStep1FalseStep2TrueStep3True  = compareSigsMultiSigAux msg₁ [] (pbk₄ ∷ []) sig₂ true
+multisigAuxStep1FalseStep2TrueStep3True  = compareSigsMultiSigAux msg₁ [] [ pbk₄ ] sig₂ true
 
 {- returns true -}
 
-multisigAuxStep1FalseStep2TrueStep3False  = compareSigsMultiSigAux msg₁ [] (pbk₄ ∷ []) sig₂ false
+multisigAuxStep1FalseStep2TrueStep3False  = compareSigsMultiSigAux msg₁ [] [ pbk₄ ] sig₂ false
 
 {- returns
    compareSigsMultiSigAux msg₁ [] [] sig₂ (isSigned msg₁ sig₂ pbk₄)
@@ -228,14 +225,14 @@ multisigAuxStep1FalseStep2TrueStep3FalseStepFalse  = compareSigsMultiSigAux msg�
 {- returns false -}
 
 
-multisigAuxStep1FalseStep2False  = compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₃ ∷ pbk₄ ∷ []) sig₁ false
+multisigAuxStep1FalseStep2False  = compareSigsMultiSigAux msg₁ [ sig₂ ] (pbk₃ ∷ [ pbk₄ ]) sig₁ false
 
 {-returns
 
   compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₄ ∷ []) sig₁ (isSigned msg₁ sig₁ pbk₃)
 -}
 
-multisigAuxStep1FalseStep2FalseStep3True  = compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₄ ∷ []) sig₁ true
+multisigAuxStep1FalseStep2FalseStep3True  = compareSigsMultiSigAux msg₁ [ sig₂ ] [ pbk₄ ] sig₁ true
 
 {- returns
    compareSigsMultiSigAux msg₁ [] [] sig₂ (isSigned msg₁ sig₂ pbk₄)
@@ -252,17 +249,17 @@ multisigAuxStep1FalseStep2FalseStep3TrueStep4False  = compareSigsMultiSigAux msg
 
 
 
-multisigAuxStep1FalseStep2FalseStep3False  = compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₄ ∷ []) sig₁ false
+multisigAuxStep1FalseStep2FalseStep3False  = compareSigsMultiSigAux msg₁ [ sig₂ ] [ pbk₄ ] sig₁ false
 
 {- returns
     compareSigsMultiSigAux msg₁ (sig₂ ∷ []) [] sig₁ (isSigned msg₁ sig₁ pbk₄)
 -}
 
-multisigAuxStep1FalseStep2FalseStep3FalseStep4True  = compareSigsMultiSigAux msg₁ (sig₂ ∷ []) [] sig₁ true
+multisigAuxStep1FalseStep2FalseStep3FalseStep4True  = compareSigsMultiSigAux msg₁ [ sig₂ ] [] sig₁ true
 
 {- returns false -}
 
-multisigAuxStep1FalseStep2FalseStep3FalseStep4False  = compareSigsMultiSigAux msg₁ (sig₂ ∷ []) [] sig₁ false
+multisigAuxStep1FalseStep2FalseStep3FalseStep4False  = compareSigsMultiSigAux msg₁ [ sig₂ ]  [] sig₁ false
 
 {- returns false -}
 
