@@ -1,4 +1,3 @@
-{- OPTIONS --allow-unsolved-metas #-}
 open import basicBitcoinDataType
 
 module stackSemanticsInstructions (param : GlobalParameters) where
@@ -58,7 +57,7 @@ open import semanticBasicOperations param
 ⟦ opElse   ⟧stacks time₁ msg = just
 ⟦ opEndIf  ⟧stacks time₁ msg = just
 ⟦ opCheckSig3 ⟧stacks time₁ msg = executeStackCheckSig3Aux msg
-⟦ opMultiSig ⟧stacks  time₁ msg =  executeMultisig msg
+⟦ opMultiSig ⟧stacks  time₁ msg =  executeMultiSig msg
 
 -- execute only the stack operations of a bitcoin script
 --  is correct only for non-if instructiosn

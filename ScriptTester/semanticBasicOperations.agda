@@ -196,7 +196,7 @@ executeMultiSig3 msg₁ pbks (suc numSigs) (sig ∷ rest) sigs = executeMultiSig
 
 
 
---semantic Basic Operations execute MultiSig Two
+--semantic Basic Operations executeMultiSig2
 executeMultiSig2 : (msg : Msg)(numPbks : ℕ)(st :  Stack)(pbks : List ℕ) → Maybe Stack
 executeMultiSig2  msg  _        []                pbks  =  nothing
 executeMultiSig2  msg  zero     (numSigs ∷ rest)  pbks  =  executeMultiSig3 msg pbks numSigs rest []
@@ -205,12 +205,12 @@ executeMultiSig2  msg  (suc n)  (pbk ∷ rest)      pbks  =  executeMultiSig2 ms
 
 -- Add the notes to a file  notes in notes
 -- next steps
--- move executeMultisig to semanticsInstructions.agda
+-- move executeMultiSig to semanticsInstructions.agda
 -- add opMultiSig to the instructions
--- define ⟦ OpMultiSig ⟧s = liftMsgStackToStateTransformerDepIfStack' executeMultisig
+-- define ⟦ OpMultiSig ⟧s = liftMsgStackToStateTransformerDepIfStack' executeMultiSig
 -- in semanticsInstructions
 -- define in addition4.agda
---   ⟦ OpMultiSig   ⟧stacks time₁ msg =  executeMultisig msg
+--   ⟦ OpMultiSig   ⟧stacks time₁ msg =  executeMultiSig msg
 
 
 -- Try out evaluatings scripts as in scriptInterpreter.agda  whether it works as intended
@@ -229,7 +229,8 @@ executeMultiSig2  msg  (suc n)  (pbk ∷ rest)      pbks  =  executeMultiSig2 ms
 -- compareSigsMultiSig  msg₁ (sig1 ∷ [ sig2 ]) (pbk1 ∷ pbk2 ∷ [ pbk3 ] ) = true
 
 --semantic Basic Operations check pubk
-executeMultisig : Msg →  Stack →  Maybe Stack
-executeMultisig msg [] = nothing
-executeMultisig msg (numberOfPbks ∷ st) = executeMultiSig2 msg numberOfPbks st []
+
+executeMultiSig : Msg →  Stack →  Maybe Stack
+executeMultiSig msg [] = nothing
+executeMultiSig msg (numberOfPbks ∷ st) = executeMultiSig2 msg numberOfPbks st []
 
