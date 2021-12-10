@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>basicBitcoinDataType</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda"><a id="1" class="Keyword">module</a> <a id="8" href="basicBitcoinDataType.html" class="Module">basicBitcoinDataType</a> <a id="29" class="Keyword">where</a>
+
+
+<a id="37" class="Comment">--</a>
+<a id="40" class="Keyword">open</a> <a id="45" class="Keyword">import</a> <a id="52" href="Data.Nat.html" class="Module">Data.Nat</a>  <a id="62" class="Keyword">hiding</a> <a id="69" class="Symbol">(</a><a id="70" href="Data.Nat.Base.html#1535" class="Datatype Operator">_≤_</a><a id="73" class="Symbol">)</a>
+<a id="75" class="Keyword">open</a> <a id="80" class="Keyword">import</a> <a id="87" href="Data.List.html" class="Module">Data.List</a> <a id="97" class="Keyword">hiding</a> <a id="104" class="Symbol">(</a><a id="105" href="Data.List.Base.html#1810" class="Function Operator">_++_</a><a id="109" class="Symbol">)</a>
+<a id="111" class="Keyword">open</a> <a id="116" class="Keyword">import</a> <a id="123" href="Data.Unit.html" class="Module">Data.Unit</a>  <a id="134" class="Keyword">hiding</a> <a id="141" class="Symbol">(</a><a id="142" href="Data.Unit.Base.html#1023" class="Record Operator">_≤_</a><a id="145" class="Symbol">)</a>
+<a id="147" class="Keyword">open</a> <a id="152" class="Keyword">import</a> <a id="159" href="Data.Empty.html" class="Module">Data.Empty</a>
+<a id="170" class="Keyword">open</a> <a id="175" class="Keyword">import</a> <a id="182" href="Data.Bool.html" class="Module">Data.Bool</a>  <a id="193" class="Keyword">hiding</a> <a id="200" class="Symbol">(</a><a id="201" href="Data.Bool.Base.html#672" class="Datatype Operator">_≤_</a> <a id="205" class="Symbol">;</a> <a id="207" href="Data.Bool.Base.html#1283" class="Function Operator">if_then_else_</a> <a id="221" class="Symbol">)</a> <a id="223" class="Keyword">renaming</a> <a id="232" class="Symbol">(</a><a id="233" href="Data.Bool.Base.html#986" class="Function Operator">_∧_</a> <a id="237" class="Symbol">to</a> <a id="240" class="Function Operator">_∧b_</a> <a id="245" class="Symbol">;</a> <a id="247" href="Data.Bool.Base.html#1044" class="Function Operator">_∨_</a> <a id="251" class="Symbol">to</a> <a id="254" class="Function Operator">_∨b_</a> <a id="259" class="Symbol">;</a> <a id="261" href="Data.Bool.Base.html#1451" class="Function">T</a> <a id="263" class="Symbol">to</a> <a id="266" class="Function">True</a><a id="270" class="Symbol">)</a>
+<a id="272" class="Keyword">open</a> <a id="277" class="Keyword">import</a> <a id="284" href="Data.Bool.Base.html" class="Module">Data.Bool.Base</a> <a id="299" class="Keyword">hiding</a> <a id="306" class="Symbol">(</a><a id="307" href="Data.Bool.Base.html#672" class="Datatype Operator">_≤_</a> <a id="311" class="Symbol">;</a> <a id="313" href="Data.Bool.Base.html#1283" class="Function Operator">if_then_else_</a> <a id="327" class="Symbol">)</a> <a id="329" class="Keyword">renaming</a> <a id="338" class="Symbol">(</a><a id="339" href="Data.Bool.Base.html#986" class="Function Operator">_∧_</a> <a id="343" class="Symbol">to</a> <a id="346" class="Function Operator">_∧b_</a> <a id="351" class="Symbol">;</a> <a id="353" href="Data.Bool.Base.html#1044" class="Function Operator">_∨_</a> <a id="357" class="Symbol">to</a> <a id="360" class="Function Operator">_∨b_</a> <a id="365" class="Symbol">;</a> <a id="367" href="Data.Bool.Base.html#1451" class="Function">T</a> <a id="369" class="Symbol">to</a> <a id="372" class="Function">True</a><a id="376" class="Symbol">)</a>
+<a id="378" class="Keyword">open</a> <a id="383" class="Keyword">import</a> <a id="390" href="Data.Product.html" class="Module">Data.Product</a> <a id="403" class="Keyword">renaming</a> <a id="412" class="Symbol">(</a><a id="413" href="Agda.Builtin.Sigma.html#236" class="InductiveConstructor Operator">_,_</a> <a id="417" class="Symbol">to</a> <a id="420" class="InductiveConstructor Operator">_,,_</a> <a id="425" class="Symbol">)</a>
+<a id="427" class="Keyword">open</a> <a id="432" class="Keyword">import</a> <a id="439" href="Data.Nat.Base.html" class="Module">Data.Nat.Base</a> <a id="453" class="Keyword">hiding</a> <a id="460" class="Symbol">(</a><a id="461" href="Data.Nat.Base.html#1535" class="Datatype Operator">_≤_</a><a id="464" class="Symbol">)</a>
+<a id="466" class="Keyword">open</a> <a id="471" class="Keyword">import</a> <a id="478" href="Data.List.NonEmpty.html" class="Module">Data.List.NonEmpty</a> <a id="497" class="Keyword">hiding</a> <a id="504" class="Symbol">(</a><a id="505" href="Data.List.NonEmpty.Base.html#1141" class="Field">head</a><a id="509" class="Symbol">)</a>
+
+<a id="512" class="Keyword">open</a> <a id="517" class="Keyword">import</a> <a id="524" href="libraries.listLib.html" class="Module">libraries.listLib</a>
+<a id="542" class="Keyword">open</a> <a id="547" class="Keyword">import</a> <a id="554" href="libraries.natLib.html" class="Module">libraries.natLib</a>
+<a id="571" class="Keyword">open</a> <a id="576" class="Keyword">import</a> <a id="583" href="libraries.boolLib.html" class="Module">libraries.boolLib</a>
+<a id="601" class="Keyword">open</a> <a id="606" class="Keyword">import</a> <a id="613" href="libraries.andLib.html" class="Module">libraries.andLib</a>
+<a id="630" class="Keyword">open</a> <a id="635" class="Keyword">import</a> <a id="642" href="libraries.miscLib.html" class="Module">libraries.miscLib</a>
+<a id="660" class="Keyword">open</a> <a id="665" class="Keyword">import</a> <a id="672" href="libraries.maybeLib.html" class="Module">libraries.maybeLib</a>
+
+
+
+<a id="Time"></a><a id="694" href="basicBitcoinDataType.html#694" class="Function">Time</a>   <a id="701" class="Symbol">:</a> <a id="703" href="Agda.Primitive.html#326" class="Primitive">Set</a>
+<a id="707" href="basicBitcoinDataType.html#694" class="Function">Time</a>   <a id="714" class="Symbol">=</a>   <a id="718" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a>
+<a id="Amount"></a><a id="720" href="basicBitcoinDataType.html#720" class="Function">Amount</a> <a id="727" class="Symbol">:</a> <a id="729" href="Agda.Primitive.html#326" class="Primitive">Set</a>
+<a id="733" href="basicBitcoinDataType.html#720" class="Function">Amount</a> <a id="740" class="Symbol">=</a>  <a id="743" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a>
+
+<a id="Address"></a><a id="746" href="basicBitcoinDataType.html#746" class="Function">Address</a> <a id="754" class="Symbol">:</a> <a id="756" href="Agda.Primitive.html#326" class="Primitive">Set</a>
+<a id="760" href="basicBitcoinDataType.html#746" class="Function">Address</a>  <a id="769" class="Symbol">=</a>  <a id="772" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a>
+
+<a id="TXID"></a><a id="775" href="basicBitcoinDataType.html#775" class="Function">TXID</a> <a id="780" class="Symbol">:</a> <a id="782" href="Agda.Primitive.html#326" class="Primitive">Set</a>
+<a id="786" href="basicBitcoinDataType.html#775" class="Function">TXID</a> <a id="791" class="Symbol">=</a>    <a id="796" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a>
+
+<a id="Signature"></a><a id="799" href="basicBitcoinDataType.html#799" class="Function">Signature</a> <a id="809" class="Symbol">:</a> <a id="811" href="Agda.Primitive.html#326" class="Primitive">Set</a>
+<a id="815" href="basicBitcoinDataType.html#799" class="Function">Signature</a> <a id="825" class="Symbol">=</a>  <a id="828" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a>
+
+<a id="PublicKey"></a><a id="831" href="basicBitcoinDataType.html#831" class="Function">PublicKey</a> <a id="841" class="Symbol">:</a> <a id="843" href="Agda.Primitive.html#326" class="Primitive">Set</a>
+<a id="847" href="basicBitcoinDataType.html#831" class="Function">PublicKey</a>  <a id="858" class="Symbol">=</a>  <a id="861" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a>
+
+<a id="864" class="Keyword">infixr</a> <a id="871" class="Number">3</a> <a id="873" href="basicBitcoinDataType.html#939" class="InductiveConstructor Operator">_+msg_</a>
+
+<a id="881" class="Keyword">data</a> <a id="Msg"></a><a id="886" href="basicBitcoinDataType.html#886" class="Datatype">Msg</a> <a id="890" class="Symbol">:</a> <a id="892" href="Agda.Primitive.html#326" class="Primitive">Set</a> <a id="896" class="Keyword">where</a>
+   <a id="Msg.nat"></a><a id="905" href="basicBitcoinDataType.html#905" class="InductiveConstructor">nat</a>     <a id="913" class="Symbol">:</a>  <a id="916" class="Symbol">(</a><a id="917" href="basicBitcoinDataType.html#917" class="Bound">n</a> <a id="919" class="Symbol">:</a> <a id="921" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a><a id="922" class="Symbol">)</a>       <a id="930" class="Symbol">→</a> <a id="932" href="basicBitcoinDataType.html#886" class="Datatype">Msg</a>
+   <a id="Msg._+msg_"></a><a id="939" href="basicBitcoinDataType.html#939" class="InductiveConstructor Operator">_+msg_</a>  <a id="947" class="Symbol">:</a>  <a id="950" class="Symbol">(</a><a id="951" href="basicBitcoinDataType.html#951" class="Bound">m</a> <a id="953" href="basicBitcoinDataType.html#953" class="Bound">m&#39;</a> <a id="956" class="Symbol">:</a> <a id="958" href="basicBitcoinDataType.html#886" class="Datatype">Msg</a><a id="961" class="Symbol">)</a>     <a id="967" class="Symbol">→</a> <a id="969" href="basicBitcoinDataType.html#886" class="Datatype">Msg</a>
+   <a id="Msg.list"></a><a id="976" href="basicBitcoinDataType.html#976" class="InductiveConstructor">list</a>    <a id="984" class="Symbol">:</a>  <a id="987" class="Symbol">(</a><a id="988" href="basicBitcoinDataType.html#988" class="Bound">l</a>  <a id="991" class="Symbol">:</a> <a id="993" href="Agda.Builtin.List.html#148" class="Datatype">List</a> <a id="998" href="basicBitcoinDataType.html#886" class="Datatype">Msg</a><a id="1001" class="Symbol">)</a>  <a id="1004" class="Symbol">→</a> <a id="1006" href="basicBitcoinDataType.html#886" class="Datatype">Msg</a>
+
+
+<a id="1012" class="Comment">-- postulate hashMsg : Time → Msg → ℕ</a>
+
+<a id="1051" class="Comment">-- postulate hashNat : ℕ → ℕ</a>
+
+<a id="1081" class="Comment">{-
+-- time
+executeTime : ℕ
+executeTime   = 31
+-}</a>
+
+<a id="1131" class="Comment">-- function that compares time</a>
+<a id="instructOpTime"></a><a id="1162" href="basicBitcoinDataType.html#1162" class="Function">instructOpTime</a> <a id="1177" class="Symbol">:</a> <a id="1179" class="Symbol">(</a><a id="1180" href="basicBitcoinDataType.html#1180" class="Bound">currentTime</a> <a id="1192" class="Symbol">:</a> <a id="1194" href="basicBitcoinDataType.html#694" class="Function">Time</a><a id="1198" class="Symbol">)</a> <a id="1200" class="Symbol">(</a><a id="1201" href="basicBitcoinDataType.html#1201" class="Bound">entryInContract</a> <a id="1217" class="Symbol">:</a> <a id="1219" href="basicBitcoinDataType.html#694" class="Function">Time</a><a id="1223" class="Symbol">)</a> <a id="1225" class="Symbol">→</a> <a id="1227" href="Agda.Builtin.Bool.html#163" class="Datatype">Bool</a>
+<a id="1232" href="basicBitcoinDataType.html#1162" class="Function">instructOpTime</a> <a id="1247" href="basicBitcoinDataType.html#1247" class="Bound">currentTime</a> <a id="1259" href="basicBitcoinDataType.html#1259" class="Bound">entryInContract</a>  <a id="1276" class="Symbol">=</a> <a id="1278" href="basicBitcoinDataType.html#1259" class="Bound">entryInContract</a> <a id="1294" href="libraries.natLib.html#591" class="Function Operator">≤b</a> <a id="1297" href="basicBitcoinDataType.html#1247" class="Bound">currentTime</a>
+
+<a id="1310" class="Comment">-- postulate publicKey2Address : (pubk : PublicKey) → Address</a>
+
+<a id="1373" class="Comment">-- Signed means that Msg msg has been signed</a>
+<a id="1418" class="Comment">-- by private key corresponding to pubk</a>
+
+
+<a id="1460" class="Comment">-- postulate Signed : (msg : Msg)(publicKey : PublicKey)(s : Signature) → Set</a>
+
+
+
+<a id="1541" class="Keyword">record</a> <a id="GlobalParameters"></a><a id="1548" href="basicBitcoinDataType.html#1548" class="Record">GlobalParameters</a> <a id="1565" class="Symbol">:</a> <a id="1567" href="Agda.Primitive.html#326" class="Primitive">Set</a> <a id="1571" class="Keyword">where</a>
+  <a id="1579" class="Keyword">field</a>
+    <a id="GlobalParameters.publicKey2Address"></a><a id="1589" href="basicBitcoinDataType.html#1589" class="Field">publicKey2Address</a> <a id="1607" class="Symbol">:</a> <a id="1609" class="Symbol">(</a><a id="1610" href="basicBitcoinDataType.html#1610" class="Bound">pubk</a> <a id="1615" class="Symbol">:</a> <a id="1617" href="basicBitcoinDataType.html#831" class="Function">PublicKey</a><a id="1626" class="Symbol">)</a> <a id="1628" class="Symbol">→</a> <a id="1630" href="basicBitcoinDataType.html#746" class="Function">Address</a>
+    <a id="GlobalParameters.hash"></a><a id="1642" href="basicBitcoinDataType.html#1642" class="Field">hash</a>              <a id="1660" class="Symbol">:</a> <a id="1662" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a> <a id="1664" class="Symbol">→</a> <a id="1666" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a>
+    <a id="GlobalParameters.signed"></a><a id="1672" href="basicBitcoinDataType.html#1672" class="Field">signed</a>            <a id="1690" class="Symbol">:</a> <a id="1692" class="Symbol">(</a><a id="1693" href="basicBitcoinDataType.html#1693" class="Bound">msg</a> <a id="1697" class="Symbol">:</a> <a id="1699" href="basicBitcoinDataType.html#886" class="Datatype">Msg</a><a id="1702" class="Symbol">)(</a><a id="1704" href="basicBitcoinDataType.html#1704" class="Bound">s</a> <a id="1706" class="Symbol">:</a> <a id="1708" href="basicBitcoinDataType.html#799" class="Function">Signature</a><a id="1717" class="Symbol">)(</a><a id="1719" href="basicBitcoinDataType.html#1719" class="Bound">publicKey</a> <a id="1729" class="Symbol">:</a> <a id="1731" href="basicBitcoinDataType.html#831" class="Function">PublicKey</a><a id="1740" class="Symbol">)</a> <a id="1742" class="Symbol">→</a> <a id="1744" href="Agda.Builtin.Bool.html#163" class="Datatype">Bool</a>
+  <a id="GlobalParameters.Signed"></a><a id="1751" href="basicBitcoinDataType.html#1751" class="Function">Signed</a> <a id="1758" class="Symbol">:</a> <a id="1760" class="Symbol">(</a><a id="1761" href="basicBitcoinDataType.html#1761" class="Bound">msg</a> <a id="1765" class="Symbol">:</a> <a id="1767" href="basicBitcoinDataType.html#886" class="Datatype">Msg</a><a id="1770" class="Symbol">)(</a><a id="1772" href="basicBitcoinDataType.html#1772" class="Bound">s</a> <a id="1774" class="Symbol">:</a> <a id="1776" href="basicBitcoinDataType.html#799" class="Function">Signature</a><a id="1785" class="Symbol">)(</a><a id="1787" href="basicBitcoinDataType.html#1787" class="Bound">publicKey</a> <a id="1797" class="Symbol">:</a> <a id="1799" href="basicBitcoinDataType.html#831" class="Function">PublicKey</a><a id="1808" class="Symbol">)</a> <a id="1810" class="Symbol">→</a> <a id="1812" href="Agda.Primitive.html#326" class="Primitive">Set</a>
+  <a id="1818" href="basicBitcoinDataType.html#1751" class="Function">Signed</a> <a id="1825" href="basicBitcoinDataType.html#1825" class="Bound">msg</a> <a id="1829" href="basicBitcoinDataType.html#1829" class="Bound">s</a> <a id="1831" href="basicBitcoinDataType.html#1831" class="Bound">publicKey</a>  <a id="1842" class="Symbol">=</a> <a id="1844" href="basicBitcoinDataType.html#266" class="Function">True</a> <a id="1849" class="Symbol">(</a><a id="1850" href="basicBitcoinDataType.html#1672" class="Field">signed</a> <a id="1857" href="basicBitcoinDataType.html#1825" class="Bound">msg</a> <a id="1861" href="basicBitcoinDataType.html#1829" class="Bound">s</a> <a id="1863" href="basicBitcoinDataType.html#1831" class="Bound">publicKey</a><a id="1872" class="Symbol">)</a>
+
+<a id="1875" class="Keyword">open</a> <a id="1880" href="basicBitcoinDataType.html#1548" class="Module">GlobalParameters</a> <a id="1897" class="Keyword">public</a>
+</pre></body></html>

@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>loadAll</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda">
+<a id="2" class="Comment">{- OPTIONS --allow-unsolved-metas #-}</a>
+<a id="40" class="Keyword">open</a> <a id="45" class="Keyword">import</a> <a id="52" href="basicBitcoinDataType.html" class="Module">basicBitcoinDataType</a>
+
+<a id="74" class="Keyword">module</a> <a id="81" href="loadAll.html" class="Module">loadAll</a> <a id="89" class="Symbol">(</a><a id="90" href="loadAll.html#90" class="Bound">param</a> <a id="96" class="Symbol">:</a> <a id="98" href="basicBitcoinDataType.html#1548" class="Record">GlobalParameters</a><a id="114" class="Symbol">)</a> <a id="116" class="Keyword">where</a>
+
+<a id="123" class="Comment">-- Loads all files by directory in alphabetic order</a>
+<a id="175" class="Comment">--    other loadAll files are not loaded</a>
+<a id="216" class="Comment">-- Alphabetic order is used so that we can easily check that it is complete</a>
+<a id="292" class="Comment">-- and therefore by typechecking this file we can guarantee that the complete</a>
+<a id="370" class="Comment">-- code is type correct.</a>
+
+
+<a id="397" class="Comment">-- The file</a>
+<a id="409" class="Comment">-- loadStackVersionInNaturalOrder</a>
+<a id="443" class="Comment">-- will load the files which are not using the IfStack in a more natural order</a>
+<a id="522" class="Comment">-- so for studying this code use this file and a file</a>
+<a id="576" class="Comment">--   to be defined for the IfStack</a>
+<a id="611" class="Comment">--</a>
+
+
+<a id="616" class="Keyword">open</a> <a id="621" class="Keyword">import</a> <a id="628" href="libraries.andLib.html" class="Module">libraries.andLib</a>
+<a id="645" class="Keyword">open</a> <a id="650" class="Keyword">import</a> <a id="657" href="libraries.boolLib.html" class="Module">libraries.boolLib</a>
+<a id="675" class="Keyword">open</a> <a id="680" class="Keyword">import</a> <a id="687" href="libraries.emptyLib.html" class="Module">libraries.emptyLib</a>
+<a id="706" class="Keyword">open</a> <a id="711" class="Keyword">import</a> <a id="718" href="libraries.equalityLib.html" class="Module">libraries.equalityLib</a>
+<a id="740" class="Keyword">open</a> <a id="745" class="Keyword">import</a> <a id="752" href="libraries.finLib.html" class="Module">libraries.finLib</a>
+<a id="769" class="Keyword">open</a> <a id="774" class="Keyword">import</a> <a id="781" href="libraries.listLib.html" class="Module">libraries.listLib</a>
+<a id="799" class="Keyword">open</a> <a id="804" class="Keyword">import</a> <a id="811" href="libraries.maybeLib.html" class="Module">libraries.maybeLib</a>
+<a id="830" class="Keyword">open</a> <a id="835" class="Keyword">import</a> <a id="842" href="libraries.miscLib.html" class="Module">libraries.miscLib</a>
+<a id="860" class="Keyword">open</a> <a id="865" class="Keyword">import</a> <a id="872" href="libraries.natLib.html" class="Module">libraries.natLib</a>
+
+
+<a id="891" class="Comment">----------------------</a>
+<a id="914" class="Comment">-- Root Directory   --</a>
+<a id="937" class="Comment">----------------------</a>
+
+<a id="961" class="Comment">-- open import basicBitcoinDataType  -- (was already imported before the module)</a>
+<a id="1042" class="Keyword">open</a> <a id="1047" class="Keyword">import</a> <a id="1054" href="exampleBasicData.html" class="Module">exampleBasicData</a>
+<a id="1071" class="Keyword">open</a> <a id="1076" class="Keyword">import</a> <a id="1083" href="hoareTripleStack.html" class="Module">hoareTripleStack</a> <a id="1100" href="loadAll.html#90" class="Bound">param</a>
+<a id="1106" class="Keyword">open</a> <a id="1111" class="Keyword">import</a> <a id="1118" href="instruction.html" class="Module">instruction</a>
+<a id="1130" class="Keyword">open</a> <a id="1135" class="Keyword">import</a> <a id="1142" href="instructionBasic.html" class="Module">instructionBasic</a>
+<a id="1159" class="Keyword">open</a> <a id="1164" class="Keyword">import</a> <a id="1171" href="ledger.html" class="Module">ledger</a> <a id="1178" href="loadAll.html#90" class="Bound">param</a>
+<a id="1184" class="Keyword">open</a> <a id="1189" class="Keyword">import</a> <a id="1196" href="semanticBasicOperations.html" class="Module">semanticBasicOperations</a> <a id="1220" href="loadAll.html#90" class="Bound">param</a>
+<a id="1226" class="Keyword">open</a> <a id="1231" class="Keyword">import</a> <a id="1238" href="stack.html" class="Module">stack</a>
+<a id="1244" class="Keyword">open</a> <a id="1249" class="Keyword">import</a> <a id="1256" href="stackPredicate.html" class="Module">stackPredicate</a>
+<a id="1271" class="Keyword">open</a> <a id="1276" class="Keyword">import</a> <a id="1283" href="stackSemanticsInstructions.html" class="Module">stackSemanticsInstructions</a> <a id="1310" href="loadAll.html#90" class="Bound">param</a>
+<a id="1316" class="Keyword">open</a> <a id="1321" class="Keyword">import</a> <a id="1328" href="verificationMultiSig.html" class="Module">verificationMultiSig</a> <a id="1349" href="loadAll.html#90" class="Bound">param</a>
+<a id="1355" class="Keyword">open</a> <a id="1360" class="Keyword">import</a> <a id="1367" href="verificationP2PKHbasic.html" class="Module">verificationP2PKHbasic</a> <a id="1390" href="loadAll.html#90" class="Bound">param</a>
+
+
+<a id="1398" class="Comment">----------------------------------------</a>
+<a id="1439" class="Comment">-- Directory verificationStackScripts --</a>
+<a id="1480" class="Comment">-----------------------------------------</a>
+
+<a id="1523" class="Keyword">open</a> <a id="1528" class="Keyword">import</a> <a id="1535" href="verificationStackScripts.demoEqualityReasoning.html" class="Module">verificationStackScripts.demoEqualityReasoning</a> <a id="1582" href="loadAll.html#90" class="Bound">param</a>
+<a id="1588" class="Keyword">open</a> <a id="1593" class="Keyword">import</a> <a id="1600" href="verificationStackScripts.demoEqualityReasoningVers2.html" class="Module">verificationStackScripts.demoEqualityReasoningVers2</a> <a id="1652" href="loadAll.html#90" class="Bound">param</a>
+<a id="1658" class="Keyword">open</a> <a id="1663" class="Keyword">import</a> <a id="1670" href="verificationStackScripts.hoareTripleStackBasic.html" class="Module">verificationStackScripts.hoareTripleStackBasic</a> <a id="1717" href="loadAll.html#90" class="Bound">param</a>
+<a id="1723" class="Keyword">open</a> <a id="1728" class="Keyword">import</a> <a id="1735" href="verificationStackScripts.maybeDef.html" class="Module">verificationStackScripts.maybeDef</a>
+<a id="1769" class="Keyword">open</a> <a id="1774" class="Keyword">import</a> <a id="1781" href="verificationStackScripts.semanticBasicOperationsForTypeSetting.html" class="Module">verificationStackScripts.semanticBasicOperationsForTypeSetting</a> <a id="1844" href="loadAll.html#90" class="Bound">param</a>
+<a id="1850" class="Keyword">open</a> <a id="1855" class="Keyword">import</a> <a id="1862" href="verificationStackScripts.semanticsStackInstructions.html" class="Module">verificationStackScripts.semanticsStackInstructions</a> <a id="1914" href="loadAll.html#90" class="Bound">param</a>
+<a id="1920" class="Keyword">open</a> <a id="1925" class="Keyword">import</a> <a id="1932" href="verificationStackScripts.sPredicate.html" class="Module">verificationStackScripts.sPredicate</a>
+<a id="1968" class="Keyword">open</a> <a id="1973" class="Keyword">import</a> <a id="1980" href="verificationStackScripts.stackHoareTriple.html" class="Module">verificationStackScripts.stackHoareTriple</a> <a id="2022" href="loadAll.html#90" class="Bound">param</a>
+<a id="2028" class="Keyword">open</a> <a id="2033" class="Keyword">import</a> <a id="2040" href="verificationStackScripts.stackInstruction.html" class="Module">verificationStackScripts.stackInstruction</a>
+<a id="2082" class="Keyword">open</a> <a id="2087" class="Keyword">import</a> <a id="2094" href="verificationStackScripts.stackSemanticsInstructionsBasic.html" class="Module">verificationStackScripts.stackSemanticsInstructionsBasic</a> <a id="2151" href="loadAll.html#90" class="Bound">param</a>
+<a id="2157" class="Keyword">open</a> <a id="2162" class="Keyword">import</a> <a id="2169" href="verificationStackScripts.stackState.html" class="Module">verificationStackScripts.stackState</a>
+<a id="2205" class="Keyword">open</a> <a id="2210" class="Keyword">import</a> <a id="2217" href="verificationStackScripts.stackVerificationLemmas.html" class="Module">verificationStackScripts.stackVerificationLemmas</a> <a id="2266" href="loadAll.html#90" class="Bound">param</a>
+<a id="2272" class="Keyword">open</a> <a id="2277" class="Keyword">import</a> <a id="2284" href="verificationStackScripts.stackVerificationLemmasPart2.html" class="Module">verificationStackScripts.stackVerificationLemmasPart2</a> <a id="2338" href="loadAll.html#90" class="Bound">param</a>
+<a id="2344" class="Keyword">open</a> <a id="2349" class="Keyword">import</a> <a id="2356" href="verificationStackScripts.stackVerificationP2PKH.html" class="Module">verificationStackScripts.stackVerificationP2PKH</a> <a id="2404" href="loadAll.html#90" class="Bound">param</a>
+<a id="2410" class="Keyword">open</a> <a id="2415" class="Keyword">import</a> <a id="2422" href="verificationStackScripts.stackVerificationP2PKHextractedProgram.html" class="Module">verificationStackScripts.stackVerificationP2PKHextractedProgram</a> <a id="2486" href="loadAll.html#90" class="Bound">param</a>
+<a id="2492" class="Keyword">open</a> <a id="2497" class="Keyword">import</a> <a id="2504" href="verificationStackScripts.stackVerificationP2PKHindexed.html" class="Module">verificationStackScripts.stackVerificationP2PKHindexed</a> <a id="2559" href="loadAll.html#90" class="Bound">param</a>
+<a id="2565" class="Keyword">open</a> <a id="2570" class="Keyword">import</a> <a id="2577" href="verificationStackScripts.stackVerificationP2PKHsymbolicExecution.html" class="Module">verificationStackScripts.stackVerificationP2PKHsymbolicExecution</a> <a id="2642" href="loadAll.html#90" class="Bound">param</a>
+<a id="2648" class="Keyword">open</a> <a id="2653" class="Keyword">import</a> <a id="2660" href="verificationStackScripts.stackVerificationP2PKHsymbolicExecutionPaperVersion.html" class="Module">verificationStackScripts.stackVerificationP2PKHsymbolicExecutionPaperVersion</a> <a id="2737" href="loadAll.html#90" class="Bound">param</a>
+<a id="2743" class="Keyword">open</a> <a id="2748" class="Keyword">import</a> <a id="2755" href="verificationStackScripts.stackVerificationP2PKHsymbolicExecutionPaperVersionPart2.html" class="Module">verificationStackScripts.stackVerificationP2PKHsymbolicExecutionPaperVersionPart2</a> <a id="2837" href="loadAll.html#90" class="Bound">param</a>
+<a id="2843" class="Keyword">open</a> <a id="2848" class="Keyword">import</a> <a id="2855" href="verificationStackScripts.stackVerificationP2PKHUsingEqualityOfPrograms.html" class="Module">verificationStackScripts.stackVerificationP2PKHUsingEqualityOfPrograms</a> <a id="2926" href="loadAll.html#90" class="Bound">param</a>
+<a id="2932" class="Keyword">open</a> <a id="2937" class="Keyword">import</a> <a id="2944" href="verificationStackScripts.stackVerificationP2PKHUsingEqualityOfProgramsTest.html" class="Module">verificationStackScripts.stackVerificationP2PKHUsingEqualityOfProgramsTest</a> <a id="3019" href="loadAll.html#90" class="Bound">param</a>
+<a id="3025" class="Keyword">open</a> <a id="3030" class="Keyword">import</a> <a id="3037" href="verificationStackScripts.verificationMultiSigBasic.html" class="Module">verificationStackScripts.verificationMultiSigBasic</a> <a id="3088" href="loadAll.html#90" class="Bound">param</a>
+<a id="3094" class="Keyword">open</a> <a id="3099" class="Keyword">import</a> <a id="3106" href="verificationStackScripts.verificationMultiSigBasicEqualityOfProgram.html" class="Module">verificationStackScripts.verificationMultiSigBasicEqualityOfProgram</a> <a id="3174" href="loadAll.html#90" class="Bound">param</a>
+<a id="3180" class="Keyword">open</a> <a id="3185" class="Keyword">import</a> <a id="3192" href="verificationStackScripts.verificationMultiSigBasicSymbolicExecution.html" class="Module">verificationStackScripts.verificationMultiSigBasicSymbolicExecution</a> <a id="3260" href="loadAll.html#90" class="Bound">param</a>
+<a id="3266" class="Keyword">open</a> <a id="3271" class="Keyword">import</a> <a id="3278" href="verificationStackScripts.verificationMultiSigBasicSymbolicExecutionPaper.html" class="Module">verificationStackScripts.verificationMultiSigBasicSymbolicExecutionPaper</a> <a id="3351" href="loadAll.html#90" class="Bound">param</a>
+<a id="3357" class="Keyword">open</a> <a id="3362" class="Keyword">import</a> <a id="3369" href="verificationStackScripts.verificationMultiSigBasicSymbolicExecutionPaperVersion.html" class="Module">verificationStackScripts.verificationMultiSigBasicSymbolicExecutionPaperVersion</a> <a id="3449" href="loadAll.html#90" class="Bound">param</a>
+</pre></body></html>

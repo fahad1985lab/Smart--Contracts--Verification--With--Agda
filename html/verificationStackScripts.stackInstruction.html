@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>verificationStackScripts.stackInstruction</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda">
+
+<a id="3" class="Keyword">module</a> <a id="10" href="verificationStackScripts.stackInstruction.html" class="Module">verificationStackScripts.stackInstruction</a> <a id="52" class="Keyword">where</a>
+
+
+<a id="60" class="Keyword">open</a> <a id="65" class="Keyword">import</a> <a id="72" href="Data.Nat.html" class="Module">Data.Nat</a>  <a id="82" class="Keyword">hiding</a> <a id="89" class="Symbol">(</a><a id="90" href="Data.Nat.Base.html#1535" class="Datatype Operator">_≤_</a><a id="93" class="Symbol">)</a>
+<a id="95" class="Keyword">open</a> <a id="100" class="Keyword">import</a> <a id="107" href="Data.List.html" class="Module">Data.List</a> <a id="117" class="Keyword">hiding</a> <a id="124" class="Symbol">(</a><a id="125" href="Data.List.Base.html#1810" class="Function Operator">_++_</a><a id="129" class="Symbol">)</a>
+<a id="131" class="Keyword">open</a> <a id="136" class="Keyword">import</a> <a id="143" href="Data.Unit.html" class="Module">Data.Unit</a>  <a id="154" class="Keyword">hiding</a> <a id="161" class="Symbol">(</a><a id="162" href="Data.Unit.Base.html#1023" class="Record Operator">_≤_</a><a id="165" class="Symbol">)</a>
+<a id="167" class="Keyword">open</a> <a id="172" class="Keyword">import</a> <a id="179" href="Data.Empty.html" class="Module">Data.Empty</a>
+<a id="190" class="Keyword">open</a> <a id="195" class="Keyword">import</a> <a id="202" href="Data.Bool.html" class="Module">Data.Bool</a>  <a id="213" class="Keyword">hiding</a> <a id="220" class="Symbol">(</a><a id="221" href="Data.Bool.Base.html#672" class="Datatype Operator">_≤_</a> <a id="225" class="Symbol">;</a> <a id="227" href="Data.Bool.Base.html#1283" class="Function Operator">if_then_else_</a> <a id="241" class="Symbol">)</a> <a id="243" class="Keyword">renaming</a> <a id="252" class="Symbol">(</a><a id="253" href="Data.Bool.Base.html#986" class="Function Operator">_∧_</a> <a id="257" class="Symbol">to</a> <a id="260" class="Function Operator">_∧b_</a> <a id="265" class="Symbol">;</a> <a id="267" href="Data.Bool.Base.html#1044" class="Function Operator">_∨_</a> <a id="271" class="Symbol">to</a> <a id="274" class="Function Operator">_∨b_</a> <a id="279" class="Symbol">;</a> <a id="281" href="Data.Bool.Base.html#1451" class="Function">T</a> <a id="283" class="Symbol">to</a> <a id="286" class="Function">True</a><a id="290" class="Symbol">)</a>
+<a id="292" class="Keyword">open</a> <a id="297" class="Keyword">import</a> <a id="304" href="Data.Bool.Base.html" class="Module">Data.Bool.Base</a> <a id="319" class="Keyword">hiding</a> <a id="326" class="Symbol">(</a><a id="327" href="Data.Bool.Base.html#672" class="Datatype Operator">_≤_</a> <a id="331" class="Symbol">;</a> <a id="333" href="Data.Bool.Base.html#1283" class="Function Operator">if_then_else_</a> <a id="347" class="Symbol">)</a> <a id="349" class="Keyword">renaming</a> <a id="358" class="Symbol">(</a><a id="359" href="Data.Bool.Base.html#986" class="Function Operator">_∧_</a> <a id="363" class="Symbol">to</a> <a id="366" class="Function Operator">_∧b_</a> <a id="371" class="Symbol">;</a> <a id="373" href="Data.Bool.Base.html#1044" class="Function Operator">_∨_</a> <a id="377" class="Symbol">to</a> <a id="380" class="Function Operator">_∨b_</a> <a id="385" class="Symbol">;</a> <a id="387" href="Data.Bool.Base.html#1451" class="Function">T</a> <a id="389" class="Symbol">to</a> <a id="392" class="Function">True</a><a id="396" class="Symbol">)</a>
+<a id="398" class="Keyword">open</a> <a id="403" class="Keyword">import</a> <a id="410" href="Data.Product.html" class="Module">Data.Product</a> <a id="423" class="Keyword">renaming</a> <a id="432" class="Symbol">(</a><a id="433" href="Agda.Builtin.Sigma.html#236" class="InductiveConstructor Operator">_,_</a> <a id="437" class="Symbol">to</a> <a id="440" class="InductiveConstructor Operator">_,,_</a> <a id="445" class="Symbol">)</a>
+<a id="447" class="Keyword">open</a> <a id="452" class="Keyword">import</a> <a id="459" href="Data.Nat.Base.html" class="Module">Data.Nat.Base</a> <a id="473" class="Keyword">hiding</a> <a id="480" class="Symbol">(</a><a id="481" href="Data.Nat.Base.html#1535" class="Datatype Operator">_≤_</a><a id="484" class="Symbol">)</a>
+<a id="486" class="Keyword">open</a> <a id="491" class="Keyword">import</a> <a id="498" href="Data.List.NonEmpty.html" class="Module">Data.List.NonEmpty</a> <a id="517" class="Keyword">hiding</a> <a id="524" class="Symbol">(</a><a id="525" href="Data.List.NonEmpty.Base.html#1141" class="Field">head</a><a id="529" class="Symbol">)</a>
+
+<a id="532" class="Keyword">open</a> <a id="537" class="Keyword">import</a> <a id="544" href="libraries.listLib.html" class="Module">libraries.listLib</a>
+<a id="562" class="Keyword">open</a> <a id="567" class="Keyword">import</a> <a id="574" href="libraries.natLib.html" class="Module">libraries.natLib</a>
+<a id="591" class="Keyword">open</a> <a id="596" class="Keyword">import</a> <a id="603" href="libraries.boolLib.html" class="Module">libraries.boolLib</a>
+<a id="621" class="Keyword">open</a> <a id="626" class="Keyword">import</a> <a id="633" href="libraries.andLib.html" class="Module">libraries.andLib</a>
+<a id="650" class="Keyword">open</a> <a id="655" class="Keyword">import</a> <a id="662" href="libraries.miscLib.html" class="Module">libraries.miscLib</a>
+<a id="680" class="Keyword">open</a> <a id="685" class="Keyword">import</a> <a id="692" href="libraries.maybeLib.html" class="Module">libraries.maybeLib</a>
+
+
+<a id="713" class="Keyword">open</a> <a id="718" class="Keyword">import</a> <a id="725" href="basicBitcoinDataType.html" class="Module">basicBitcoinDataType</a>
+<a id="746" class="Keyword">open</a> <a id="751" class="Keyword">import</a> <a id="758" href="stack.html" class="Module">stack</a>
+<a id="764" class="Keyword">open</a> <a id="769" class="Keyword">import</a> <a id="776" href="verificationStackScripts.stackState.html" class="Module">verificationStackScripts.stackState</a>
+<a id="812" class="Keyword">open</a> <a id="817" class="Keyword">import</a> <a id="824" href="verificationStackScripts.sPredicate.html" class="Module">verificationStackScripts.sPredicate</a>
+
+
+<a id="862" class="Comment">{-
+--list with normal instructions
+data InstructionBasic : Set where
+  opEqual  : Instruction
+  opAdd    : Instruction
+  opPush   : ℕ → Instruction
+  opSub    : Instruction
+  opVerify : Instruction
+  opCheckSig : Instruction
+  opEqualVerify : Instruction
+  opDup : Instruction
+  opDrop :  Instruction
+  opSwap  : Instruction
+  opHash : Instruction
+  opCHECKLOCKTIMEVERIFY : Instruction
+  opCheckSig3 : Instruction
+  opMultiSig : Instruction
+
+
+
+BitcoinScriptBasic : Set
+BitcoinScriptBasic  = List Instruction
+-}</a>
+</pre></body></html>
