@@ -184,7 +184,7 @@ weakestPreConditionMultiSig-2-4ˢ pbk1 pbk2 pbk3 pbk4 time  msg₁ ( sig2 ∷ si
 
 
 HoareTripleStackGeAux' : (msg₁ : Msg)(pbk1 pbk2 pbk3 : ℕ) →
-                 < (weakestPreConditionMultiSig-2-3-bas pbk1 pbk2 pbk3) >stgen
+                 < (weakestPreConditionMultiSig-2-3-bas pbk1 pbk2 pbk3) >gˢ
                  (λ time₁ msg₁ stack →
                     executeMultiSig3 msg₁ (pbk1 ∷ pbk2 ∷ pbk3 ∷ []) 2 stack [])
                  < (λ time₁ msg₁ stack → acceptStateˢ time₁ msg₁ stack) >
@@ -671,7 +671,7 @@ multiSigScript-3-5-b pbk1 pbk2 pbk3 pbk4 pbk5 =
       (opPush 3) ∷ (opPush pbk1) ∷  (opPush pbk2) ∷  (opPush pbk3) ∷  (opPush pbk4) ∷  (opPush pbk5) ∷ (opPush 5) ∷ opMultiSig ∷ []
 
 --multisig check Time Script
---@BEGIN@checkTimeScript
+
 checkTimeScriptᵇ : (time₁ : Time) → BitcoinScriptBasic
 checkTimeScriptᵇ time₁ = (opPush time₁) ∷ opCHECKLOCKTIMEVERIFY ∷ [ opDrop  ]
 

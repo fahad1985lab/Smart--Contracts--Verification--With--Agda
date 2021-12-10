@@ -53,7 +53,7 @@ open import stackSemanticsInstructions param
 --  Hoare triple for that instruction
 --  provided we have a non-if instruction
 
-record <_>stgen_<_> (φ : StackPredicate) (stackfun : StackTransformer)
+record <_>gˢ_<_> (φ : StackPredicate) (stackfun : StackTransformer)
                        (ψ : StackPredicate) : Set where
   constructor hoareTripleStackGen -- corrStackPartGeneric
   field
@@ -63,12 +63,12 @@ record <_>stgen_<_> (φ : StackPredicate) (stackfun : StackTransformer)
     <==stg : (time : Time)(msg : Msg)(s : Stack)
             → liftPred2Maybe (ψ  time msg) (stackfun time msg s)
             → φ time msg s
-open <_>stgen_<_> public
+open <_>gˢ_<_> public
 
 {-
 HoareTripleStackGen : (φ : StackPredicate) (stackfun : StackTransformer) (ψ : StackPredicate)
                       → Set
-HoareTripleStackGen φ stackfun ψ  = < φ >stgen stackfun < ψ >
+HoareTripleStackGen φ stackfun ψ  = < φ >gˢ stackfun < ψ >
 -}
 {-
 -- The condition CorrectnessStackPartGeneric
@@ -77,9 +77,9 @@ HoareTripleStackGen φ stackfun ψ  = < φ >stgen stackfun < ψ >
 CorrectnessStackPartOfInstr : (instr : InstructionAll)
                               (φ ψ : StackPredicate)
                               → Set
-CorrectnessStackPartOfInstr instr φ ψ = < φ >stgen ⟦ instr ∷ []  ⟧stack < ψ >
+CorrectnessStackPartOfInstr instr φ ψ = < φ >gˢ ⟦ instr ∷ []  ⟧stack < ψ >
 -}
 
 -- Hoare triple  with stack instructions
 <_>stack_<_> : StackPredicate → BitcoinScript → StackPredicate → Set
-< φ >stack prog < ψ > = < φ >stgen ⟦ prog  ⟧stack  < ψ >
+< φ >stack prog < ψ > = < φ >gˢ ⟦ prog  ⟧stack  < ψ >
