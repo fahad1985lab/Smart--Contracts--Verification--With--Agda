@@ -69,6 +69,11 @@ notFalse : ℕ → Bool
 notFalse  zero = false
 notFalse  (suc x) = true
 
+NotFalse : ℕ → Set
+NotFalse  zero = ⊥
+NotFalse  (suc x) = ⊤
+
+
 
 compareNatToEq : (x y : ℕ) → isTrueNat (compareNaturals x y) → x ≡ y
 compareNatToEq zero zero t = refl
@@ -78,10 +83,10 @@ lemmaCompareNat : ( x : ℕ ) → compareNaturals x x ≡ 1
 lemmaCompareNat zero = refl
 lemmaCompareNat (suc n) = lemmaCompareNat n
 
-boolToNatNotFalseLemma : (b : Bool) → True b → True (notFalse (boolToNat b))
+boolToNatNotFalseLemma : (b : Bool) → True b → NotFalse (boolToNat b)
 boolToNatNotFalseLemma true p = tt
 
-boolToNatNotFalseLemma2 : (b : Bool) → True (notFalse (boolToNat b)) → True b
+boolToNatNotFalseLemma2 : (b : Bool) → NotFalse (boolToNat b) → True b
 boolToNatNotFalseLemma2 true p = tt
 
 leqSucLemma : (n m : ℕ) → n ≤ m → n ≤ suc m
