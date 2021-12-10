@@ -662,16 +662,15 @@ lemmaHoareTripleStackGeAux'Comb3-5 msg₁ pbk1 pbk2 pbk3 pbk4 pbk5 sig1 sig2 sig
 
 --complex multisig
 multiSigScript2-4ᵇ : (pbk₁ pbk₂ pbk₃ pbk₄ :  ℕ) → BitcoinScriptBasic
-multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ =  (opPush 2) ∷ (opPush pbk₁) ∷  (opPush pbk₂) ∷
-                                         (opPush pbk₃) ∷  (opPush pbk₄) ∷ (opPush 4) ∷  [  opMultiSig ]
+multiSigScript2-4ᵇ  pbk₁ pbk₂ pbk₃ pbk₄ =  (opPush 2) ∷ (opPush pbk₁) ∷  (opPush pbk₂) ∷
+                    (opPush pbk₃) ∷  (opPush pbk₄) ∷ (opPush 4) ∷  [  opMultiSig ]
 
 
 multiSigScript-3-5-b : (pbk1 pbk2 pbk3 pbk4 pbk5 :  ℕ) → BitcoinScriptBasic
 multiSigScript-3-5-b pbk1 pbk2 pbk3 pbk4 pbk5 =
       (opPush 3) ∷ (opPush pbk1) ∷  (opPush pbk2) ∷  (opPush pbk3) ∷  (opPush pbk4) ∷  (opPush pbk5) ∷ (opPush 5) ∷ opMultiSig ∷ []
 
---multisig check Time Script
-
+--multi sig check Time Script
 checkTimeScriptᵇ : (time₁ : Time) → BitcoinScriptBasic
 checkTimeScriptᵇ time₁ = (opPush time₁) ∷ opCHECKLOCKTIMEVERIFY ∷ [ opDrop  ]
 
