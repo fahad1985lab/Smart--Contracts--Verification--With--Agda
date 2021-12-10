@@ -95,12 +95,13 @@ weakestPreConditionMultiSig-2-4 pbk1 pbk2 pbk3 pbk4 = stackPred2SPred (weakestPr
 
 
 -- Main theorem for multisig-2-4
---verification MultiSig Basict heoremCorrectnessMultiSig-2-4
+--verification MultiSig Basic theorem Correctness MultiSig-2-4
 
 theoremCorrectnessMultiSig-2-4 : (pbk1 pbk2 pbk3 pbk4 :  ℕ)
                                  → < weakestPreConditionMultiSig-2-4 pbk1 pbk2 pbk3 pbk4  >iff
                                     multiSigScript2-4ᵇ pbk1 pbk2 pbk3 pbk4
                                     < stackPred2SPred acceptStateˢ  >
+
 theoremCorrectnessMultiSig-2-4 pbk1 pbk2 pbk3 pbk4
                           = hoareTripleStack2HoareTriple (multiSigScript2-4ᵇ pbk1 pbk2 pbk3 pbk4)
                           (weakestPreConditionMultiSig-2-4ˢ pbk1 pbk2 pbk3 pbk4 ) acceptStateˢ
@@ -118,19 +119,20 @@ theoremCorrectnessMultiSig-2-4 pbk1 pbk2 pbk3 pbk4
 -- Then we prove the correctenss of the combined script using method1
 --    and this shows that we can make bigger jumps in method 1
 -------------------------------
---verification MultiSig Basic theoremCorrectnessTimeCheck
+--verification MultiSig Basic theorem Correctness Time Check
 
 theoremCorrectnessTimeCheck : (φ : StackPredicate)(time₁ : Time)
    →   <  stackPred2SPred (timeCheckPreCond time₁ ∧sp φ)   >iff
         checkTimeScriptᵇ time₁
         <  stackPred2SPred φ   >
-theoremCorrectnessTimeCheck φ time₁ .==> ⟨ currentTime₁ , msg₁ , stack₁ ⟩ (conj and3 and4) with (currentTime₁ ≤b time₁)
+
+theoremCorrectnessTimeCheck φ time₁ .==> ⟨ currentTime₁ , msg₁ , stack₁ ⟩ (conj and3 and4) with (instructOpTime currentTime₁ time₁)
 theoremCorrectnessTimeCheck φ time₁ .==> ⟨ currentTime₁ , msg₁ , stack₁ ⟩ (conj and3 and4) | true = and4
-theoremCorrectnessTimeCheck φ time₁ .<== ⟨ currentTime₁ , msg₁ , stack₁ ⟩ p with (currentTime₁ ≤b time₁)
+theoremCorrectnessTimeCheck φ time₁ .<== ⟨ currentTime₁ , msg₁ , stack₁ ⟩ p with (instructOpTime currentTime₁ time₁)
 theoremCorrectnessTimeCheck φ time₁ .<== ⟨ currentTime₁ , msg₁ , stack₁ ⟩ p | true = conj tt p
 
 
---verification MultiSig Basic theoremCorrectnessCombinedMultiSigTimeCheck
+--verification MultiSig Basic theorem Correctness Combined MultiSig Time Check
 
 theoremCorrectnessCombinedMultiSigTimeCheck : (time₁ : Time) (pbk1 pbk2 pbk3 pbk4 :  ℕ)
    →   < stackPred2SPred (  timeCheckPreCond time₁ ∧sp
