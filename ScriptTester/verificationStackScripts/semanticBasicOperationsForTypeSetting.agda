@@ -9,13 +9,14 @@ open import Data.Empty
 open import Data.Bool  hiding (_≤_ ; if_then_else_ ) renaming (_∧_ to _∧b_ ; _∨_ to _∨b_ ; T to True)
 open import Data.Product renaming (_,_ to _,,_ )
 open import Data.Nat.Base hiding (_≤_)
+-- open import Data.List.NonEmpty hiding (head)
 open import Data.Maybe
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; module ≡-Reasoning; sym)
 open ≡-Reasoning
 open import Agda.Builtin.Equality
-
+--open import Agda.Builtin.Equality.Rewrite
 
 
 open import libraries.listLib
@@ -43,6 +44,7 @@ executeStackCheckSig3Aux msg (p1 ∷ p2 ∷ p3 ∷ s1 ∷ s2 ∷ s3 ∷ s) =  st
 
 mutual
 --semantic Basic Operations For Type Setting compare SigsMultiSig
+
  cmpSigs : (msg : Msg)(sigs pbks : List ℕ)  → Bool
  cmpSigs msg  []               pubkeys    =  true
  cmpSigs msg  (sig ∷ sigs)  []            =  false
@@ -54,17 +56,18 @@ mutual
 
 
 --semantic Basic Operations For Type Setting execute MultiSigThree
---@BEGIN@executeMultiSigThree
+
 executeMultiSig3 : (msg : Msg)(pbks : List ℕ)(numSigs : ℕ)(st : Stack)(sigs : List ℕ) → Maybe Stack
 executeMultiSig3  msg  pbks  _             [] sigs               =  nothing
 executeMultiSig3  msg  pbks  zero          (x ∷ restStack) sigs
-                  =  just ((boolToNat (cmpSigs msg sigs pbks)) ∷ restStack)
+                  =  just (boolToNat (cmpSigs msg sigs pbks) ∷ restStack)
 executeMultiSig3  msg  pbks  (suc numSigs) (sig ∷ rest) sigs
                   =  executeMultiSig3 msg pbks numSigs rest (sig ∷ sigs)
 
 --semantic Basic Operations For Type Setting core Execute MultiSig Three
 coreExecuteMultiSigThree : (msg : Msg)(sigs : List ℕ)(pbks : List ℕ)(restStack : Stack) → Maybe Stack
-coreExecuteMultiSigThree msg sigs pbks restStack =  just ((boolToNat (cmpSigs msg sigs pbks)) ∷ restStack)
+coreExecuteMultiSigThree msg sigs pbks restStack =
+  just (boolToNat (cmpSigs msg sigs pbks) ∷ restStack)
 
 
 --semantic Basic Operations For Type Setting execute MultiSig Two
@@ -103,7 +106,6 @@ executeMultiSig2  msg  (suc n)  (pbk ∷ rest)      pbks  =  executeMultiSig2 ms
 -- cmpSigs  msg (sig1 ∷ [ sig2 ]) (pbk1 ∷ pbk2 ∷ [ pbk3 ] ) = true
 
 --semantic Basic Operations For Type Setting check pubk
-
 executeMultisig : Msg →  Stack →  Maybe Stack
 executeMultisig msg [] = nothing
 executeMultisig msg (numberOfPbks ∷ st) = executeMultiSig2 msg numberOfPbks st []

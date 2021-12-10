@@ -1,5 +1,3 @@
---@PREFIX@verificationMultiSigBasic
---\verificationMultiSigBasic
 open import basicBitcoinDataType
 
 module verificationStackScripts.verificationMultiSigBasic (param : GlobalParameters) where
@@ -50,8 +48,8 @@ open import verificationStackScripts.stackVerificationLemmasPart2 param
 open import verificationStackScripts.stackVerificationP2PKH param
 
 mainLemmaCorrectnessMultiSig-2-4 : (msg₁ : Msg)(pbk1 pbk2 pbk3 pbk4  : ℕ) →
-                   < weakestPreConditionMultiSig-2-4-bas pbk1 pbk2 pbk3 pbk4 >stackb
-                    multiSigScript-2-4-b pbk1 pbk2 pbk3 pbk4
+                   < weakestPreConditionMultiSig-2-4ˢ pbk1 pbk2 pbk3 pbk4 >stackb
+                    multiSigScript2-4ᵇ pbk1 pbk2 pbk3 pbk4
                   < acceptStateˢ >
 mainLemmaCorrectnessMultiSig-2-4 msg₁ pbk1 pbk2 pbk3 pbk4 .==>stg time msg₂ (sig2 ∷ sig1 ∷ dummy ∷ stack)
   (inj₁ (conj and3 and4)) =
@@ -90,25 +88,24 @@ mainLemmaCorrectnessMultiSig-2-4 msg₁ pbk1 pbk2 pbk3 pbk4 .<==stg time msg₂ 
 
 
 weakestPreConditionMultiSig-2-4 : (pbk1 pbk2 pbk3 pbk4 :  ℕ)→ StackStatePred
-weakestPreConditionMultiSig-2-4 pbk1 pbk2 pbk3 pbk4 = stackPred2SPred (weakestPreConditionMultiSig-2-4-bas pbk1 pbk2 pbk3 pbk4)
+weakestPreConditionMultiSig-2-4 pbk1 pbk2 pbk3 pbk4 = stackPred2SPred (weakestPreConditionMultiSig-2-4ˢ pbk1 pbk2 pbk3 pbk4)
 
 
 
 
 
 -- Main theorem for multisig-2-4
---\verificationMultiSigBasictheoremCorrectnessMultiSigTwoFour
---@BEGIN@theoremCorrectnessMultiSigTwoFour
+--verification MultiSig Basict heoremCorrectnessMultiSig-2-4
+
 theoremCorrectnessMultiSig-2-4 : (pbk1 pbk2 pbk3 pbk4 :  ℕ)
                                  → < weakestPreConditionMultiSig-2-4 pbk1 pbk2 pbk3 pbk4  >iff
-                                    multiSigScript-2-4-b pbk1 pbk2 pbk3 pbk4
+                                    multiSigScript2-4ᵇ pbk1 pbk2 pbk3 pbk4
                                     < stackPred2SPred acceptStateˢ  >
---@END
 theoremCorrectnessMultiSig-2-4 pbk1 pbk2 pbk3 pbk4
-                          = hoareTripleStack2HoareTriple (multiSigScript-2-4-b pbk1 pbk2 pbk3 pbk4)
-                          (weakestPreConditionMultiSig-2-4-bas pbk1 pbk2 pbk3 pbk4 ) acceptStateˢ
+                          = hoareTripleStack2HoareTriple (multiSigScript2-4ᵇ pbk1 pbk2 pbk3 pbk4)
+                          (weakestPreConditionMultiSig-2-4ˢ pbk1 pbk2 pbk3 pbk4 ) acceptStateˢ
                           (mainLemmaCorrectnessMultiSig-2-4 (nat pbk4) pbk1 pbk2 pbk3 pbk4)
---@END
+
 
 
 -------------------------------------------------------------
@@ -121,33 +118,32 @@ theoremCorrectnessMultiSig-2-4 pbk1 pbk2 pbk3 pbk4
 -- Then we prove the correctenss of the combined script using method1
 --    and this shows that we can make bigger jumps in method 1
 -------------------------------
---\verificationMultiSigBasictheoremCorrectnessTimeCheck
---@BEGIN@theoremCorrectnessTimeCheck
+--verification MultiSig Basic theoremCorrectnessTimeCheck
+
 theoremCorrectnessTimeCheck : (φ : StackPredicate)(time₁ : Time)
    →   <  stackPred2SPred (timeCheckPreCond time₁ ∧sp φ)   >iff
-        checkTimeScript-b time₁
+        checkTimeScriptᵇ time₁
         <  stackPred2SPred φ   >
---@END
 theoremCorrectnessTimeCheck φ time₁ .==> ⟨ currentTime₁ , msg₁ , stack₁ ⟩ (conj and3 and4) with (currentTime₁ ≤b time₁)
 theoremCorrectnessTimeCheck φ time₁ .==> ⟨ currentTime₁ , msg₁ , stack₁ ⟩ (conj and3 and4) | true = and4
 theoremCorrectnessTimeCheck φ time₁ .<== ⟨ currentTime₁ , msg₁ , stack₁ ⟩ p with (currentTime₁ ≤b time₁)
 theoremCorrectnessTimeCheck φ time₁ .<== ⟨ currentTime₁ , msg₁ , stack₁ ⟩ p | true = conj tt p
 
 
---\verificationMultiSigBasictheoremCorrectnessCombinedMultiSigTimeCheck
---@BEGIN@theoremCorrectnessCombinedMultiSigTimeCheck
+--verification MultiSig Basic theoremCorrectnessCombinedMultiSigTimeCheck
+
 theoremCorrectnessCombinedMultiSigTimeCheck : (time₁ : Time) (pbk1 pbk2 pbk3 pbk4 :  ℕ)
    →   < stackPred2SPred (  timeCheckPreCond time₁ ∧sp
-                             weakestPreConditionMultiSig-2-4-bas  pbk1 pbk2 pbk3 pbk4) >iff
-        checkTimeScript-b time₁ ++ multiSigScript-2-4-b pbk1 pbk2 pbk3 pbk4
+                             weakestPreConditionMultiSig-2-4ˢ  pbk1 pbk2 pbk3 pbk4) >iff
+        checkTimeScriptᵇ time₁ ++ multiSigScript2-4ᵇ pbk1 pbk2 pbk3 pbk4
         < acceptState >
 theoremCorrectnessCombinedMultiSigTimeCheck time₁ pbk1 pbk2 pbk3 pbk4 =
   stackPred2SPred (timeCheckPreCond time₁ ∧sp
-     weakestPreConditionMultiSig-2-4-bas  pbk1 pbk2 pbk3 pbk4)
-           <><>⟨  checkTimeScript-b time₁  ⟩⟨  theoremCorrectnessTimeCheck
-                  (weakestPreConditionMultiSig-2-4-bas pbk1 pbk2 pbk3 pbk4) time₁  ⟩
-  stackPred2SPred (weakestPreConditionMultiSig-2-4-bas pbk1 pbk2 pbk3 pbk4)
-           <><>⟨ multiSigScript-2-4-b pbk1 pbk2 pbk3 pbk4
+     weakestPreConditionMultiSig-2-4ˢ  pbk1 pbk2 pbk3 pbk4)
+           <><>⟨  checkTimeScriptᵇ time₁  ⟩⟨  theoremCorrectnessTimeCheck
+                  (weakestPreConditionMultiSig-2-4ˢ pbk1 pbk2 pbk3 pbk4) time₁  ⟩
+  stackPred2SPred (weakestPreConditionMultiSig-2-4ˢ pbk1 pbk2 pbk3 pbk4)
+           <><>⟨ multiSigScript2-4ᵇ pbk1 pbk2 pbk3 pbk4
                  ⟩⟨ theoremCorrectnessMultiSig-2-4 pbk1 pbk2 pbk3 pbk4   ⟩e
   stackPred2SPred acceptStateˢ ∎p
---@END
+

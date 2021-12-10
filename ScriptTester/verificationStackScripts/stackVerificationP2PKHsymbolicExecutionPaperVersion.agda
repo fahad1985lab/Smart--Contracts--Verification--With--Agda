@@ -49,32 +49,34 @@ open import verificationStackScripts.stackVerificationP2PKHindexed param
 --     in order to determine the case distinction
 --     and extract a program from it
 --
---   This is done by postulating parameters and applying ⟦ scriptP2PKHbas pbkh ⟧stb
+--   This is done by postulating parameters and applying ⟦ scriptP2PKHᵇ pbkh ⟧stb
 --     to parameters
 --------------------------------------------------------------------------------
 
+private
+  postulate time₁ : Time
+  postulate msg₁ : Msg
+  postulate stack₁ : Stack
+  postulate pbkh : ℕ
+  postulate pbk : ℕ
+  postulate x₁ : ℕ
+  postulate sig₁ : ℕ
 
-postulate time₁ : Time
-postulate msg₁ : Msg
-postulate stack₁ : Stack
-postulate pbkh : ℕ
-postulate pbk : ℕ
-postulate x₁ : ℕ
-postulate sig₁ : ℕ
 
-
-{- We first create a symbolic execution of the scriptP2PKHbas pbkh to see what kind
+{- We first create a symbolic execution of the scriptP2PKHᵇ pbkh to see what kind
    of case distinction happens -}
 
-check = scriptP2PKHbas
+check = scriptP2PKHᵇ
 
+--stack Verification P2PKH symbolic Execution test P2PKHscript
 testP2PKHscript : Maybe Stack
-testP2PKHscript = ⟦ scriptP2PKHbas pbkh ⟧stb  time₁ msg₁ stack₁
+testP2PKHscript =
+  ⟦ scriptP2PKHᵇ pbkh ⟧stb  time₁ msg₁ stack₁
 
 
 
 
---⟦ scriptP2PKHbas pbkh ⟧stb  time₁ msg₁ stack
+--⟦ scriptP2PKHᵇ pbkh ⟧stb  time₁ msg₁ stack
 
 {- evaluation gives
 
@@ -112,14 +114,14 @@ lift2Maybe
 -}
 
 -- We define a term giving the result of the evaluation
-
+--stack Verification P2PKH symbolic Execution test P2PKHscript two
 testP2PKHscript2 : Maybe Stack
 testP2PKHscript2 =
-  executeStackDup stack₁                >>=  λ stack₂ →  executeOpHash stack₂       >>= λ stack₃ →
-  executeStackEquality (pbkh ∷ stack₃)  >>=  λ stack₄ →  executeStackVerify stack₄  >>= λ stack₅ →
-  executeStackCheckSig msg₁ stack₅
+ executeStackDup stack₁                >>=  λ stack₂ →  executeOpHash stack₂       >>= λ stack₃ →
+ executeStackEquality (pbkh ∷ stack₃)  >>=  λ stack₄ →  executeStackVerify stack₄  >>= λ stack₅ →
+ executeStackCheckSig msg₁ stack₅
 
-
+--stack Verification P2PKH symbolic Execution test P2PKHscript two Using More Space
 testP2PKHscript2UsingMoreSpace =
  executeStackDup stack₁                             >>=
  λ stack₂ →  executeOpHash stack₂                   >>=
@@ -128,7 +130,7 @@ testP2PKHscript2UsingMoreSpace =
  λ stack₅ →  executeStackCheckSig msg₁ stack₅
 
 
-
+--stack Verification P2PKH symbolic Execution test P2PKHscript two Using Do
 testP2PKHscript2UsingMoreSpaceUsingDo =
  do  stack₂ ← executeStackDup stack₁
      stack₃ ← executeOpHash stack₂
@@ -163,13 +165,14 @@ just something if stack₁ is nonempty
 So let's check what happens if stack₁ = []
 -}
 
-
+--stack Verification P2PKH symbolic Execution Empty
 testP2PKHscriptEmpty : Maybe Stack
-testP2PKHscriptEmpty = ⟦ scriptP2PKHbas pbkh ⟧stb  time₁ msg₁ []
+testP2PKHscriptEmpty =
+  ⟦ scriptP2PKHᵇ pbkh ⟧stb  time₁ msg₁ []
 
 
 
---⟦ scriptP2PKHbas pbkh ⟧stb  time₁ msg₁ []
+--⟦ scriptP2PKHᵇ pbkh ⟧stb  time₁ msg₁ []
 
 
 
@@ -182,9 +185,9 @@ So now get the first (trivial) theorem
 -}
 
 
-
+--nothing
 stackfunP2PKHemptyIsNothing : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)
-                              → ⟦ scriptP2PKHbas pubKeyHash ⟧stb time₁ msg₁ [] ≡ nothing
+                              → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ [] ≡ nothing
 stackfunP2PKHemptyIsNothing pubKeyHash time₁ msg₁ = refl
 
 
@@ -194,9 +197,11 @@ stackfunP2PKHemptyIsNothing pubKeyHash time₁ msg₁ = refl
 
 lets a test for symbolic execution -}
 
-
+--stack Verification P2PKH symbolic Execution nonestack
 teststackfunP2PKHNonEmptyStack :  Maybe Stack
-teststackfunP2PKHNonEmptyStack = ⟦ scriptP2PKHbas pbkh ⟧stb  time₁ msg₁ (pbk ∷ stack₁)
+teststackfunP2PKHNonEmptyStack =
+   ⟦ scriptP2PKHᵇ pbkh ⟧stb  time₁ msg₁ (pbk ∷ stack₁)
+
 
 {- If we compute it we get
 executeStackVerify (compareNaturals pbkh (param .hash pbk) ∷ pbk ∷ stack₁)
@@ -214,7 +219,7 @@ stackfunP2PKHNonEmptyStackNormalForm =
  executeStackVerify (compareNaturals pbkh (hashFun pbk) ∷ pbk ∷ stack₁) >>=
  executeStackCheckSig msg₁
 
---stack Verification P2PKH symbolic Execution NonEmpty Stack Normal Form using do notation
+--stack Verification P2PKH symbolic Execution NonEmpty Stack Normal Form
 stackfunP2PKHNonEmptyStackNormalFormDo :  Maybe Stack
 stackfunP2PKHNonEmptyStackNormalFormDo =
  do   stack₂ ← executeStackVerify (compareNaturals pbkh (hashFun pbk) ∷ pbk ∷ stack₁)
@@ -256,7 +261,7 @@ lift2Maybe (executeStackCheckSig msg₁)
 
 
 
---stack empty
+--stackempty
 stackfunP2PKHNonEmptyStack : (pubKeyHash : ℕ)(msg₁ : Msg)(pbk : ℕ)(stack₂ : Stack) → Maybe Stack
 stackfunP2PKHNonEmptyStack pubKeyHash msg₁ pbk stack₂
               = executeStackVerify (compareNaturals pubKeyHash (hashFun pbk) ∷ pbk ∷ stack₂)
@@ -270,7 +275,7 @@ and check that this is correct
 -}
 
 stackfunP2PKHemptyNonEmptyStackCorrect : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(pbk : ℕ)(stack₂ : Stack)
-        → ⟦ scriptP2PKHbas pubKeyHash  ⟧stb time₁ msg₁ (pbk ∷ stack₂) ≡ stackfunP2PKHNonEmptyStack pubKeyHash msg₁  pbk stack₂
+        → ⟦ scriptP2PKHᵇ pubKeyHash  ⟧stb time₁ msg₁ (pbk ∷ stack₂) ≡ stackfunP2PKHNonEmptyStack pubKeyHash msg₁  pbk stack₂
 stackfunP2PKHemptyNonEmptyStackCorrect pubKeyHash time₁ msg₁ pbk stack₂ = refl
 
 
@@ -292,22 +297,21 @@ compres = compareNaturals pubKeyHash (hashFun pbk)
 
 -- This function will be repeated in stackVerificationP2PKHextractedProgram.agda
 -- and therefore is kept private in this section in order to avoid a conflict
--- \stackVerificationPtoPKHsymbolicExecutionabstract
---abstract
+--stack Verification P2PKH symbolic Execution abstract
 p2PKHNonEmptyStackAbstr' : (msg₁ : Msg)(pbk : ℕ)(stack₁ : Stack)(cmp : ℕ) → Maybe Stack
 p2PKHNonEmptyStackAbstr' msg₁ pbk stack₁ cmp =  executeStackVerify (cmp ∷  pbk ∷ stack₁) >>=
                                                 executeStackCheckSig msg₁
 
 
---stack Verification P2PKH symbolic Execution abstract Using Var
+--stack Verification P2PKH symbolic Execution abstract
 
 abstrFun : (stack₁ : Stack)(cmp : ℕ) → Maybe Stack
-abstrFun stack₁ cmp =  do  stack₁ ← executeStackVerify (cmp ∷  pbk ∷ stack₁)
-                           executeStackCheckSig msg₁ stack₁
+abstrFun stack₁ cmp =  do  stack₂ ← executeStackVerify (cmp ∷  pbk ∷ stack₁)
+                           executeStackCheckSig msg₁ stack₂
 
 
 
---stack Verification P2PKH symbolic Executi on nonEmpty Stack Normal Form With Abstracted Fun
+--stack Verification P2PKH symbolic Execution nonEmpty Stack Normal Form With Abstracted Fun
 stackfunP2PKHNonEmptyStackNormalFormUsingAbstractedFun : Maybe Stack
 stackfunP2PKHNonEmptyStackNormalFormUsingAbstractedFun =
   abstrFun stack₁ (compareNaturals pbkh (hashFun pbk))
@@ -324,7 +328,7 @@ stackfunP2PKHNonEmptyStackNormalFormUsingAbstractedFunTest  = refl
 -- and therefore is kept private in this section in order to avoid a conflict
 private
   stackfunP2PKHNonEmptyStackAbstractedCor :  (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(pbk : ℕ)(stack₂ : Stack)
-                  → ⟦ scriptP2PKHbas pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ stack₂)
+                  → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ stack₂)
                      ≡ p2PKHNonEmptyStackAbstr'  msg₁ pbk stack₂
                              (compareNaturals pubKeyHash (hashFun pbk))
   stackfunP2PKHNonEmptyStackAbstractedCor pubKeyHash time₁ msg₁ pbk stack₂ = refl
@@ -384,13 +388,14 @@ testStackfunP2PKHNonEmptyStackAbstractedCompreSucCase : Maybe Stack
 testStackfunP2PKHNonEmptyStackAbstractedCompreSucCase = p2PKHNonEmptyStackAbstr' msg₁ pbk stack₁ (suc x₁)
 
 
-
+-- We evaluate
 
 -- we evaluate now
---stack Verification P2PKH symbolic Execution abstr Fun Suc Case
+-- stack Verification P2PKH symbolic Execution abstr Fun Suc Case
 abstrFunSucCase : Maybe Stack
 abstrFunSucCase =
  abstrFun stack₁ (suc x₁)
+
 
 -- we obtain
 --stack Verification P2PKH symbolic Execution abstr Fun Suc Case Normal
@@ -446,13 +451,13 @@ abstrFunSucCaseEmptyCheck :  abstrFunSucCaseEmpty ≡ nothing
 abstrFunSucCaseEmptyCheck = refl
 
 -- we evaluate now
---stack Verification P2PKH symbolic Execution abstr Fun Suc Case Non Empty
+--stack Verification P2PKH symbolic Execution abstr Fun Suc Case NonEmpty
 abstrFunSucCaseNonEmpty : Maybe Stack
 abstrFunSucCaseNonEmpty =
  abstrFun (sig₁ ∷ stack₁) (suc x₁)
 
 
---stack Verification P2PKH symbolic Execution abstr Fun Suc Case Non Empty Normal
+--stack Verification P2PKH symbolic Execution abstr Fun Suc Case NonEmpty Normal
 abstrFunSucCaseNonEmptyNormal : Maybe Stack
 abstrFunSucCaseNonEmptyNormal =
  just (boolToNat (isSigned msg₁ sig₁ pbk) ∷ stack₁)
@@ -461,7 +466,7 @@ abstrFunSucCaseNonEmptyNormal =
 abstrFunSucCaseNonEmptyCheck : abstrFunSucCaseNonEmpty ≡ abstrFunSucCaseNonEmptyNormal
 abstrFunSucCaseNonEmptyCheck = refl
 
---easy case
+--easycase
 testStackfunP2PKHNonEmptyStackAbstractedCompreSucEmpty : Maybe Stack
 testStackfunP2PKHNonEmptyStackAbstractedCompreSucEmpty =
                            p2PKHNonEmptyStackAbstr' msg₁ pbk [] (suc x₁)
@@ -507,7 +512,7 @@ and we show that this is the case
 
 -}
 
---stack nonempty
+--stacknonempty
 testStackfunP2PKHNonEmptyStackAbstractedCompreSucNonEmpty : Maybe Stack
 testStackfunP2PKHNonEmptyStackAbstractedCompreSucNonEmpty = p2PKHNonEmptyStackAbstr' msg₁ pbk (sig₁  ∷ stack₁) (suc x₁)
 
@@ -530,14 +535,15 @@ stackfunP2PKHNonEmptyStackAbstractedCorComprSucStackNonEmptyCor msg₂ pbk₁ si
 {- this function is obolete but an interesting observation -}
 
 stackfunP2PKHemptySingleStackIsNothing : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(pbk : ℕ)
-        → ⟦ scriptP2PKHbas pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ []) ≡ nothing
+        → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ []) ≡ nothing
 stackfunP2PKHemptySingleStackIsNothing  pubKeyHash time₁ msg₁ pbk
-  =  ⟦ scriptP2PKHbas pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ [])
+  =  ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ [])
                ≡⟨ stackfunP2PKHNonEmptyStackAbstractedCor pubKeyHash time₁ msg₁ pbk []   ⟩
      p2PKHNonEmptyStackAbstr' msg₁ pbk [] (compareNaturals pubKeyHash (hashFun pbk))
                ≡⟨ stackfunP2PKHNonEmptyStackAbstractedCorEmptysNothing msg₁ pbk (compareNaturals pubKeyHash (hashFun pbk))   ⟩
      nothing
      ∎
+
 
 --stack Verification P2PKH symbolic Execution abstr Fun Suc Case NonEmpty Sub Term One
 abstrFunSucCaseNonEmptyNormalSubTerm1 : ℕ

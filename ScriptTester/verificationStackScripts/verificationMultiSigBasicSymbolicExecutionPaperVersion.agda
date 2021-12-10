@@ -1,6 +1,6 @@
 open import basicBitcoinDataType
 
-module verificationStackScripts.verificationMultiSigBasicSymbolicExecution (param : GlobalParameters) where
+module verificationStackScripts.verificationMultiSigBasicSymbolicExecutionPaperVersion (param : GlobalParameters) where
 
 
 open import Data.List.Base hiding (_++_ )
@@ -52,6 +52,18 @@ private
   postulate stack₁ : List ℕ
   postulate sig₂ sig₁ dummy : ℕ
 
+-- --@BEGIN@complexmultisig
+-- multiSigScript2-4ᵇ : (pbk1 pbk2 pbk3 pbk4 :  ℕ) → BitcoinScriptBasic
+-- multiSigScript2-4ᵇ pbk1 pbk2 pbk3 pbk4 =
+--        (opPush 2) ∷ (opPush pbk1) ∷  (opPush pbk2) ∷  (opPush pbk3) ∷  (opPush pbk4) ∷ (opPush 4) ∷   opMultiSig ∷ []
+-- --@END
+
+-- multiSigScript2-4 : (pbk1 pbk2 pbk3 pbk4 :  ℕ) → BitcoinScriptBasic
+-- multiSigScript2-4 pbk1 pbk2 pbk3 pbk4 =
+--        (opPush 2) ∷ (opPush pbk1) ∷  (opPush pbk2) ∷  (opPush pbk3) ∷  (opPush pbk4) ∷ (opPush 4) ∷   opMultiSig ∷ []
+
+
+--multisig symbolic
 multisigScript-2-4-symbolic =
         ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ stack₁
 
@@ -60,6 +72,8 @@ multisigScript-2-4-symbolic =
 executeMultiSig3 msg₁ (pbk₁ ∷ pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) 2 stack₁ []
 
 -}
+
+--result multisig
 
 test2 : Maybe Stack
 test2 =
@@ -87,8 +101,9 @@ result nothing
 -}
 
 multisigScript-2-4-symbolic-3stackelement =
-   ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ (sig₂ ∷ sig₁ ∷ dummy ∷ stack₁)
-
+--@BEGININLINE@stackhasthreeelement
+  ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ (sig₂ ∷ sig₁ ∷ dummy ∷ stack₁)
+--@END
 {-
 just
 (boolToNat
@@ -121,8 +136,9 @@ topElementMultisigScript-2-4-symbolic-3' =
 
 topElementMultisigScript-2-4-symbolic-3 : Bool
 topElementMultisigScript-2-4-symbolic-3 =
+--@BEGININLINE@compareSigmulti
    compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) sig₁  (isSigned msg₁ sig₁ pbk₁)
-
+--@END
 
 testEqual : topElementMultisigScript-2-4-symbolic-3' ≡ topElementMultisigScript-2-4-symbolic-3
 testEqual = refl

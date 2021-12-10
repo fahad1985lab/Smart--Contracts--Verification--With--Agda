@@ -336,7 +336,7 @@ correctComplete-to pubKeyHash = correct-to pubKeyHash 6 tt
 
 correctnessP2PKH : (pubKeyHash : ℕ)
                    → <  weakestPreConditionP2PKH pubKeyHash >iff
-                      scriptP2PKHbas pubKeyHash
+                      scriptP2PKHᵇ pubKeyHash
                      < acceptState  >
 correctnessP2PKH pubKeyHash .==> = correctComplete-to   pubKeyHash
 correctnessP2PKH pubKeyHash .<== = correctComplete-from pubKeyHash

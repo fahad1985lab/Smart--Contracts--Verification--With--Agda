@@ -74,7 +74,7 @@ correct-1-to ⟨ time , msg₁ , pbk  ∷ sig ∷ st ⟩ p =  boolToNatNotFalseL
 correct-1-from : (s : StackState) → (accept-0 ⁺) (⟦ opCheckSig ⟧s s ) → accept₁ s
 correct-1-from ⟨ time , msg₁ , pbk ∷ sig ∷ stack₁  ⟩ p = boolToNatNotFalseLemma2 (isSigned  msg₁ sig pbk) p
 
---correct two
+--correct one
 correct-1 : < accept₁ >iff  ([ opCheckSig ]) < acceptState >
 correct-1 .==> = correct-1-to
 correct-1 .<== = correct-1-from
@@ -146,10 +146,10 @@ correct-6 pbk .==> = correct-6-to pbk
 correct-6 pbk .<== = correct-6-from pbk
 
 
+--script p2pkh
+scriptP2PKHᵇ : (pbkh : ℕ) → BitcoinScriptBasic
+scriptP2PKHᵇ pbkh = opDup ∷ opHash ∷ (opPush pbkh) ∷ opEqual ∷ opVerify ∷ [ opCheckSig ]
 
-scriptP2PKHbas : (pbkh : ℕ) → BitcoinScriptBasic
---scriptp pkh
-scriptP2PKHbas pbkh = opDup ∷ opHash ∷ (opPush pbkh) ∷ opEqual ∷ opVerify ∷ [ opCheckSig ]
 
 {- Reminder  from stackPredicate.agda
 
@@ -185,8 +185,8 @@ wPreCondP2PKHˢ pbkh time m ( pbK ∷ sig ∷ st)
 -- wPreCondP2PKH pbkh = accept-6 pbkh
 
 
---main theorem
-theoremP2PKH : (pbkh : ℕ) → < wPreCondP2PKH pbkh >iff scriptP2PKHbas pbkh < acceptState >
+--main theorem P2PKH
+theoremP2PKH : (pbkh : ℕ) → < wPreCondP2PKH pbkh >iff scriptP2PKHᵇ pbkh < acceptState >
 theoremP2PKH pbkh  = wPreCondP2PKH pbkh <><>⟨ [ opDup ]   ⟩⟨  correct-6  pbkh  ⟩
                      accept₅  pbkh  <><>⟨  [  opHash ]       ⟩⟨  correct-5  pbkh  ⟩
                      accept₄  pbkh  <><>⟨  [  opPush pbkh ]  ⟩⟨  correct-4  pbkh  ⟩

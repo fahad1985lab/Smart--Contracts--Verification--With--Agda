@@ -1,4 +1,3 @@
---@PREFIX@stackVerificationPtoPKHextractedProgram
 open import basicBitcoinDataType
 
 module verificationStackScripts.stackVerificationP2PKHextractedProgram (param : GlobalParameters)  where
@@ -43,7 +42,7 @@ open import verificationP2PKHbasic param
 
 open import verificationStackScripts.stackState
 open import verificationStackScripts.sPredicate
---open import verificationWithIfStack.hoareTripleStackScript param
+open import verificationWithIfStack.hoareTripleStackScript param
 open import verificationStackScripts.stackHoareTriple param
 open import verificationStackScripts.stackVerificationLemmas param
 open import verificationStackScripts.stackSemanticsInstructionsBasic param
@@ -57,10 +56,10 @@ open import verificationStackScripts.stackVerificationLemmasPart2 param
 {- Now we have decoded the function -}
 
 -- p2pkhFunctionDecodedaux1 should be equal to p2PKHNonEmptyStackAbstr (ignorning time)
--- p2pkhFunctionDecoded should be equal to   ⟦ scriptP2PKHbas pubKeyHash ⟧stb time₁ msg₁ stack₁   (where time is irrelevant)
+-- p2pkhFunctionDecoded should be equal to   ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ stack₁   (where time is irrelevant)
 
 mutual
---@BEGIN@ptopkhFunctionDecoded
+--p2pkh Function Decoded
   p2pkhFunctionDecoded : (pbkh : ℕ)(msg₁ : Msg)(stack₁ : Stack) → Maybe Stack
   p2pkhFunctionDecoded  pbkh  msg₁  []              =  nothing
   p2pkhFunctionDecoded  pbkh  msg₁  (pbk ∷ stack₁)  =  p2pkhFunctionDecodedaux1 pbk msg₁ stack₁
@@ -71,4 +70,4 @@ mutual
   p2pkhFunctionDecodedaux1  pbk  msg₁  (sig₁ ∷ stack₁)  zero         =  nothing
   p2pkhFunctionDecodedaux1  pbk  msg₁  (sig₁ ∷ stack₁)  (suc cpRes)  =
                             just (boolToNat (isSigned  msg₁ sig₁ pbk) ∷ stack₁)
---@END
+
