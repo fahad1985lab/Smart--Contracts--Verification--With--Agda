@@ -1,4 +1,4 @@
-open import basicBitcoinDataType
+open import basicBitcoinDataType 
 
 module verificationStackScripts.hoareTripleStackBasic (param : GlobalParameters) where
 
@@ -73,7 +73,7 @@ open HoareTripleStackGen public
 
 -- Hoare triple  with stack instructions
 <_>stackb_<_> : StackPredicate → BitcoinScriptBasic → StackPredicate → Set
-< φ >stackb prog < ψ > = < φ >stgen (⟦ prog  ⟧stb ) < ψ >
+< φ >stackb prog < ψ > = < φ >gˢ (⟦ prog  ⟧ˢ ) < ψ >
 
 
 
@@ -102,7 +102,7 @@ lemmaGenericHoareTripleImpliesHoareTriple'' prog φ ψ prog₁ .<== = prog₁ .<
 lemmaNonIfInstrGenericCondImpliesTripleaux :
           (instr : InstructionBasic)
           (φ ψ : StackStatePred)
-          → < φ >ssgen stackTransform2StackStateTransform ⟦ [ instr ] ⟧stb < ψ >
+          → < φ >ssgen stackTransform2StackStateTransform ⟦ [ instr ] ⟧ˢ < ψ >
           → < φ >ssgen ⟦ instr ⟧s  < ψ >
 lemmaNonIfInstrGenericCondImpliesTripleaux opEqual  φ ψ x = x
 lemmaNonIfInstrGenericCondImpliesTripleaux opAdd  φ ψ x = x
@@ -123,7 +123,7 @@ lemmaNonIfInstrGenericCondImpliesTripleaux opMultiSig  φ ψ x = x
 lemmaNonIfInstrGenericCondImpliesHoareTriple :
           (instr : InstructionBasic)
           (φ ψ : StackStatePred)
-          → < φ >ssgen stackTransform2StackStateTransform ⟦ [ instr ] ⟧stb < ψ >
+          → < φ >ssgen stackTransform2StackStateTransform ⟦ [ instr ] ⟧ˢ < ψ >
           → < φ >iff [ instr ]  < ψ >
 lemmaNonIfInstrGenericCondImpliesHoareTriple instr φ ψ p
   = lemmaGenericHoareTripleImpliesHoareTriple instr φ ψ
@@ -194,7 +194,7 @@ lift2StateCorrectnessStackFun<=  φ ψ stackfun stackCorrectness ⟨ currentTime
 lemmaHoareTripleStackPartToHoareTripleGeneric :
      (stackfun : StackTransformer)
      (φ ψ : StackPredicate)
-     → < φ >stgen stackfun  < ψ >
+     → < φ >gˢ stackfun  < ψ >
      → < stackPred2SPred φ >ssgen
         stackTransform2StackStateTransform  stackfun
         < stackPred2SPred ψ >
@@ -224,4 +224,4 @@ hoartTripleStackPartImpliesHoareTriple instr φ ψ x
          (stackPred2SPred φ)
         (stackPred2SPred ψ)
         (lemmaHoareTripleStackPartToHoareTripleGeneric
-           ⟦ [ instr ] ⟧stb  φ ψ x))
+           ⟦ [ instr ] ⟧ˢ  φ ψ x))

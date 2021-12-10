@@ -64,13 +64,13 @@ postulate yTest : ℕ
 
 check = scriptP2PKHᵇ
 
---test P2PKH
+--test P2PKH script
 testP2PKHscript : Maybe Stack
-testP2PKHscript = ⟦ scriptP2PKHᵇ pbkhTest ⟧stb  timeTest msgTest₁ stackTest
+testP2PKHscript = ⟦ scriptP2PKHᵇ pbkhTest ⟧ˢ timeTest msgTest₁ stackTest
 
 
 
---⟦ scriptP2PKH pbkhTest ⟧stb  timeTest msgTest₁ stackTest
+--⟦ scriptP2PKH pbkhTest ⟧ˢ timeTest msgTest₁ stackTest
 
 {- evaluation gives
 
@@ -114,11 +114,11 @@ So let's check what happens if stackTest = []
 
 --Empty
 testP2PKHscriptEmpty : Maybe Stack
-testP2PKHscriptEmpty = ⟦ scriptP2PKHᵇ pbkhTest ⟧stb  timeTest msgTest₁ []
+testP2PKHscriptEmpty = ⟦ scriptP2PKHᵇ pbkhTest ⟧ˢ timeTest msgTest₁ []
 
 
 
---⟦ scriptP2PKH pbkhTest ⟧stb  timeTest msgTest₁ []
+--⟦ scriptP2PKH pbkhTest ⟧ˢ timeTest msgTest₁ []
 
 
 
@@ -133,7 +133,7 @@ So now get the first (trivial) theorem
 
 --nothing
 stackfunP2PKHemptyIsNothing : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)
-                              → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ [] ≡ nothing
+                              → ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ [] ≡ nothing
 stackfunP2PKHemptyIsNothing pubKeyHash time₁ msg₁ = refl
 
 
@@ -146,7 +146,7 @@ lets a test for symbolic execution -}
 
 --nonestack
 teststackfunP2PKHNonEmptyStack :  Maybe Stack
-teststackfunP2PKHNonEmptyStack =  ⟦ scriptP2PKHᵇ pbkhTest ⟧stb  timeTest msgTest₁ (pbk ∷ stackTest)
+teststackfunP2PKHNonEmptyStack =  ⟦ scriptP2PKHᵇ pbkhTest ⟧ˢ timeTest msgTest₁ (pbk ∷ stackTest)
 
 
 {- If we compute it we get
@@ -181,7 +181,7 @@ lift2Maybe (executeStackCheckSig msgTest₁)
 
 
 
---stackempty
+--stack empty
 stackfunP2PKHNonEmptyStack : (pubKeyHash : ℕ)(msg₁ : Msg)(pbk : ℕ)(stack₁ : Stack) → Maybe Stack
 stackfunP2PKHNonEmptyStack pubKeyHash msg₁ pbk stack₁
               = executeStackVerify (compareNaturals pubKeyHash (hashFun pbk) ∷ pbk ∷ stack₁)
@@ -195,7 +195,7 @@ and check that this is correct
 -}
 
 stackfunP2PKHemptyNonEmptyStackCorrect : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(pbk : ℕ)(stack₁ : Stack)
-        → ⟦ scriptP2PKHᵇ pubKeyHash  ⟧stb time₁ msg₁ (pbk ∷ stack₁) ≡ stackfunP2PKHNonEmptyStack pubKeyHash msg₁  pbk stack₁
+        → ⟦ scriptP2PKHᵇ pubKeyHash  ⟧ˢ time₁ msg₁ (pbk ∷ stack₁) ≡ stackfunP2PKHNonEmptyStack pubKeyHash msg₁  pbk stack₁
 stackfunP2PKHemptyNonEmptyStackCorrect pubKeyHash time₁ msg₁ pbk stack₁ = refl
 
 
@@ -227,7 +227,7 @@ stackfunP2PKHNonEmptyStackAbstracted msg₁ pbk stack₁ compareRes
 -}
 
 stackfunP2PKHNonEmptyStackAbstractedCor :  (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(pbk : ℕ)(stack₁ : Stack)
-                → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ stack₁)
+                → ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ (pbk ∷ stack₁)
                    ≡ stackfunP2PKHNonEmptyStackAbstracted  msg₁ pbk stack₁
                            (compareNaturals pubKeyHash (hashFun pbk))
 stackfunP2PKHNonEmptyStackAbstractedCor pubKeyHash time₁ msg₁ pbk stack₁ = refl
@@ -303,7 +303,7 @@ So lets look at the easy case []
     -}
 
 
---easycase
+--easy case
 testStackfunP2PKHNonEmptyStackAbstractedCompreSucEmpty : Maybe Stack
 testStackfunP2PKHNonEmptyStackAbstractedCompreSucEmpty =
                            stackfunP2PKHNonEmptyStackAbstracted msgTest₁ pbk [] (suc xTest)
@@ -348,7 +348,7 @@ and we show that this is the case
 
 -}
 
---stacknonempty
+--stack nonempty
 testStackfunP2PKHNonEmptyStackAbstractedCompreSucNonEmpty : Maybe Stack
 testStackfunP2PKHNonEmptyStackAbstractedCompreSucNonEmpty = stackfunP2PKHNonEmptyStackAbstracted msgTest₁ pbk (sigTest  ∷ stackTest) (suc xTest)
 
@@ -371,9 +371,9 @@ stackfunP2PKHNonEmptyStackAbstractedCorComprSucStackNonEmptyCor msg₂ pbk₁ si
 {- this function is obolete but an interesting observation -}
 
 stackfunP2PKHemptySingleStackIsNothing : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(pbk : ℕ)
-        → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ []) ≡ nothing
+        → ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ (pbk ∷ []) ≡ nothing
 stackfunP2PKHemptySingleStackIsNothing  pubKeyHash time₁ msg₁ pbk
-  =  ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ [])
+  =  ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ (pbk ∷ [])
                ≡⟨ stackfunP2PKHNonEmptyStackAbstractedCor pubKeyHash time₁ msg₁ pbk []   ⟩
      stackfunP2PKHNonEmptyStackAbstracted  msg₁ pbk [] (compareNaturals pubKeyHash (hashFun pbk))
                ≡⟨ stackfunP2PKHNonEmptyStackAbstractedCorEmptysNothing msg₁ pbk (compareNaturals pubKeyHash (hashFun pbk))   ⟩
@@ -388,7 +388,7 @@ pspkhFunctionDecodedaux1 pbk msg₁ [] cpRes = nothing
 pspkhFunctionDecodedaux1 pbk msg₁ (sig₁ ∷ stack₁) zero = nothing
 pspkhFunctionDecodedaux1 pbk msg₁ (sig₁ ∷ stack₁) (suc cpRes) = just (boolToNat (isSigned  msg₁ sig₁ pbk) ∷ stack₁)
 
--- should be equal to   ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ stack₁   (where time is irrelevant)
+-- should be equal to   ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ stack₁   (where time is irrelevant)
 pspkhFunctionDecoded : (pbkh : ℕ)(msg₁ : Msg)(stack₁ : Stack) → Maybe Stack
 pspkhFunctionDecoded pbkh msg₁ [] = nothing
 pspkhFunctionDecoded pbkh msg₁ (pbk ∷ stack₁) = pspkhFunctionDecodedaux1 pbk msg₁ stack₁ (compareNaturals pbkh (hashFun pbk))
@@ -405,10 +405,10 @@ pspkhFunctionDecodedaux1cor pbk₁ msg₁ (x ∷ stack₁) (suc cpRes) = refl
 
 
 pspkhFunctionDecodedcor : (time₁ : ℕ) (pbkh : ℕ)(msg₁ : Msg)(stack₁ : Stack)
-           → ⟦ scriptP2PKHᵇ pbkh ⟧stb time₁ msg₁ stack₁  ≡ pspkhFunctionDecoded pbkh  msg₁ stack₁
+           → ⟦ scriptP2PKHᵇ pbkh ⟧ˢ time₁ msg₁ stack₁  ≡ pspkhFunctionDecoded pbkh  msg₁ stack₁
 pspkhFunctionDecodedcor time₁ pbkh msg₁ [] = refl
 pspkhFunctionDecodedcor time₁ pbkh msg₁ (pbk ∷ stack₁) =
-       ⟦ scriptP2PKHᵇ pbkh ⟧stb time₁ msg₁ (pbk ∷ stack₁)
+       ⟦ scriptP2PKHᵇ pbkh ⟧ˢ time₁ msg₁ (pbk ∷ stack₁)
           ≡⟨ stackfunP2PKHNonEmptyStackAbstractedCor pbkh time₁ msg₁ pbk stack₁ ⟩
        stackfunP2PKHNonEmptyStackAbstracted  msg₁ pbk stack₁ (compareNaturals pbkh (hashFun pbk))
           ≡⟨ pspkhFunctionDecodedaux1cor pbk msg₁ stack₁ (compareNaturals pbkh (hashFun pbk)) ⟩
@@ -440,7 +440,7 @@ lemmaPHKcoraux2 : (pbk : ℕ)(time : Time) (msg₁ : Msg) (sig : ℕ)(s : Stack)
 lemmaPHKcoraux2 pbk time msg₁ sig s (suc cpRes) p = p
 {-
 lemmaPTKHcoraux : (pbkh : ℕ)
-   → < weakestPreConditionP2PKHˢ pbkh >stgen
+   → < weakestPreConditionP2PKHˢ pbkh >gˢ
       (λ time msg₁ s → pspkhFunctionDecoded pbkh msg₁ s)
       < acceptStateˢ >
 lemmaPTKHcoraux .(hashFun pbk) .==>stg time msg₁ (pbk ∷ sig ∷ s) (conj refl and4)
@@ -454,7 +454,7 @@ lemmaPTKHcoraux pbkh .<==stg time msg₁ (pbk ∷ sig ∷ s) x
 
 {- This lemma  is actually for the paper 1
    and follows because
-    ⟦ scriptP2PKHᵇ pbkh ⟧stb  =  (λ time msg₁ s → pspkhFunctionDecoded pbkh msg₁ s)
+    ⟦ scriptP2PKHᵇ pbkh ⟧ˢ  =  (λ time msg₁ s → pspkhFunctionDecoded pbkh msg₁ s)
 -}
 
 LemmaPTPKHcor : (pubKeyHash : ℕ)
@@ -464,7 +464,7 @@ LemmaPTPKHcor : (pubKeyHash : ℕ)
 LemmaPTPKHcor pbkh
     = lemmaTransferHoareTripleStack (weakestPreConditionP2PKHˢ pbkh) acceptStateˢ
         (λ time msg s → pspkhFunctionDecoded pbkh msg s )
-        ⟦ scriptP2PKHᵇ pbkh ⟧stb
+        ⟦ scriptP2PKHᵇ pbkh ⟧ˢ
         (λ t m s → sym (pspkhFunctionDecodedcor t pbkh m s))
         (lemmaPTKHcoraux pbkh)
 -}
@@ -503,6 +503,6 @@ theoremPTPKHcor pubKeyHash ifStack₁ active =
 {-
   stackfunP2PKHemptyNotCorrectPbkIsNothing : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(stack₁ : State1)
         → ¬  (pubKeyHash ≡ hashFun pbk)
-        → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ []) ≡ nothing
+        → ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ (pbk ∷ []) ≡ nothing
   stackfunP2PKHemptyNotCorrectPbkIsNothing pubKeyHash time₁ msg₁ stack₁ = {!!}
 -}

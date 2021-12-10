@@ -70,7 +70,7 @@ open import verificationStackScripts.stackVerificationLemmasPart2 param
 -}
 
 
---stack Verification P2PKH Using Equality Of Programs p2pkh Non Empty Stack Abstr
+--stack Verification P2PKH Using Equality Of Programs p2pkh NonEmpty Stack Abstr
 p2PKHNonEmptyStackAbstr : (msg₁ : Msg)(pbk : ℕ)(stack₁ : Stack)(cmp : ℕ) → Maybe Stack
 p2PKHNonEmptyStackAbstr msg₁ pbk stack₁ cmp =  executeStackVerify (cmp ∷  pbk ∷ stack₁) >>=
                                                executeStackCheckSig msg₁
@@ -88,7 +88,7 @@ stackfunP2PKHNonEmptyStackAbstractedCorEmptysNothing msg₁ pbk₁ zero = refl
 stackfunP2PKHNonEmptyStackAbstractedCorEmptysNothing msg₁ pbk₁ (suc x) = refl
 
 stackfunP2PKHNonEmptyStackAbstractedCor :  (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(pbk : ℕ)(stack₁ : Stack)
-                → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ stack₁)
+                → ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ (pbk ∷ stack₁)
                    ≡ p2PKHNonEmptyStackAbstr  msg₁ pbk stack₁
                            (compareNaturals pubKeyHash (hashFun pbk))
 stackfunP2PKHNonEmptyStackAbstractedCor pubKeyHash time₁ msg₁ pbk stack₁ = refl
@@ -102,12 +102,11 @@ p2pkhFunctionDecodedaux1cor pbk₁ msg₁ (x ∷ stack₁) zero = refl
 p2pkhFunctionDecodedaux1cor pbk₁ msg₁ (x ∷ stack₁) (suc cpRes) = refl
 
 --stack Verification P2PKH Using Equality Of Programs p2pkh Function Decodedcor
-
 p2pkhFunctionDecodedcor : (time₁ : ℕ) (pbkh : ℕ)(msg₁ : Msg)(stack₁ : Stack)
- → ⟦ scriptP2PKHᵇ pbkh ⟧stb time₁ msg₁ stack₁  ≡ p2pkhFunctionDecoded pbkh  msg₁ stack₁
+ → ⟦ scriptP2PKHᵇ pbkh ⟧ˢ time₁ msg₁ stack₁  ≡ p2pkhFunctionDecoded pbkh  msg₁ stack₁
 p2pkhFunctionDecodedcor time₁ pbkh msg₁ [] = refl
 p2pkhFunctionDecodedcor time₁ pbkh msg₁ (pbk ∷ stack₁) =
-       ⟦ scriptP2PKHᵇ pbkh ⟧stb time₁ msg₁ (pbk ∷ stack₁)
+       ⟦ scriptP2PKHᵇ pbkh ⟧ˢ time₁ msg₁ (pbk ∷ stack₁)
           ≡⟨ stackfunP2PKHNonEmptyStackAbstractedCor pbkh time₁ msg₁ pbk stack₁ ⟩
        p2PKHNonEmptyStackAbstr  msg₁ pbk stack₁ (compareNaturals pbkh (hashFun pbk))
           ≡⟨ p2pkhFunctionDecodedaux1cor pbk msg₁ stack₁ (compareNaturals pbkh (hashFun pbk)) ⟩
@@ -145,10 +144,10 @@ lemmaPHKcoraux2 pbk time msg₁ sig s (suc cpRes) p = p
 -}
 
 --stack Verification P2PKH Using Equality Of Programs lemmaPTKHcoraux
-lemmaPTKHcoraux : (pbkh : ℕ) →  < weakestPreConditionP2PKHˢ pbkh >stgen
+
+lemmaPTKHcoraux : (pbkh : ℕ) →  < weakestPreConditionP2PKHˢ pbkh >gˢ
                                 (λ time msg₁ s → p2pkhFunctionDecoded pbkh msg₁ s)
                                 < acceptStateˢ >
-
 lemmaPTKHcoraux .(hashFun pbk) .==>stg time msg₁ (pbk ∷ sig ∷ s) (conj refl and4)
       rewrite (lemmaCompareNat (hashFun pbk))
       = boolToNatNotFalseLemma (isSigned  msg₁ sig pbk) and4
@@ -172,6 +171,7 @@ LemmaPTPKHcor pbkh
 
 
 --stack Verification P2PKH Using Equality Of Programs theoremPTPKHcor
+
 theoremPTPKHcor :  (pbkh : ℕ)
                    → < wPreCondP2PKH pbkh >iff scriptP2PKHᵇ pbkh < acceptState >
 theoremPTPKHcor pbkh =
@@ -197,7 +197,7 @@ theoremPTPKHcor pbkh =
 {-
   stackfunP2PKHemptyNotCorrectPbkIsNothing : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(stack₁ : State1)
         → ( neg (pubKeyHash ≡ hashFun pbk)  )
-        → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ []) ≡ nothing
+        → ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ (pbk ∷ []) ≡ nothing
   stackfunP2PKHemptyNotCorrectPbkIsNothing pubKeyHash time₁ msg₁ stack₁ = {!!}
 
 -}

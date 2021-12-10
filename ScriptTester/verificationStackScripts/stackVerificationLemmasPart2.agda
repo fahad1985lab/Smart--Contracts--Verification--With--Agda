@@ -2,7 +2,7 @@ open import basicBitcoinDataType
 
 module verificationStackScripts.stackVerificationLemmasPart2 (param : GlobalParameters) where
 
-
+ 
 open import Data.List.Base hiding (_++_ )
 open import Data.Nat  renaming (_≤_ to _≤'_ ; _<_ to _<'_)
 open import Data.List hiding (_++_  )
@@ -49,7 +49,7 @@ open import verificationStackScripts.stackSemanticsInstructionsBasic param
 {-  the initial part is generic and should go to appropriate files -}
 
 lemmaStackSemIsSemantics : (op : InstructionBasic)
-                          → ⟦ op ⟧s  ≡ stackTransform2StackStateTransform ⟦ [ op ] ⟧stb
+                          → ⟦ op ⟧s  ≡ stackTransform2StackStateTransform ⟦ [ op ] ⟧ˢ
 lemmaStackSemIsSemantics opEqual = refl
 lemmaStackSemIsSemantics opAdd  = refl
 lemmaStackSemIsSemantics (opPush x)  =  refl
@@ -84,25 +84,25 @@ lemmaStackSemIsSemScriptaux2 g' ⟨ currentTime₁ , msg₁ , stack₁ ⟩ nothi
 
 lemmaStackSemIsSemScript : (prog : BitcoinScriptBasic)
                            (stackstate : StackState)
-                          → ⟦ prog ⟧ stackstate  ≡ stackTransform2StackStateTransform ⟦ prog ⟧stb stackstate
+                          → ⟦ prog ⟧ stackstate  ≡ stackTransform2StackStateTransform ⟦ prog ⟧ˢ stackstate
 lemmaStackSemIsSemScript [] ⟨ currentTime₁ , msg₁ , stack₁ ⟩ = refl
 lemmaStackSemIsSemScript (op ∷ []) ⟨ currentTime₁ , msg₁ , stack₁ ⟩ rewrite  lemmaStackSemIsSemantics op = refl
 lemmaStackSemIsSemScript (op ∷ rest@(x₁ ∷ prog)) ⟨ currentTime₁ , msg₁ , stack₁ ⟩ =
      (⟦ op ⟧s ⟨ currentTime₁ , msg₁ , stack₁ ⟩ >>= ⟦ rest ⟧ )
           ≡⟨ cong (λ x → (x ⟨ currentTime₁ , msg₁ , stack₁ ⟩ >>= ⟦ rest ⟧))
                   (lemmaStackSemIsSemantics op )  ⟩
-       (stackTransform2StackStateTransform ⟦ op ⟧stbs  ⟨ currentTime₁ , msg₁ , stack₁ ⟩
+       (stackTransform2StackStateTransform ⟦ op ⟧sˢ  ⟨ currentTime₁ , msg₁ , stack₁ ⟩
         >>= ⟦ rest ⟧)
 
-          ≡⟨ lemmaEqualLift2Maybe  ⟦ rest ⟧  (stackTransform2StackStateTransform ⟦ rest ⟧stb )
+          ≡⟨ lemmaEqualLift2Maybe  ⟦ rest ⟧  (stackTransform2StackStateTransform ⟦ rest ⟧ˢ )
             (lemmaStackSemIsSemScript rest )
-            ((stackTransform2StackStateTransform ⟦ op ⟧stbs  ⟨ currentTime₁ , msg₁ , stack₁  ⟩)) ⟩
-       (stackTransform2StackStateTransform ⟦ op ⟧stbs  ⟨ currentTime₁ , msg₁ , stack₁  ⟩ >>= stackTransform2StackStateTransform ⟦ rest ⟧stb)
-                ≡⟨ lemmaStackSemIsSemScriptaux2 ⟦ x₁ ∷ prog ⟧stb ⟨ currentTime₁ , msg₁ , stack₁  ⟩
-                   (⟦ op ⟧stbs currentTime₁ msg₁ stack₁) ⟩
+            ((stackTransform2StackStateTransform ⟦ op ⟧sˢ  ⟨ currentTime₁ , msg₁ , stack₁  ⟩)) ⟩
+       (stackTransform2StackStateTransform ⟦ op ⟧sˢ  ⟨ currentTime₁ , msg₁ , stack₁  ⟩ >>= stackTransform2StackStateTransform ⟦ rest ⟧ˢ)
+                ≡⟨ lemmaStackSemIsSemScriptaux2 ⟦ x₁ ∷ prog ⟧ˢ ⟨ currentTime₁ , msg₁ , stack₁  ⟩
+                   (⟦ op ⟧sˢ currentTime₁ msg₁ stack₁) ⟩
         stackState2WithMaybe
       ⟨ currentTime₁ , msg₁ ,
-      (⟦ op ⟧stbs currentTime₁ msg₁ stack₁ >>= ⟦ rest ⟧stb currentTime₁ msg₁)
+      (⟦ op ⟧sˢ currentTime₁ msg₁ stack₁ >>= ⟦ rest ⟧ˢ currentTime₁ msg₁)
 
       ⟩
     ∎
@@ -121,11 +121,11 @@ lemmaGenericHoareTripleImpliesHoareTripleProg prog φ ψ (hoareTripleSSGen ==>g�
 lemmaNonIfInstrGenericCondImpliesTripleauxProg :
           (prog : BitcoinScriptBasic)
           (φ ψ : StackStatePred)
-          → < φ >ssgen stackTransform2StackStateTransform ⟦ prog ⟧stb < ψ >
+          → < φ >ssgen stackTransform2StackStateTransform ⟦ prog ⟧ˢ < ψ >
           → < φ >ssgen ⟦ prog ⟧ < ψ >
 lemmaNonIfInstrGenericCondImpliesTripleauxProg prog  φ ψ x  =
     lemmaTransferHoareTripleGen φ ψ
-      (stackTransform2StackStateTransform ⟦ prog ⟧stb) ⟦ prog ⟧
+      (stackTransform2StackStateTransform ⟦ prog ⟧ˢ) ⟦ prog ⟧
      ( (λ s → sym (lemmaStackSemIsSemScript prog  s))) x
 
 
@@ -140,7 +140,7 @@ hoareTripleStack2HoareTriple :
 hoareTripleStack2HoareTriple prog φ ψ x
   = lemmaGenericHoareTripleImpliesHoareTripleProg prog (stackPred2SPred φ) (stackPred2SPred ψ)
   (lemmaNonIfInstrGenericCondImpliesTripleauxProg prog (stackPred2SPred φ) (stackPred2SPred ψ)
-   (lemmaHoareTripleStackPartToHoareTripleGeneric ⟦ prog ⟧stb
+   (lemmaHoareTripleStackPartToHoareTripleGeneric ⟦ prog ⟧ˢ
     φ ψ x))
 
 
@@ -149,8 +149,8 @@ hoareTripleStack2HoareTriple prog φ ψ x
 lemmaTransferHoareTripleStack : (φ ψ : StackPredicate)
                               (f g : Time → Msg → Stack → Maybe Stack)
                               (p : (t : Time)(m : Msg)(s : Stack) → f t m s  ≡ g t m s)
-                              → < φ >stgen f  < ψ >
-                              → < φ >stgen g < ψ >
+                              → < φ >gˢ f  < ψ >
+                              → < φ >gˢ g < ψ >
 lemmaTransferHoareTripleStack φ ψ f g p (hoareTripleStackGen ==>stg₁ <==stg₁) .==>stg time msg₁ s x
         = transfer (liftPred2Maybe (ψ time msg₁)) (p time msg₁ s) (==>stg₁ time msg₁ s x)
 lemmaTransferHoareTripleStack φ ψ f g p (hoareTripleStackGen ==>stg₁ <==stg₁) .<==stg time msg₁ s x

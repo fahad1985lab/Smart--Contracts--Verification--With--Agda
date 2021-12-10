@@ -51,7 +51,7 @@ open import verificationStackScripts.stackVerificationP2PKHindexed param
 --     in order to determine the case distinction
 --     and extract a program from it
 --
---   This is done by postulating parameters and applying ⟦ scriptP2PKHᵇ pbkh ⟧stb
+--   This is done by postulating parameters and applying ⟦ scriptP2PKHᵇ pbkh ⟧ˢ
 --     to parameters
 --------------------------------------------------------------------------------
 
@@ -71,13 +71,13 @@ private
 
 check = scriptP2PKHᵇ
 
---test P2PKH script
+--test P2PKHscript
 testP2PKHscript : Maybe Stack
-testP2PKHscript = ⟦ scriptP2PKHᵇ pbkh ⟧stb  time₁ msg₁ stack₁
+testP2PKHscript = ⟦ scriptP2PKHᵇ pbkh ⟧ˢ time₁ msg₁ stack₁
 
 
 
---⟦ scriptP2PKHᵇ pbkh ⟧stb  time₁ msg₁ stack
+--⟦ scriptP2PKHᵇ pbkh ⟧ˢ time₁ msg₁ stack
 
 {- evaluation gives
 
@@ -137,11 +137,11 @@ So let's check what happens if stack₁ = []
 
 --Empty
 testP2PKHscriptEmpty : Maybe Stack
-testP2PKHscriptEmpty = ⟦ scriptP2PKHᵇ pbkh ⟧stb  time₁ msg₁ []
+testP2PKHscriptEmpty = ⟦ scriptP2PKHᵇ pbkh ⟧ˢ time₁ msg₁ []
 
 
 
---⟦ scriptP2PKHᵇ pbkh ⟧stb  time₁ msg₁ []
+--⟦ scriptP2PKHᵇ pbkh ⟧ˢ time₁ msg₁ []
 
 
 
@@ -156,7 +156,7 @@ So now get the first (trivial) theorem
 
 --nothing
 stackfunP2PKHemptyIsNothing : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)
-                              → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ [] ≡ nothing
+                              → ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ [] ≡ nothing
 stackfunP2PKHemptyIsNothing pubKeyHash time₁ msg₁ = refl
 
 
@@ -169,7 +169,7 @@ lets a test for symbolic execution -}
 
 --nonestack
 teststackfunP2PKHNonEmptyStack :  Maybe Stack
-teststackfunP2PKHNonEmptyStack =  ⟦ scriptP2PKHᵇ pbkh ⟧stb  time₁ msg₁ (pbk ∷ stack₁)
+teststackfunP2PKHNonEmptyStack =  ⟦ scriptP2PKHᵇ pbkh ⟧ˢ time₁ msg₁ (pbk ∷ stack₁)
 
 
 {- If we compute it we get
@@ -201,7 +201,7 @@ lift2Maybe (executeStackCheckSig msg₁)
 
 
 
---stackempty
+--stack empty
 stackfunP2PKHNonEmptyStack : (pubKeyHash : ℕ)(msg₁ : Msg)(pbk : ℕ)(stack₂ : Stack) → Maybe Stack
 stackfunP2PKHNonEmptyStack pubKeyHash msg₁ pbk stack₂
               = executeStackVerify (compareNaturals pubKeyHash (hashFun pbk) ∷ pbk ∷ stack₂)
@@ -215,7 +215,7 @@ and check that this is correct
 -}
 
 stackfunP2PKHemptyNonEmptyStackCorrect : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(pbk : ℕ)(stack₂ : Stack)
-        → ⟦ scriptP2PKHᵇ pubKeyHash  ⟧stb time₁ msg₁ (pbk ∷ stack₂) ≡ stackfunP2PKHNonEmptyStack pubKeyHash msg₁  pbk stack₂
+        → ⟦ scriptP2PKHᵇ pubKeyHash  ⟧ˢ time₁ msg₁ (pbk ∷ stack₂) ≡ stackfunP2PKHNonEmptyStack pubKeyHash msg₁  pbk stack₂
 stackfunP2PKHemptyNonEmptyStackCorrect pubKeyHash time₁ msg₁ pbk stack₂ = refl
 
 
@@ -253,7 +253,7 @@ private
 -- and therefore is kept private in this section in order to avoid a conflict
 private
   stackfunP2PKHNonEmptyStackAbstractedCor :  (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(pbk : ℕ)(stack₂ : Stack)
-                  → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ stack₂)
+                  → ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ (pbk ∷ stack₂)
                      ≡ p2PKHNonEmptyStackAbstr  msg₁ pbk stack₂
                              (compareNaturals pubKeyHash (hashFun pbk))
   stackfunP2PKHNonEmptyStackAbstractedCor pubKeyHash time₁ msg₁ pbk stack₂ = refl
@@ -401,9 +401,9 @@ stackfunP2PKHNonEmptyStackAbstractedCorComprSucStackNonEmptyCor msg₂ pbk₁ si
 {- this function is obolete but an interesting observation -}
 
 stackfunP2PKHemptySingleStackIsNothing : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(pbk : ℕ)
-        → ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ []) ≡ nothing
+        → ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ (pbk ∷ []) ≡ nothing
 stackfunP2PKHemptySingleStackIsNothing  pubKeyHash time₁ msg₁ pbk
-  =  ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ (pbk ∷ [])
+  =  ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ (pbk ∷ [])
                ≡⟨ stackfunP2PKHNonEmptyStackAbstractedCor pubKeyHash time₁ msg₁ pbk []   ⟩
      p2PKHNonEmptyStackAbstr  msg₁ pbk [] (compareNaturals pubKeyHash (hashFun pbk))
                ≡⟨ stackfunP2PKHNonEmptyStackAbstractedCorEmptysNothing msg₁ pbk (compareNaturals pubKeyHash (hashFun pbk))   ⟩

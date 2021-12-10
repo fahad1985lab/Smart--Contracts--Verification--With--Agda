@@ -52,8 +52,9 @@ private
   postulate stack₁ : List ℕ
   postulate sig₂ sig₁ dummy : ℕ
 
+--multisig symbolic
 multisigScript-2-4-symbolic =
-        ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ stack₁
+        ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ stack₁
 
 {- evaluated we get
 
@@ -61,6 +62,7 @@ executeMultiSig3 msg₁ (pbk₁ ∷ pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) 2 stack
 
 -}
 
+--result multisig
 test2 : Maybe Stack
 test2 =
       executeMultiSig3 msg₁ (pbk₁ ∷ pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) 2 stack₁ []
@@ -68,26 +70,27 @@ test2 =
 
 -- now we try out stack₁ = []
 
-multisigScript-2-4-symbolic-empty = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ []
+multisigScript-2-4-symbolic-empty = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ []
 
 {-
 result nothing
 -}
 
-multisigScript-2-4-symbolic-1stackelement = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ (sig₂ ∷ [])
+multisigScript-2-4-symbolic-1stackelement = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ (sig₂ ∷ [])
 
 {-
 result nothing
 -}
 
-multisigScript-2-4-symbolic-2stackelement = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ (sig₂ ∷ sig₁ ∷ [])
+multisigScript-2-4-symbolic-2stackelement = ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ (sig₂ ∷ sig₁ ∷ [])
 
 {-
 result nothing
 -}
 
+--stack has three element
 multisigScript-2-4-symbolic-3stackelement =
-   ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ (sig₂ ∷ sig₁ ∷ dummy ∷ stack₁)
+  ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ (sig₂ ∷ sig₁ ∷ dummy ∷ stack₁)
 
 {-
 just
@@ -119,6 +122,7 @@ topElementMultisigScript-2-4-symbolic-3' : Bool
 topElementMultisigScript-2-4-symbolic-3' =
    compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) sig₁  (isSigned msg₁ sig₁ pbk₁)
 
+--compare Sigmulti
 topElementMultisigScript-2-4-symbolic-3 : Bool
 topElementMultisigScript-2-4-symbolic-3 =
    compareSigsMultiSigAux msg₁ (sig₂ ∷ []) (pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ []) sig₁  (isSigned msg₁ sig₁ pbk₁)

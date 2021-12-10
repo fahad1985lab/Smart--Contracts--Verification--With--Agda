@@ -1,5 +1,5 @@
 {-# OPTIONS --allow-unsolved-metas #-}
-
+ 
 open import basicBitcoinDataType
 
 module verificationStackScripts.verificationMultiSigBasicEqualityOfProgram (param : GlobalParameters) where
@@ -143,20 +143,20 @@ extractedFunctionPMS pbk₁ pbk₂ pbk₃ pbk₄ msg₁ (sig₁ ∷ sig₂ ∷ d
 
 
 lemmaCorr1 : (pbk₁ pbk₂ pbk₃ pbk₄ : ℕ)(time₁ : Time)(msg₁ : Msg)
-       → ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ [] ≡  nothing
+       → ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ [] ≡  nothing
 lemmaCorr1 pbk₁ pbk₂ pbk₃ pbk₄ time₁ msg₁ = refl
 
 lemmaCorr2 : (pbk₁ pbk₂ pbk₃ pbk₄ : ℕ)(time₁ : Time)(msg₁ : Msg)(n : ℕ) (stack₁ : Stack)
-       → ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ (n ∷ []) ≡  nothing
+       → ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ (n ∷ []) ≡  nothing
 lemmaCorr2 pbk₁ pbk₂ pbk₃ pbk₄ time₁ msg₁ stack₁ n  = refl
 
 lemmaCorr3 : (pbk₁ pbk₂ pbk₃ pbk₄ : ℕ)(time₁ : Time)(msg₁ : Msg)(n₁ n₂ : ℕ) (stack₁ : Stack)
-       → ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ (n₁ ∷ n₂  ∷ []) ≡  nothing
+       → ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ (n₁ ∷ n₂  ∷ []) ≡  nothing
 lemmaCorr3 pbk₁ pbk₂ pbk₃ pbk₄ time₁ msg₁ stack₁ n₁ n₂  = refl
 
 
 lemmaCorr4 : (pbk₁ pbk₂ pbk₃ pbk₄ : ℕ)(time₁ : Time)(msg₁ : Msg)(stack₁ : Stack)(sig₁ sig₂ dummy : ℕ)
-        → ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧stb time₁ msg₁ (sig₁ ∷ sig₂ ∷ dummy ∷ stack₁)
+        → ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ (sig₁ ∷ sig₂ ∷ dummy ∷ stack₁)
            ≡ just ( (boolToNat (compareSigsMultiSigAux msg₁ (sig₁ ∷ []) (pbk₂ ∷ pbk₃ ∷ pbk₄ ∷ [])
                                                              sig₂ (param .signed msg₁ sig₂ pbk₁))) ∷ stack₁)
 lemmaCorr4 pbk₁ pbk₂ pbk₃ pbk₄ time₁ msg₁ stack₁ sig₁ sig₂ dummy  = refl

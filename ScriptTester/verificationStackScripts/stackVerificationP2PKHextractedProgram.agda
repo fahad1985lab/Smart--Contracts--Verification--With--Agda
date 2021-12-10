@@ -42,7 +42,7 @@ open import verificationP2PKHbasic param
 
 open import verificationStackScripts.stackState
 open import verificationStackScripts.sPredicate
-open import verificationWithIfStack.hoareTripleStackScript param
+--open import verificationWithIfStack.hoareTripleStackScript param
 open import verificationStackScripts.stackHoareTriple param
 open import verificationStackScripts.stackVerificationLemmas param
 open import verificationStackScripts.stackSemanticsInstructionsBasic param
@@ -56,7 +56,7 @@ open import verificationStackScripts.stackVerificationLemmasPart2 param
 {- Now we have decoded the function -}
 
 -- p2pkhFunctionDecodedaux1 should be equal to p2PKHNonEmptyStackAbstr (ignorning time)
--- p2pkhFunctionDecoded should be equal to   ⟦ scriptP2PKHᵇ pubKeyHash ⟧stb time₁ msg₁ stack₁   (where time is irrelevant)
+-- p2pkhFunctionDecoded should be equal to   ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ stack₁   (where time is irrelevant)
 
 mutual
 --p2pkh Function Decoded
