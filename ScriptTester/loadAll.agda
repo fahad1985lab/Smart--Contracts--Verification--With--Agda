@@ -1,3 +1,5 @@
+
+{- OPTIONS --allow-unsolved-metas #-}
 open import basicBitcoinDataType
 
 module loadAll (param : GlobalParameters) where
@@ -75,14 +77,23 @@ open import verificationStackScripts.verificationMultiSigBasicSymbolicExecution 
 
 
 
-
 ----------------------------------------
 -- Directory paperTypes2021PostProceed --
 -----------------------------------------
+-- open import paperTypes2021PostProceed.demoEqualityReasoning param
+-- open import paperTypes2021PostProceed.demoEqualityReasoningVers2 param
+-- open import paperTypes2021PostProceed.maybeDef
+-- open import paperTypes2021PostProceed.semanticBasicOperationsForTypeSetting param
+-- open import paperTypes2021PostProceed.stackVerificationP2PKHsymbolicExecutionPaperVersion param
+-- open import paperTypes2021PostProceed.stackVerificationP2PKHsymbolicExecutionPaperVersionPart2 param
+-- open import paperTypes2021PostProceed.verificationMultiSigBasicSymbolicExecutionPaper param
+-- open import paperTypes2021PostProceed.verificationMultiSigBasicSymbolicExecutionPaperVersion param
+
 open import verificationStackScripts.demoEqualityReasoning param
---open import verificationStackScripts.demoEqualityReasoningVers2 param
---open import paperTypes2021PostProceed.maybeDef
+open import verificationStackScripts.demoEqualityReasoningVers2 param
+open import verificationStackScripts.maybeDef
 open import verificationStackScripts.semanticBasicOperationsForTypeSetting param
 open import verificationStackScripts.stackVerificationP2PKHsymbolicExecutionPaperVersion param
---open import paperTypes2021PostProceed.stackVerificationP2PKHsymbolicExecutionPaperVersionPart2 param
+open import verificationStackScripts.stackVerificationP2PKHsymbolicExecutionPaperVersionPart2 param
 open import verificationStackScripts.verificationMultiSigBasicSymbolicExecutionPaper param
+open import verificationStackScripts.verificationMultiSigBasicSymbolicExecutionPaperVersion param
