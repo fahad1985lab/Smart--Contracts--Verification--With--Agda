@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>libraries.andLib</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda"><a id="1" class="Keyword">module</a> <a id="8" href="libraries.andLib.html" class="Module">libraries.andLib</a>  <a id="26" class="Keyword">where</a>
+
+<a id="33" class="Keyword">record</a> <a id="_∧_"></a><a id="40" href="libraries.andLib.html#40" class="Record Operator">_∧_</a> <a id="44" class="Symbol">(</a> <a id="46" href="libraries.andLib.html#46" class="Bound">A</a> <a id="48" href="libraries.andLib.html#48" class="Bound">B</a> <a id="50" class="Symbol">:</a> <a id="52" href="Agda.Primitive.html#326" class="Primitive">Set</a> <a id="56" class="Symbol">)</a> <a id="58" class="Symbol">:</a> <a id="60" href="Agda.Primitive.html#326" class="Primitive">Set</a> <a id="64" class="Keyword">where</a>
+   <a id="73" class="Keyword">constructor</a> <a id="conj"></a><a id="85" href="libraries.andLib.html#85" class="InductiveConstructor">conj</a>
+   <a id="93" class="Keyword">field</a>
+    <a id="_∧_.and1"></a><a id="103" href="libraries.andLib.html#103" class="Field">and1</a> <a id="108" class="Symbol">:</a> <a id="110" href="libraries.andLib.html#46" class="Bound">A</a>
+    <a id="_∧_.and2"></a><a id="116" href="libraries.andLib.html#116" class="Field">and2</a> <a id="121" class="Symbol">:</a> <a id="123" href="libraries.andLib.html#48" class="Bound">B</a>
+<a id="125" class="Keyword">open</a> <a id="130" href="libraries.andLib.html#40" class="Module Operator">_∧_</a>  <a id="135" class="Keyword">public</a>
+
+
+<a id="144" class="Comment">{-
+record _∧3_∧3_ ( A B C : Set ) : Set where
+   constructor conj3
+   field
+    and1 : A
+    and2 : B
+    and3 : C
+open _∧3_∧3_  public
+-}</a>
+</pre></body></html>
