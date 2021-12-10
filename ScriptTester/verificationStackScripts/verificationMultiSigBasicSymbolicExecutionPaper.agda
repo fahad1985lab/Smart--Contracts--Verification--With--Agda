@@ -56,11 +56,10 @@ private
 --verification MultiSig Basic Symbolic Execution Paper complex multisig
 multiSigScript2-4ᵇ : (pbk1 pbk2 pbk3 pbk4 :  ℕ) → BitcoinScriptBasic
 multiSigScript2-4ᵇ  pbk1 pbk2 pbk3 pbk4 = (opPush 2)     ∷  (opPush pbk1)  ∷  (opPush pbk2) ∷
-                   (opPush pbk3) ∷      (opPush pbk4)  ∷  (opPush 4)     ∷  [ opMultiSig ]
+  (opPush pbk3) ∷      (opPush pbk4)  ∷  (opPush 4)     ∷  [ opMultiSig ]
 
 
---verification MultiSig Basic Symbolic Execution 
-
+--verificationMultiSigBasicSymbolicExecutionPaper
 multisigScript-2-4-symbolic =
         ⟦ multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ ⟧ˢ time₁ msg₁ stack₁
 
@@ -69,6 +68,7 @@ multisigScript-2-4-symbolic =
 executeMultiSig3 msg₁ (pbk₁ ∷ pbk₂ ∷ pbk₃ ∷ [ pbk₄ ]) 2 stack₁ []
 
 -}
+
 
 --result multisig
 test2 : Maybe Stack
@@ -96,10 +96,16 @@ multisigScript-2-4-symbolic-2stackelement = ⟦ multiSigScript2-4ᵇ pbk₁ pbk�
 result nothing
 -}
 
---verification MultiSig Basic Symbolic Execution Paper stack Needed First Step MultiSig
 stackNeededFirstStepMultiSig : (sig₂ sig₁ dummy : ℕ)(stack₁ : Stack) → Stack
 stackNeededFirstStepMultiSig sig₂ sig₁ dummy stack₁ =
   sig₂ ∷ sig₁ ∷ dummy ∷ stack₁
+
+
+--verification MultiSig Basic Symbolic Execution Paper stack Needed First Step MultiSig
+stackNeededFirstStepMultiSig' : Stack
+stackNeededFirstStepMultiSig' =
+  sig₂ ∷ sig₁ ∷ dummy ∷ stack₁
+
 
 --stack has three element
 multisigScript-2-4-symbolic-3stackelement =
@@ -111,13 +117,13 @@ just
  (cmpSigsMultiSigAux msg₁ [ sig₂ ] (pbk₂ ∷ pbk₃ ∷ [ pbk₄ ]) sig₁  (isSigned msg₁ sig₁ pbk₁))
  ∷  stack₁)
 -}
---verification MultiSig Basic Symbolic Execution Paper stack has three element Normalised
 
+--verification MultiSig Basic Symbolic Execution Paper stack has three element Normalised
 multisigScript-2-4-symbolic-3stackelementNormalised : Maybe Stack
 multisigScript-2-4-symbolic-3stackelementNormalised =
+
   just  (boolToNat (cmpSigsMultiSigAux msg₁ [ sig₂ ] (pbk₂ ∷ pbk₃ ∷ [ pbk₄ ]) sig₁
         (isSigned msg₁ sig₁ pbk₁)) ∷  stack₁)
-
 
 
 {-
@@ -150,10 +156,16 @@ topElementMultisigScript-2-4-symbolic-3 : Bool
 topElementMultisigScript-2-4-symbolic-3 =
    cmpSigsMultiSigAux msg₁ [ sig₂ ] (pbk₂ ∷ pbk₃ ∷ [ pbk₄ ]) sig₁  (isSigned msg₁ sig₁ pbk₁)
 
---verification MultiSig Basic Symbolic Execution Paper subex Top Element One
+
 subExpTopElementMultisigScript-2-4-symbolic-3 : (msg₁ : Msg)(sig₁ pbk₁ : ℕ) → Bool
 subExpTopElementMultisigScript-2-4-symbolic-3 msg₁ sig₁ pbk₁ =
  isSigned msg₁ sig₁ pbk₁
+
+--verification MultiSig Basic Symbolic Execution Paper subex Top Element One
+subExpTopElementMultisigScript-2-4-symbolic-3' : Bool
+subExpTopElementMultisigScript-2-4-symbolic-3' =
+ isSigned msg₁ sig₁ pbk₁
+
 
 
 
@@ -189,10 +201,8 @@ resultMultisigAuxStep1True =
   cmpSigsMultiSigAux msg₁ [] (pbk₃ ∷ [ pbk₄ ]) sig₂ (isSigned msg₁ sig₂ pbk₂)
 
 --verification MultiSig Basic Symbolic Execution Paper result Step1 true SubExp
-
 resultMultisigAuxStep1TrueSubExp : Bool
-resultMultisigAuxStep1TrueSubExp =
-  isSigned msg₁ sig₂ pbk₂
+resultMultisigAuxStep1TrueSubExp =  isSigned msg₁ sig₂ pbk₂
 
 
 
@@ -207,17 +217,15 @@ multisigAuxStep1TrueStep2False = cmpSigsMultiSigAux msg₁ [] (pbk₃ ∷ [ pbk�
    compareSigsMultiSigAux msg₁ [] [ pbk₄ ] sig₂ (isSigned msg₁ sig₂ pbk₃)
 -}
 
-
 --verification MultiSig Basic Symbolic Execution Paper result Step1 true Step2 False
 resultMultisigAuxStep1Step2False : Bool
 resultMultisigAuxStep1Step2False =
-  cmpSigsMultiSigAux msg₁ [] [ pbk₄ ] sig₂ (isSigned msg₁ sig₂ pbk₃)
+ cmpSigsMultiSigAux msg₁ [] [ pbk₄ ] sig₂ (isSigned msg₁ sig₂ pbk₃)
 
 --verification MultiSig Basic Symbolic Execution Paper result Step1 true Step2 False Core
-
 resultMultisigAuxStep1Step2FalseCoreExp : Bool
 resultMultisigAuxStep1Step2FalseCoreExp =
-  isSigned msg₁ sig₂ pbk₃
+ isSigned msg₁ sig₂ pbk₃
 
 
 multisigAuxStep1TrueStep2FalseStep3True = cmpSigsMultiSigAux msg₁ [] [ pbk₄ ] sig₂ true
