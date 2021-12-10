@@ -58,7 +58,7 @@ executeTime   = 31
 
 -- function that compares time
 instructOpTime : (currentTime : Time) (entryInContract : Time) → Bool
-instructOpTime currentTime entryInContract  = currentTime ≤b   entryInContract
+instructOpTime currentTime entryInContract  = entryInContract ≤b currentTime
 
 -- postulate publicKey2Address : (pubk : PublicKey) → Address
 

@@ -670,7 +670,8 @@ multiSigScript-3-5-b : (pbk1 pbk2 pbk3 pbk4 pbk5 :  ℕ) → BitcoinScriptBasic
 multiSigScript-3-5-b pbk1 pbk2 pbk3 pbk4 pbk5 =
       (opPush 3) ∷ (opPush pbk1) ∷  (opPush pbk2) ∷  (opPush pbk3) ∷  (opPush pbk4) ∷  (opPush pbk5) ∷ (opPush 5) ∷ opMultiSig ∷ []
 
---multi sig check Time Script
+--multisig check Time Script
+
 checkTimeScriptᵇ : (time₁ : Time) → BitcoinScriptBasic
 checkTimeScriptᵇ time₁ = (opPush time₁) ∷ opCHECKLOCKTIMEVERIFY ∷ [ opDrop  ]
 
@@ -705,7 +706,6 @@ lemmaHoareTripleStackGeAux'5 msg pbk1 pbk2 pbk3 sig1 sig3 x x₁ | true | true =
 
 
 --multisig time Check PreCond
-
 timeCheckPreCond : (time₁ : Time) → StackPredicate
-timeCheckPreCond time₁ time₂ msg stack₁ = time₂ ≤ time₁
+timeCheckPreCond time₁ time₂ msg stack₁ = time₁ ≤ time₂
 

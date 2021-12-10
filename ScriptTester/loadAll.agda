@@ -40,8 +40,6 @@ open import hoareTripleStack param
 open import instruction
 open import instructionBasic
 open import ledger param
--- open import loadAll
--- open import loadStackVersionInNaturalOrder
 open import semanticBasicOperations param
 open import stack
 open import stackPredicate
@@ -80,9 +78,3 @@ open import verificationStackScripts.verificationMultiSigBasicEqualityOfProgram 
 open import verificationStackScripts.verificationMultiSigBasicSymbolicExecution param
 open import verificationStackScripts.verificationMultiSigBasicSymbolicExecutionPaper param
 open import verificationStackScripts.verificationMultiSigBasicSymbolicExecutionPaperVersion param
-
-
-
-
-
-
