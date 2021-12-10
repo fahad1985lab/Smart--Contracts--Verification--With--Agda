@@ -1,5 +1,5 @@
 open import basicBitcoinDataType
- 
+
 module verificationStackScripts.stackSemanticsInstructionsBasic (param : GlobalParameters)  where
 
 open import Data.Nat  hiding (_≤_)
@@ -58,7 +58,7 @@ open import verificationStackScripts.stackInstruction
 ⟦ opHash   ⟧sˢ time₁ msg = executeOpHash
 ⟦ opCHECKLOCKTIMEVERIFY ⟧sˢ time₁ msg = executeOpCHECKLOCKTIMEVERIFY time₁
 ⟦ opCheckSig3 ⟧sˢ time₁ msg = executeStackCheckSig3Aux msg
-⟦ opMultiSig ⟧sˢ  time₁ msg =  executeMultisig msg
+⟦ opMultiSig ⟧sˢ  time₁ msg =  executeMultiSig msg
 
 -- execute only the stack operations of a bitcoin script
 --  is correct only for non-if instructiosn

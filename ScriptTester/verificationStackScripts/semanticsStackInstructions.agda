@@ -33,7 +33,7 @@ open import verificationStackScripts.stackState
 open import verificationStackScripts.sPredicate
 
 
---semantics Stack Instructions 
+--semantics Stack Instructions semanticS
 ⟦_⟧s : InstructionBasic → StackState → Maybe StackState
 ⟦ opEqual ⟧s = liftStackToStackStateTransformer'  executeStackEquality
 ⟦ opAdd ⟧s = liftStackToStackStateTransformer' executeStackAdd
@@ -48,7 +48,7 @@ open import verificationStackScripts.sPredicate
 ⟦ opCHECKLOCKTIMEVERIFY ⟧s = liftTimeStackToStateTransformer' executeOpCHECKLOCKTIMEVERIFY
 ⟦ opCheckSig3  ⟧s = liftMsgStackToStateTransformer' executeStackCheckSig3Aux
 ⟦ opHash  ⟧s = liftStackToStackStateTransformer' executeOpHash
-⟦ opMultiSig ⟧s = liftMsgStackToStateTransformer' executeMultisig
+⟦ opMultiSig ⟧s = liftMsgStackToStateTransformer' executeMultiSig
 
 
 

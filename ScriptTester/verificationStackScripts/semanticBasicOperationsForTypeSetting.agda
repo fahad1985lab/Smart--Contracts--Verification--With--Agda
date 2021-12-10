@@ -28,7 +28,7 @@ open import libraries.maybeLib
 
 open import stack
 
-open import semanticBasicOperations param hiding (executeStackCheckSig3Aux;compareSigsMultiSigAux;compareSigsMultiSig;executeMultiSig3;executeMultiSig2;executeMultisig)
+open import semanticBasicOperations param hiding (executeStackCheckSig3Aux;compareSigsMultiSigAux;compareSigsMultiSig;executeMultiSig3;executeMultiSig2;executeMultiSig)
 
 executeStackCheckSig3Aux : Msg →  Stack → Maybe Stack
 executeStackCheckSig3Aux msg [] = nothing
@@ -43,7 +43,7 @@ executeStackCheckSig3Aux msg (p1 ∷ p2 ∷ p3 ∷ s1 ∷ s2 ∷ s3 ∷ s) =  st
 
 
 mutual
---semantic Basic Operations For Type Setting compare SigsMultiSig
+--semantic Basic Operations For Type Setting compareSigsMultiSig
 
  cmpSigs : (msg : Msg)(sigs pbks : List ℕ)  → Bool
  cmpSigs msg  []               pubkeys    =  true
@@ -55,8 +55,7 @@ mutual
  cmpSigsAux  msg  sigs  pbks  sig  true   =  cmpSigs  msg  sigs             pbks
 
 
---semantic Basic Operations For Type Setting execute MultiSigThree
-
+--semantic Basic Operations For Type Setting executeMultiSig3
 executeMultiSig3 : (msg : Msg)(pbks : List ℕ)(numSigs : ℕ)(st : Stack)(sigs : List ℕ) → Maybe Stack
 executeMultiSig3  msg  pbks  _             [] sigs               =  nothing
 executeMultiSig3  msg  pbks  zero          (x ∷ restStack) sigs
@@ -64,13 +63,14 @@ executeMultiSig3  msg  pbks  zero          (x ∷ restStack) sigs
 executeMultiSig3  msg  pbks  (suc numSigs) (sig ∷ rest) sigs
                   =  executeMultiSig3 msg pbks numSigs rest (sig ∷ sigs)
 
---semantic Basic Operations For Type Setting core Execute MultiSig Three
+
+--semantic Basic Operations For Type Setting coreExecuteMultiSigThree
 coreExecuteMultiSigThree : (msg : Msg)(sigs : List ℕ)(pbks : List ℕ)(restStack : Stack) → Maybe Stack
 coreExecuteMultiSigThree msg sigs pbks restStack =
   just (boolToNat (cmpSigs msg sigs pbks) ∷ restStack)
 
 
---semantic Basic Operations For Type Setting execute MultiSig Two
+--semantic Basic Operations For Type Setting executeMultiSig2
 
 executeMultiSig2 : (msg : Msg)(numPbks : ℕ)(st :   Stack)(pbks : List ℕ) → Maybe Stack
 executeMultiSig2  msg  _        []                pbks  =  nothing
@@ -82,12 +82,12 @@ executeMultiSig2  msg  (suc n)  (pbk ∷ rest)      pbks  =  executeMultiSig2 ms
 
 -- Add the notes to a file  notes in notes
 -- next steps
--- move executeMultisig to semanticsInstructions.agda
+-- move executeMultiSig to semanticsInstructions.agda
 -- add opMultiSig to the instructions
--- define ⟦ OpMultiSig ⟧s = liftMsgStackToStateTransformerDepIfStack' executeMultisig
+-- define ⟦ OpMultiSig ⟧s = liftMsgStackToStateTransformerDepIfStack' executeMultiSig
 -- in semanticsInstructions
 -- define in addition4.agda
---   ⟦ OpMultiSig   ⟧stacks time₁ msg =  executeMultisig msg
+--   ⟦ OpMultiSig   ⟧stacks time₁ msg =  executeMultiSig msg
 
 
 -- Try out evaluatings scripts as in scriptInterpreter.agda  whether it works as intended
@@ -106,7 +106,8 @@ executeMultiSig2  msg  (suc n)  (pbk ∷ rest)      pbks  =  executeMultiSig2 ms
 -- cmpSigs  msg (sig1 ∷ [ sig2 ]) (pbk1 ∷ pbk2 ∷ [ pbk3 ] ) = true
 
 --semantic Basic Operations For Type Setting check pubk
-executeMultisig : Msg →  Stack →  Maybe Stack
-executeMultisig msg [] = nothing
-executeMultisig msg (numberOfPbks ∷ st) = executeMultiSig2 msg numberOfPbks st []
+
+executeMultiSig : Msg →  Stack →  Maybe Stack
+executeMultiSig msg [] = nothing
+executeMultiSig msg (numberOfPbks ∷ st) = executeMultiSig2 msg numberOfPbks st []
 

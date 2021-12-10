@@ -73,8 +73,7 @@ correct-1-to ⟨ time , msg₁ , pbk  ∷ sig ∷ st ⟩ p =  boolToNatNotFalseL
 
 correct-1-from : (s : StackState) → (accept-0 ⁺) (⟦ opCheckSig ⟧s s ) → accept₁ s
 correct-1-from ⟨ time , msg₁ , pbk ∷ sig ∷ stack₁  ⟩ p = boolToNatNotFalseLemma2 (isSigned  msg₁ sig pbk) p
-
---correct one
+--correctone
 correct-1 : < accept₁ >iff  ([ opCheckSig ]) < acceptState >
 correct-1 .==> = correct-1-to
 correct-1 .<== = correct-1-from
@@ -86,7 +85,7 @@ correct-2-to ⟨ time , msg₁ , suc x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p = p
 correct-2-from : (s : StackState) → (accept₁ ⁺) (⟦ opVerify ⟧s s ) → accept₂ s
 correct-2-from ⟨ time , msg₁ , suc x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p = p
 
---correct two
+--correcttwo
 correct-2 : < accept₂ >iff  ([ opVerify ]) < accept₁ >
 correct-2 .==> = correct-2-to
 correct-2 .<== = correct-2-from
@@ -103,7 +102,7 @@ correct-3-from ⟨ time , msg₁ , x ∷ x₁ ∷ pbk ∷ sig ∷ stack₁  ⟩ 
         q = correct3Aux2 (compareNaturals x x₁) pbk sig stack₁ time msg₁ p
       in (conj refl q)
 
---correct three
+--correctthree
 correct-3 : < accept₃ >iff  ([ opEqual ]) < accept₂ >
 correct-3 .==> = correct-3-to
 correct-3 .<== = correct-3-from
@@ -115,7 +114,7 @@ correct-4-to pbk ⟨ currentTime₁ , msg₁ , .pbk ∷ x₁ ∷ x₂ ∷ stack�
 correct-4-from : ( pbk : ℕ ) →  (s : StackState) → (accept₃ ⁺) (⟦ opPush pbk ⟧s s ) → accept₄ pbk  s
 correct-4-from pbk ⟨ currentTime₁ , msg₁ , .pbk ∷ x₁ ∷ x₂ ∷ stack₁   ⟩ (conj refl and4) = conj refl and4
 
---correct four
+--correctfour
 correct-4 :( pbk : ℕ ) →  < accept₄ pbk >iff  ([ opPush pbk ]) < accept₃ >
 correct-4 pbk .==> = correct-4-to pbk
 correct-4 pbk .<== = correct-4-from pbk
@@ -127,7 +126,7 @@ correct-5-to pbk ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ (conj 
 correct-5-from : ( pbk : ℕ ) →  (s : StackState)  → (( accept₄ pbk) ⁺) (⟦ opHash ⟧s s ) → accept₅ pbk  s
 correct-5-from .(hashFun x) ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ (conj refl checkSig) = conj refl checkSig
 
---correct five
+--correctfive
 correct-5 :( pbk : ℕ ) →  < accept₅ pbk >iff  ([ opHash  ]) < accept₄ pbk >
 correct-5 pbk .==> = correct-5-to pbk
 correct-5 pbk .<== = correct-5-from pbk
@@ -140,13 +139,14 @@ correct-6-to pbkHash ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p 
 correct-6-from : ( pbkHash : ℕ ) →  (s : StackState)  → (( accept₅ pbkHash) ⁺) (⟦ opDup ⟧s s ) → wPreCondP2PKH pbkHash  s
 correct-6-from pbkHash ⟨ time , msg₁ , x ∷ x₁ ∷ stack₁ ⟩ p = p
 
---correct six
+--correctsix
 correct-6 :( pbk : ℕ ) →  < wPreCondP2PKH pbk >iff  ([ opDup  ]) < accept₅ pbk >
 correct-6 pbk .==> = correct-6-to pbk
 correct-6 pbk .<== = correct-6-from pbk
 
 
---script p2pkh
+
+--scriptppkh
 scriptP2PKHᵇ : (pbkh : ℕ) → BitcoinScriptBasic
 scriptP2PKHᵇ pbkh = opDup ∷ opHash ∷ (opPush pbkh) ∷ opEqual ∷ opVerify ∷ [ opCheckSig ]
 
@@ -194,3 +194,37 @@ theoremP2PKH pbkh  = wPreCondP2PKH pbkh <><>⟨ [ opDup ]   ⟩⟨  correct-6  p
                      accept₂        <><>⟨  [  opVerify ]     ⟩⟨  correct-2  ⟩
                      accept₁        <><>⟨  [  opCheckSig ]   ⟩⟨  correct-1  ⟩e  acceptState  ∎p
 
+
+{- We have natural accepting condition expressing that the stack has height >= 1 and top element > 0
+   We have a natural weakest precondition expressing  blablabla
+   and a proof that it is the weakest precondtion for the scriptP2PKH w.r.t. the acceptState
+
+   NOTE:  here we used single instructions. However opPush pbkh is already a composed instruction
+          and we could use whole program pieces instead of single instructions.
+
+          The complication is due to the fact that instructions can lead to failure, and therefore
+             the operational semantics of the resulting programs become quite long and complicated
+             because if we have   instructions p1 p2 p3  in Agda syntax we get
+             [[ p1 :: p2 :: p3 ::[] ]]s =
+                case [[ p1 ]]s  of
+                   nothing -> nothing
+                   just s1 -> case [[ p2 ]] s1 of
+                                nothing -> nothing
+                                just s2 -> [[ p3 ]] s2
+            So one gets a very involved case distinction which quickly becomes difficult to view.
+            By having intermediate conditions we make this manageable.
+
+
+
+Not for paper:
+Current agda we have
+
+f  zero   = ??
+f (suc y) = ??
+
+in Agda1 we had
+f x =  case x of
+            zero -> ??
+            suc y -> ??
+
+-}
