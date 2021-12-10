@@ -10,7 +10,7 @@ open import Data.Sum
 open import Data.Unit  hiding (_≤_)
 open import Data.Empty
 open import Data.Maybe
-
+--open import Data.List.Base
 open import Data.Bool  hiding (_≤_ ; _<_ ; if_then_else_  )  renaming (_∧_ to _∧b_ ; _∨_ to _∨b_ ; T to True)
 open import Data.Product renaming (_,_ to _,,_ )
 open import Data.Nat.Base hiding (_≤_ ; _<_)
@@ -20,7 +20,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; module ≡-Reasoning; sym)
 open ≡-Reasoning
 open import Agda.Builtin.Equality
-
+--open import Agda.Builtin.Equality.Rewrite
 
 open import libraries.listLib
 open import libraries.emptyLib
@@ -166,12 +166,12 @@ lemmaHoareTripleStackGeAux'4 msg₂ pbk1 pbk2 pbk3 sig1 sig2 p | true | true = i
 
 
 
-weakestPreConditionMultiSig-2-4-bas : (pbk1 pbk2 pbk3 pbk4 :  ℕ)
+weakestPreConditionMultiSig-2-4ˢ : (pbk1 pbk2 pbk3 pbk4 :  ℕ)
                                       → StackPredicate
-weakestPreConditionMultiSig-2-4-bas pbk1 pbk2 pbk3 pbk4 time  msg₁ [] = ⊥
-weakestPreConditionMultiSig-2-4-bas pbk1 pbk2 pbk3 pbk4 time  msg₁ (x ∷ []) = ⊥
-weakestPreConditionMultiSig-2-4-bas pbk1 pbk2 pbk3 pbk4 time  msg₁ (x ∷ y ∷ []) = ⊥
-weakestPreConditionMultiSig-2-4-bas pbk1 pbk2 pbk3 pbk4 time  msg₁ ( sig2 ∷ sig1 ∷ dummy ∷ stack₁) =
+weakestPreConditionMultiSig-2-4ˢ pbk1 pbk2 pbk3 pbk4 time  msg₁ [] = ⊥
+weakestPreConditionMultiSig-2-4ˢ pbk1 pbk2 pbk3 pbk4 time  msg₁ (x ∷ []) = ⊥
+weakestPreConditionMultiSig-2-4ˢ pbk1 pbk2 pbk3 pbk4 time  msg₁ (x ∷ y ∷ []) = ⊥
+weakestPreConditionMultiSig-2-4ˢ pbk1 pbk2 pbk3 pbk4 time  msg₁ ( sig2 ∷ sig1 ∷ dummy ∷ stack₁) =
        (  (IsSigned msg₁ sig1 pbk1 ∧  IsSigned msg₁ sig2 pbk2) ⊎
           (IsSigned msg₁ sig1 pbk1 ∧  IsSigned msg₁ sig2 pbk3) ⊎
           (IsSigned msg₁ sig1 pbk1 ∧  IsSigned msg₁ sig2 pbk4) ⊎
@@ -661,9 +661,9 @@ lemmaHoareTripleStackGeAux'Comb3-5 msg₁ pbk1 pbk2 pbk3 pbk4 pbk5 sig1 sig2 sig
 
 
 --complex multisig
-multiSigScript-2-4-b : (pbk1 pbk2 pbk3 pbk4 :  ℕ) → BitcoinScriptBasic
-multiSigScript-2-4-b pbk1 pbk2 pbk3 pbk4 =
-       (opPush 2) ∷ (opPush pbk1) ∷  (opPush pbk2) ∷  (opPush pbk3) ∷  (opPush pbk4) ∷ (opPush 4) ∷   opMultiSig ∷ []
+multiSigScript2-4ᵇ : (pbk₁ pbk₂ pbk₃ pbk₄ :  ℕ) → BitcoinScriptBasic
+multiSigScript2-4ᵇ pbk₁ pbk₂ pbk₃ pbk₄ =  (opPush 2) ∷ (opPush pbk₁) ∷  (opPush pbk₂) ∷
+                                         (opPush pbk₃) ∷  (opPush pbk₄) ∷ (opPush 4) ∷  [  opMultiSig ]
 
 
 multiSigScript-3-5-b : (pbk1 pbk2 pbk3 pbk4 pbk5 :  ℕ) → BitcoinScriptBasic
@@ -671,9 +671,9 @@ multiSigScript-3-5-b pbk1 pbk2 pbk3 pbk4 pbk5 =
       (opPush 3) ∷ (opPush pbk1) ∷  (opPush pbk2) ∷  (opPush pbk3) ∷  (opPush pbk4) ∷  (opPush pbk5) ∷ (opPush 5) ∷ opMultiSig ∷ []
 
 --multisig check Time Script
-
-checkTimeScript-b : (time₁ : Time) → BitcoinScriptBasic
-checkTimeScript-b time₁ = (opPush time₁) ∷ opCHECKLOCKTIMEVERIFY ∷ [ opDrop  ]
+--@BEGIN@checkTimeScript
+checkTimeScriptᵇ : (time₁ : Time) → BitcoinScriptBasic
+checkTimeScriptᵇ time₁ = (opPush time₁) ∷ opCHECKLOCKTIMEVERIFY ∷ [ opDrop  ]
 
 
 

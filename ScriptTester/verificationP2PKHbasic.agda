@@ -18,7 +18,7 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; module ≡-Reasoning; sym)
 open ≡-Reasoning
 open import Agda.Builtin.Equality
-
+--open import Agda.Builtin.Equality.Rewrite
 
 open import libraries.andLib
 open import libraries.miscLib
@@ -29,6 +29,7 @@ open import stack
 open import stackPredicate
 open import instruction
 open import instructionBasic
+-- open import ledger param
 open import semanticBasicOperations param
 
 
@@ -53,12 +54,12 @@ instruction-6 = opDup
 accept-0Basic : StackPredicate
 accept-0Basic = acceptStateˢ
 
---accept one
+--accept One
 accept₁ˢ : StackPredicate
 accept₁ˢ time m [] = ⊥
 accept₁ˢ time m (sig ∷ []) = ⊥
 accept₁ˢ time m ( pubKey  ∷ sig ∷ st) = IsSigned m  sig pubKey
-
+--@END
 accept₂ˢCore : Time → Msg → ℕ → ℕ → ℕ → Set
 accept₂ˢCore time m zero pubKey sig = ⊥
 accept₂ˢCore time m (suc x) pubKey sig =  IsSigned  m sig pubKey
@@ -199,5 +200,5 @@ instructionsBasic pbkh 5 _ = opDup
 scriptP2PKH : (pbkh : ℕ) → BitcoinScript
 scriptP2PKH pbkh = opDup ∷ opHash ∷ (opPush pbkh) ∷ opEqual ∷ opVerify ∷ opCheckSig ∷ []
 
-weakestPreConditionP2PKH-basis : (pbkh : ℕ) → StackPredicate
-weakestPreConditionP2PKH-basis = wPreCondP2PKHˢ
+weakestPreConditionP2PKHˢ : (pbkh : ℕ) → StackPredicate
+weakestPreConditionP2PKHˢ = wPreCondP2PKHˢ

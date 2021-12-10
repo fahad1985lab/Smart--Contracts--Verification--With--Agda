@@ -1,5 +1,3 @@
-
-
 open import basicBitcoinDataType
 
 module semanticBasicOperations (param : GlobalParameters) where
@@ -11,13 +9,14 @@ open import Data.Empty
 open import Data.Bool  hiding (_≤_ ; if_then_else_ ) renaming (_∧_ to _∧b_ ; _∨_ to _∨b_ ; T to True)
 open import Data.Product renaming (_,_ to _,,_ )
 open import Data.Nat.Base hiding (_≤_)
+-- open import Data.List.NonEmpty hiding (head)
 open import Data.Maybe
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; module ≡-Reasoning; sym)
 open ≡-Reasoning
 open import Agda.Builtin.Equality
-
+--open import Agda.Builtin.Equality.Rewrite
 
 
 open import libraries.listLib
@@ -185,7 +184,7 @@ executeMultiSig3 : (msg : Msg)(pbks : List ℕ)(numSigs : ℕ)(st : Stack)(sigs 
 executeMultiSig3 msg₁ pbks zero [] sigs = nothing
             -- need to fetch one extra because of a bug in bitcoin definition of MultiSig
 executeMultiSig3 msg₁ pbks zero (x ∷ restStack) sigs
-     = just ((boolToNat (compareSigsMultiSig msg₁ sigs pbks)) ∷ restStack)
+     = just (boolToNat (compareSigsMultiSig msg₁ sigs pbks) ∷ restStack)
      -- We have found enough public Keys and signatures to compare
      -- We check using compareSigsMultiSig   whether public Keys match the signatures
      -- and the result is pushed on the stack.
@@ -197,8 +196,7 @@ executeMultiSig3 msg₁ pbks (suc numSigs) (sig ∷ rest) sigs = executeMultiSig
 
 
 
---semantic Basic Operations execute MultiSigTwo
-
+--semantic Basic Operations execute MultiSig Two
 executeMultiSig2 : (msg : Msg)(numPbks : ℕ)(st :  Stack)(pbks : List ℕ) → Maybe Stack
 executeMultiSig2  msg  _        []                pbks  =  nothing
 executeMultiSig2  msg  zero     (numSigs ∷ rest)  pbks  =  executeMultiSig3 msg pbks numSigs rest []
