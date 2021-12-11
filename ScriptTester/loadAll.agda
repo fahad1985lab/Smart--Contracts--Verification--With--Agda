@@ -1,5 +1,5 @@
 
-{- OPTIONS --allow-unsolved-metas #-}
+
 open import basicBitcoinDataType
 
 module loadAll (param : GlobalParameters) where
