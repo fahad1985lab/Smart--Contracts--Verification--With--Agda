@@ -151,38 +151,6 @@ scriptP2PKHᵇ : (pbkh : ℕ) → BitcoinScriptBasic
 scriptP2PKHᵇ pbkh = opDup ∷ opHash ∷ (opPush pbkh) ∷ opEqual ∷ opVerify ∷ [ opCheckSig ]
 
 
-{- Reminder  from stackPredicate.agda
-
-
--- acceptingBasic means that the stack has at hight >= 1 and top element >0
-acceptingBasic : Time → Msg → Stack → Bool
-acceptingBasic time msg₁ [] = false
-acceptingBasic time msg₁ (x ∷ stack₁) = notFalse x
-
-
-acceptStateˢ : StackPredicate
-acceptStateˢ time msg₁ s = acceptingBasic time msg₁ s)
-
-
--- wPreCondP2PKHˢ expresses:
---    stack has height at least 2
---    for the two top elements pbk and sig we have
---    hashFun pbk ≡  pbkh   and   isSigned  m sig pbk
-wPreCondP2PKHˢ : (pbkh : ℕ ) → StackPredicate
-wPreCondP2PKHˢ pbkh time m [] = ⊥
-wPreCondP2PKHˢ pbkh time m (x ∷ []) = ⊥
-wPreCondP2PKHˢ pbkh time m ( pbK ∷ sig ∷ st)
-    =  (hashFun pbk ≡  pbkh ) ∧  True ( isSigned  m sig pbk )
-
--}
-
-
--- acceptState : StackStatePred
--- acceptState = stackPred2SPred acceptStateˢ -- accept-0Basic
-
--- acceptState = accept-0Basic
-
--- wPreCondP2PKH pbkh = accept-6 pbkh
 
 
 --main theorem P2PKH
@@ -195,36 +163,7 @@ theoremP2PKH pbkh  = wPreCondP2PKH pbkh <><>⟨ [ opDup ]   ⟩⟨  correct-6  p
                      accept₁        <><>⟨  [  opCheckSig ]   ⟩⟨  correct-1  ⟩e  acceptState  ∎p
 
 
-{- We have natural accepting condition expressing that the stack has height >= 1 and top element > 0
-   We have a natural weakest precondition expressing  blablabla
-   and a proof that it is the weakest precondtion for the scriptP2PKH w.r.t. the acceptState
-
-   NOTE:  here we used single instructions. However opPush pbkh is already a composed instruction
-          and we could use whole program pieces instead of single instructions.
-
-          The complication is due to the fact that instructions can lead to failure, and therefore
-             the operational semantics of the resulting programs become quite long and complicated
-             because if we have   instructions p1 p2 p3  in Agda syntax we get
-             [[ p1 :: p2 :: p3 ::[] ]]s =
-                case [[ p1 ]]s  of
-                   nothing -> nothing
-                   just s1 -> case [[ p2 ]] s1 of
-                                nothing -> nothing
-                                just s2 -> [[ p3 ]] s2
-            So one gets a very involved case distinction which quickly becomes difficult to view.
-            By having intermediate conditions we make this manageable.
 
 
 
-Not for paper:
-Current agda we have
 
-f  zero   = ??
-f (suc y) = ??
-
-in Agda1 we had
-f x =  case x of
-            zero -> ??
-            suc y -> ??
-
--}
