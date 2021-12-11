@@ -1,7 +1,7 @@
 # Verification of Bitcoin's Smart Contracts in Agda using Weakest Preconditions for Access Control
 
 
-## Code in Agda
+## Code in Agda 
 * All Agda Code
   [ScriptTester](/ScriptTester/)
   
