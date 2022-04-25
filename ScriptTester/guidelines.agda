@@ -43,7 +43,13 @@ open import semanticBasicOperations param
 
 --⟦ _ ⟧ₛ and ⟦ _ ⟧⁺ are defined in 
 open import verificationStackScripts.semanticsStackInstructions param
- 
+
+-- StackStatePred and stackPred2SPred are defined in
+open import verificationStackScripts.sPredicate
+
+-- stackPredicate defined in
+open import stackPredicate
+
 
 -- 4. Specifying Security of Bitcoin Scripts 
 -- 4.1.  Weakest Precondition for Security
@@ -52,16 +58,16 @@ open import verificationStackScripts.semanticsStackInstructions param
 --StackState defined in
 open import verificationStackScripts.stackState
 
+-- < φ >ⁱᶠᶠ p < ψ > :=∀ s ∈ StackState.φ(s) ⇔ (ψ⁺) (⟦ p ⟧ s) and <_>ⁱᶠᶠ_<_> are defined in
+open import verificationStackScripts.stackHoareTriple param
+
 --StackState → Set and acceptState defined in
 open import verificationStackScripts.sPredicate
 
--- _⁺
+-- _⁺ defined in
 open import libraries.maybeLib
 
--- <_>ⁱᶠᶠ_<_>  defined in
-open import verificationStackScripts.stackHoareTriple param
 
---
 
 -- 4.3.  Automatically Generated Weakest Preconditions
 
@@ -90,6 +96,9 @@ open import verificationP2PKHbasic param
 --acceptState defined in
 open import verificationStackScripts.sPredicate
 
+
+--<><>⟨_⟩⟨_⟩e defined in
+open import verificationStackScripts.stackHoareTriple param
 
 -- 6. Proof of Correctness using Symbolic Execution
 -- 6.1. Example: P2PKH Script
