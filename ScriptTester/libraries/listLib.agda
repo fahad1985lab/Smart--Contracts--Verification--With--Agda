@@ -72,7 +72,7 @@ correctNthDelFromList (x ∷ l) zero j = refl
 correctNthDelFromList (x ∷ l) (suc i) zero = refl
 correctNthDelFromList (x ∷ l) (suc i) (suc j) = correctNthDelFromList l i j
 
---\listLib
+
 concatListIndex2OriginIndices : {X Y : Set}(l l' : List X)
                                 (f   :  Fin (length l) → Y)(f'  :  Fin (length l') → Y)
                                 (i   : Fin (length (l ++ l')))  → Y
@@ -97,7 +97,7 @@ corCconcatListIndex2OriginIndices (x ∷ l) l' f g g' cor1 cor2 (suc i) =
     corCconcatListIndex2OriginIndices l l' f (g ∘ suc) g' (cor1 ∘ suc) cor2 i
 
 
---\listLib
+
 listOfElementsOfFin : (n : ℕ) → List (Fin n)
 listOfElementsOfFin zero = []
 listOfElementsOfFin (suc n) = zero ∷ (mapL suc (listOfElementsOfFin n))
@@ -121,12 +121,12 @@ corListOfElementsOfFinLength (suc n) = cong suc cor3
 -- however since elements can occur multiple times they can still occur
 -- multiple times (as many times as they occur in the list) from the list
 
---\listLib
+
 data SubList {X : Set} : (l : List X) → Set where
   []    :  {l : List X} → SubList l
   cons  :  {l : List X}(i : Fin (length l))(o : SubList (delFromList l i)) → SubList l
 
---\listLib
+
 listMinusSubList : {X : Set}(l : List X)(o : SubList l) → List X
 listMinusSubList l []          = l
 listMinusSubList l (cons i o)  = listMinusSubList (delFromList l i) o
@@ -135,27 +135,26 @@ subList2List : {X : Set}{l : List X}(sl : SubList l) → List X
 subList2List []                   = []
 subList2List {l = l} (cons i sl)  = nth l i ∷ subList2List sl
 
---\listLib
+
 data SubList+ {X : Set} (Y : Set) : (l : List X) → Set where
   []   :  {l : List X} → SubList+ Y l
   cons :  {l : List X}(i : Fin (length l))(y : Y)(o : SubList+ Y (delFromList l i))
           → SubList+ Y l
 
---\listLib
+
 listMinusSubList+ : {X Y : Set}(l : List X)(o : SubList+ Y l) → List X
 
 listMinusSubList+ l [] = l
 listMinusSubList+ l (cons i y o) = listMinusSubList+ (delFromList l i) o
 
 
--- needed fromutxo2Msg
---\listLib
+
 subList+2List : {X Y : Set}{l : List X}(sl : SubList+ Y l) → List (X × Y)
 
 subList+2List [] = []
 subList+2List {X} {Y} {l} (cons i y sl) = (nth l i , y) ∷ subList+2List sl
 
---\listLib
+
 listMinusSubList+Index2OrgIndex : {X Y : Set}(l : List X)(o : SubList+ Y l)
                                   (i : Fin (length (listMinusSubList+ l o))) → Fin (length l)
 
@@ -186,7 +185,7 @@ corListMinusSubList+Index2OrgIndex (x ∷ l) (cons (suc i₁) y o) i = trans eq1
                 ((listMinusSubList+Index2OrgIndex (x ∷ delFromList l i₁) o i))
 
 
---\listLib
+
 subList+2IndicesOriginalList : {X Y : Set}(l : List X)(sl : SubList+ Y l) → List (Fin (length l) × Y)
 subList+2IndicesOriginalList l [] = []
 subList+2IndicesOriginalList {X} {Y} l (cons i y sl) =
@@ -196,17 +195,17 @@ subList+2IndicesOriginalList {X} {Y} l (cons i y sl) =
         res1 = subList+2IndicesOriginalList (delFromList l i) sl
 
 
--- \listLib
+
 sumListViaf : {X : Set} (f : X → ℕ)(l : List X) → ℕ
 sumListViaf f [] = 0
 sumListViaf f (x ∷ l) = f x + sumListViaf f l
 
---\listLib
+
 ∀inList : {X : Set}(l : List X)(P : X → Set) → Set
 ∀inList [] P        = ⊤
 ∀inList (x ∷ l) P   = P x ×  ∀inList l  P
 
---\listLib
+
 nonNil : {X : Set}(l : List X) → Bool
 nonNil [] = true
 nonNil (_ ∷ _) = false
@@ -215,8 +214,7 @@ NonNil : {X : Set}(l : List X) → Set
 NonNil l = T (nonNil l)
 
 
--- adds the index to it but adds in addition n to the result
--- used as an auxiliary function in the next part
+
 
 list2ListWithIndexaux : {X : Set}(n : ℕ) (l : List X) → List (X × ℕ)
 list2ListWithIndexaux n [] = []

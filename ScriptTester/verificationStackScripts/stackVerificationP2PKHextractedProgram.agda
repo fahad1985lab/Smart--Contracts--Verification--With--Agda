@@ -29,7 +29,6 @@ open import libraries.natLib
 open import libraries.boolLib
 open import libraries.emptyLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 open import stack
@@ -39,10 +38,8 @@ open import hoareTripleStack param
 open import instruction
 open import stackSemanticsInstructions param
 open import verificationP2PKHbasic param
-
 open import verificationStackScripts.stackState
 open import verificationStackScripts.sPredicate
---open import verificationWithIfStack.hoareTripleStackScript param
 open import verificationStackScripts.stackHoareTriple param
 open import verificationStackScripts.stackVerificationLemmas param
 open import verificationStackScripts.stackSemanticsInstructionsBasic param
@@ -53,21 +50,17 @@ open import verificationStackScripts.hoareTripleStackBasic param
 open import verificationStackScripts.stackVerificationLemmasPart2 param
 
 
-{- Now we have decoded the function -}
 
--- p2pkhFunctionDecodedaux1 should be equal to p2PKHNonEmptyStackAbstr (ignorning time)
--- p2pkhFunctionDecoded should be equal to   ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ stack₁   (where time is irrelevant)
 
 mutual
---p2pkh Function Decoded
+
   p2pkhFunctionDecoded : (pbkh : ℕ)(msg₁ : Msg)(stack₁ : Stack) → Maybe Stack
   p2pkhFunctionDecoded  pbkh  msg₁  []              =  nothing
-  p2pkhFunctionDecoded  pbkh  msg₁  (pbk ∷ stack₁)  =  p2pkhFunctionDecodedaux1 pbk msg₁ stack₁
+  p2pkhFunctionDecoded  pbkh  msg₁  (pbk ∷ stack₁)  =  p2pkhFunctionDecodedAux1 pbk msg₁ stack₁
                                                        (compareNaturals pbkh (hashFun pbk))
 
-  p2pkhFunctionDecodedaux1 : (pbk : ℕ)(msg₁ : Msg)(stack₁ : Stack)(cpRes : ℕ) → Maybe Stack
-  p2pkhFunctionDecodedaux1  pbk  msg₁  []               cpRes        =  nothing
-  p2pkhFunctionDecodedaux1  pbk  msg₁  (sig₁ ∷ stack₁)  zero         =  nothing
-  p2pkhFunctionDecodedaux1  pbk  msg₁  (sig₁ ∷ stack₁)  (suc cpRes)  =
+  p2pkhFunctionDecodedAux1 : (pbk : ℕ)(msg₁ : Msg)(stack₁ : Stack)(cpRes : ℕ) → Maybe Stack
+  p2pkhFunctionDecodedAux1  pbk  msg₁  []               cpRes        =  nothing
+  p2pkhFunctionDecodedAux1  pbk  msg₁  (sig₁ ∷ stack₁)  zero         =  nothing
+  p2pkhFunctionDecodedAux1  pbk  msg₁  (sig₁ ∷ stack₁)  (suc cpRes)  =
                             just (boolToNat (isSigned  msg₁ sig₁ pbk) ∷ stack₁)
-

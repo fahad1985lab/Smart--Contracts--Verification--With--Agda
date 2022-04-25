@@ -1,7 +1,7 @@
 module basicBitcoinDataType where
 
 
---
+
 open import Data.Nat  hiding (_≤_)
 open import Data.List hiding (_++_)
 open import Data.Unit  hiding (_≤_)
@@ -16,7 +16,6 @@ open import libraries.listLib
 open import libraries.natLib
 open import libraries.boolLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 
@@ -46,27 +45,10 @@ data Msg : Set where
    list    :  (l  : List Msg)  → Msg
 
 
--- postulate hashMsg : Time → Msg → ℕ
-
--- postulate hashNat : ℕ → ℕ
-
-{-
--- time
-executeTime : ℕ
-executeTime   = 31
--}
 
 -- function that compares time
 instructOpTime : (currentTime : Time) (entryInContract : Time) → Bool
 instructOpTime currentTime entryInContract  = entryInContract ≤b currentTime
-
--- postulate publicKey2Address : (pubk : PublicKey) → Address
-
--- Signed means that Msg msg has been signed
--- by private key corresponding to pubk
-
-
--- postulate Signed : (msg : Msg)(publicKey : PublicKey)(s : Signature) → Set
 
 
 

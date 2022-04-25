@@ -20,7 +20,6 @@ open import libraries.listLib
 open import libraries.natLib
 open import libraries.boolLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 open import basicBitcoinDataType
@@ -88,3 +87,9 @@ liftMsgStackToStateTransformer' f = stackTransform2StackStateTransform (λ time 
 msgToMStackToIfStackToMState : Time → Msg  → Maybe Stack → Maybe StackState
 msgToMStackToIfStackToMState time msg nothing = nothing
 msgToMStackToIfStackToMState time msg (just x) = just ⟨ time , msg , x ⟩
+
+
+liftStackFun2StackState : (Time → Msg → Stack → Maybe Stack) → StackState → Maybe StackState
+liftStackFun2StackState f ⟨ currentTime₁ , msg₁ , stack₁ ⟩ =
+    stackState2WithMaybe ⟨ currentTime₁ , msg₁ ,(f currentTime₁  msg₁  stack₁) ⟩
+

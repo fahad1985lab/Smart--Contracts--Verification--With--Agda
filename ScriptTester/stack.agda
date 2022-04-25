@@ -1,4 +1,3 @@
---@PREFIX@stackexample
 module stack where
 
 open import Data.Nat  hiding (_≤_)
@@ -17,15 +16,14 @@ open import libraries.natLib
 open import libraries.boolLib
 
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 open import basicBitcoinDataType
 
---@BEGIN@stackdef
+
 Stack : Set
 Stack = List ℕ
---@END
+
 
 stackHasSingletonTop  : ℕ →   Maybe Stack →  Bool
 stackHasSingletonTop l nothing = false

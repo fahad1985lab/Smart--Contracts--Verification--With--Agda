@@ -1,4 +1,3 @@
---@PREFIX@sPredicate
 open import basicBitcoinDataType
 
 module verificationStackScripts.sPredicate where
@@ -22,12 +21,10 @@ open import Agda.Builtin.Equality
 
 
 --our libraries
-
 open import libraries.listLib
 open import libraries.natLib
 open import libraries.boolLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 
@@ -37,11 +34,10 @@ open import verificationStackScripts.stackState
 
 
 
--- Boolean valued Stack Predicate
---@BEGIN@ttt
+
 BStackStatePred  : Set
 BStackStatePred =  StackState →  Bool
---@END
+
 
 
 MaybeBStackStatePred : Set
@@ -54,8 +50,8 @@ StackStatePred = StackState → Set
 
 
 
-predicateAfterPushingx : (n : ℕ)(P : StackStatePred) → StackStatePred
-predicateAfterPushingx n P ⟨ time , msg₁ , stack₁ ⟩ = P ⟨ time , msg₁ , n ∷ stack₁ ⟩
+predicateAfterPushingx : (n : ℕ)(φ : StackStatePred) → StackStatePred
+predicateAfterPushingx n φ ⟨ time , msg₁ , stack₁ ⟩ = φ ⟨ time , msg₁ , n ∷ stack₁ ⟩
 
 
 predicateForTopElOfStack : (n : ℕ) → StackStatePred
@@ -134,16 +130,7 @@ liftAddingx n φ = predicateAfterPushingx n (stackPred2SPred φ)
 
 
 
--- acceptingState  : BStackStatePred
--- acceptingState  = stackPred2SPredBool acceptingBasic
-
-
--- acceptingMaybeState  : MaybeBStackStatePred
--- acceptingMaybeState  = acceptingState ⁺ᵇ
 
 
 acceptState : StackStatePred
 acceptState = stackPred2SPred acceptStateˢ
-
--- AcceptingMaybeState : Maybe StackState → Set
--- AcceptingMaybeState s = True (acceptingMaybeState s)

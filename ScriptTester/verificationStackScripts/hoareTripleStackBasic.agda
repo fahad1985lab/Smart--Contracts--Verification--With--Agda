@@ -1,4 +1,4 @@
-open import basicBitcoinDataType 
+open import basicBitcoinDataType
 
 module verificationStackScripts.hoareTripleStackBasic (param : GlobalParameters) where
 
@@ -23,7 +23,6 @@ open import libraries.listLib
 open import libraries.natLib
 open import libraries.boolLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 open import libraries.emptyLib
 
@@ -46,31 +45,6 @@ open import verificationStackScripts.stackHoareTriple param
 ---------------------------------------------------------------------------------------
 
 
-
--- Defines the condition for the stackfunction of an instruction
---   for the hoare truple based on φ ψ only to be correct
---
--- here we have a generic version which doesn't refer to an instruction
---  but just its stack partx
---
--- we later show that this implies the correctness of a
---  Hoare triple for that instruction
---  provided we have a non-if instruction
-
-{-
-record HoareTripleStackGen (φ : StackPredicate) (stackfun : StackTransformer)
-                       (ψ : StackPredicate) : Set where
-  constructor hoareTripleStackGen -- corrStackPartGeneric
-  field
-    ==>stg : (time : Time)(msg : Msg)(s : Stack)
-            → φ time msg s
-            → liftPred2Maybe (ψ  time msg) (stackfun time msg s)
-    <==stg : (time : Time)(msg : Msg)(s : Stack)
-            → liftPred2Maybe (ψ  time msg) (stackfun time msg s)
-            → φ time msg s
-open HoareTripleStackGen public
--}
-
 -- Hoare triple  with stack instructions
 <_>stackb_<_> : StackPredicate → BitcoinScriptBasic → StackPredicate → Set
 < φ >stackb prog < ψ > = < φ >gˢ (⟦ prog  ⟧ˢ ) < ψ >
@@ -81,8 +55,8 @@ open HoareTripleStackGen public
 -- Proof that the generic Hoare triple implies the standard one for an instruction
 lemmaGenericHoareTripleImpliesHoareTriple : (instr : InstructionBasic)
                                             (φ ψ : StackStatePred)
-                                            → < φ >ssgen ⟦ instr ⟧s  < ψ >
-                                            → < φ >iff [ instr ] < ψ >
+                                            → < φ >ssgen ⟦ instr ⟧ₛ  < ψ >
+                                            → < φ >ⁱᶠᶠ [ instr ] < ψ >
 lemmaGenericHoareTripleImpliesHoareTriple instr φ ψ prog .==> = prog .==>g
 lemmaGenericHoareTripleImpliesHoareTriple instr φ ψ prog .<== = prog .<==g
 
@@ -90,7 +64,7 @@ lemmaGenericHoareTripleImpliesHoareTriple instr φ ψ prog .<== = prog .<==g
 lemmaGenericHoareTripleImpliesHoareTriple'' : (prog : BitcoinScriptBasic)
                                             (φ ψ : StackStatePred)
                                             → < φ >ssgen ⟦ prog ⟧  < ψ >
-                                            → < φ >iff prog < ψ >
+                                            → < φ >ⁱᶠᶠ prog < ψ >
 lemmaGenericHoareTripleImpliesHoareTriple'' prog φ ψ prog₁ .==> = prog₁ .==>g
 lemmaGenericHoareTripleImpliesHoareTriple'' prog φ ψ prog₁ .<== = prog₁ .<==g
 
@@ -100,10 +74,10 @@ lemmaGenericHoareTripleImpliesHoareTriple'' prog φ ψ prog₁ .<== = prog₁ .<
 --   Hoare triple of a stack function implies
 --   the Hoare triple of the instruction
 lemmaNonIfInstrGenericCondImpliesTripleaux :
-          (instr : InstructionBasic)
+          (op : InstructionBasic)
           (φ ψ : StackStatePred)
-          → < φ >ssgen stackTransform2StackStateTransform ⟦ [ instr ] ⟧ˢ < ψ >
-          → < φ >ssgen ⟦ instr ⟧s  < ψ >
+          → < φ >ssgen stackTransform2StackStateTransform ⟦ [ op ] ⟧ˢ < ψ >
+          → < φ >ssgen ⟦ op ⟧ₛ  < ψ >
 lemmaNonIfInstrGenericCondImpliesTripleaux opEqual  φ ψ x = x
 lemmaNonIfInstrGenericCondImpliesTripleaux opAdd  φ ψ x = x
 lemmaNonIfInstrGenericCondImpliesTripleaux (opPush x₁)  φ ψ x = x
@@ -121,13 +95,13 @@ lemmaNonIfInstrGenericCondImpliesTripleaux opMultiSig  φ ψ x = x
 
 
 lemmaNonIfInstrGenericCondImpliesHoareTriple :
-          (instr : InstructionBasic)
+          (op : InstructionBasic)
           (φ ψ : StackStatePred)
-          → < φ >ssgen stackTransform2StackStateTransform ⟦ [ instr ] ⟧ˢ < ψ >
-          → < φ >iff [ instr ]  < ψ >
-lemmaNonIfInstrGenericCondImpliesHoareTriple instr φ ψ p
-  = lemmaGenericHoareTripleImpliesHoareTriple instr φ ψ
-      (lemmaNonIfInstrGenericCondImpliesTripleaux instr φ ψ p)
+          → < φ >ssgen stackTransform2StackStateTransform ⟦ [ op ] ⟧ˢ < ψ >
+          → < φ >ⁱᶠᶠ [ op ]  < ψ >
+lemmaNonIfInstrGenericCondImpliesHoareTriple op φ ψ p
+  = lemmaGenericHoareTripleImpliesHoareTriple op φ ψ
+      (lemmaNonIfInstrGenericCondImpliesTripleaux op φ ψ p)
 
 
 
@@ -211,17 +185,17 @@ lemmaHoareTripleStackPartToHoareTripleGeneric stackfun  φ ψ
 -- implies correctness of the Hoare triple for that instruction
 
 hoartTripleStackPartImpliesHoareTriple :
-     (instr : InstructionBasic)
+     (op : InstructionBasic)
      (φ ψ : StackPredicate)
-     → < φ >stackb [ instr ] < ψ >
-     → < stackPred2SPred φ   >iff [ instr ]  <  stackPred2SPred ψ  >
+     → < φ >stackb [ op ] < ψ >
+     → < stackPred2SPred φ   >ⁱᶠᶠ [ op ]  <  stackPred2SPred ψ  >
 
-hoartTripleStackPartImpliesHoareTriple instr φ ψ x
-   = lemmaGenericHoareTripleImpliesHoareTriple instr
+hoartTripleStackPartImpliesHoareTriple op φ ψ x
+   = lemmaGenericHoareTripleImpliesHoareTriple op
       (stackPred2SPred φ)
       (stackPred2SPred ψ)
-      (lemmaNonIfInstrGenericCondImpliesTripleaux instr
+      (lemmaNonIfInstrGenericCondImpliesTripleaux op
          (stackPred2SPred φ)
         (stackPred2SPred ψ)
         (lemmaHoareTripleStackPartToHoareTripleGeneric
-           ⟦ [ instr ] ⟧ˢ  φ ψ x))
+           ⟦ [ op ] ⟧ˢ  φ ψ x))

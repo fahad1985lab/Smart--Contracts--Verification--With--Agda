@@ -21,48 +21,39 @@ open import libraries.listLib
 open import libraries.natLib
 open import libraries.boolLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 
 open import stack
 open import semanticBasicOperations param
 open import instructionBasic
-
 open import verificationStackScripts.stackState
 open import verificationStackScripts.sPredicate
-open import verificationStackScripts.stackInstruction
 
 
 
--- The stack operation of type
---   Time → Msg →  Stack → Maybe Stack
--- on which the semantics is based
--- we have (see next lemma) for nonif instructions
--- ⟦ op ⟧s  ≡ stackTransform2StateTransform ⟦ op ⟧sˢ
 
--- The stacks operations is only corret for non-if instructions
--- original name was   executeStackPartOfInstr
+⟦_⟧ₛˢ : InstructionBasic →  Time → Msg →  Stack → Maybe Stack  
+⟦ opEqual  ⟧ₛˢ time₁ msg = executeStackEquality
+⟦ opAdd    ⟧ₛˢ time₁ msg = executeStackAdd
+⟦ opPush x ⟧ₛˢ time₁ msg = executeStackPush x
+⟦ opSub    ⟧ₛˢ time₁ msg = executeStackSub
+⟦ opVerify ⟧ₛˢ time₁ msg = executeStackVerify
+⟦ opCheckSig ⟧ₛˢ time₁ msg = executeStackCheckSig msg
+⟦ opEqualVerify ⟧ₛˢ time₁ msg = executeStackVerify
+⟦ opDup    ⟧ₛˢ time₁ msg = executeStackDup
+⟦ opDrop   ⟧ₛˢ time₁ msg = executeStackDrop
+⟦ opSwap   ⟧ₛˢ time₁ msg = executeStackSwap
+⟦ opHash   ⟧ₛˢ time₁ msg = executeOpHash
+⟦ opCHECKLOCKTIMEVERIFY ⟧ₛˢ time₁ msg = executeOpCHECKLOCKTIMEVERIFY time₁
+⟦ opCheckSig3 ⟧ₛˢ time₁ msg = executeStackCheckSig3Aux msg
+⟦ opMultiSig ⟧ₛˢ  time₁ msg =  executeMultiSig msg
 
-⟦_⟧sˢ : InstructionBasic →  Time → Msg →  Stack → Maybe Stack
-⟦ opEqual  ⟧sˢ time₁ msg = executeStackEquality
-⟦ opAdd    ⟧sˢ time₁ msg = executeStackAdd
-⟦ opPush x ⟧sˢ time₁ msg = executeStackPush x
-⟦ opSub    ⟧sˢ time₁ msg = executeStackSub
-⟦ opVerify ⟧sˢ time₁ msg = executeStackVerify
-⟦ opCheckSig ⟧sˢ time₁ msg = executeStackCheckSig msg
-⟦ opEqualVerify ⟧sˢ time₁ msg = executeStackVerify
-⟦ opDup    ⟧sˢ time₁ msg = executeStackDup
-⟦ opDrop   ⟧sˢ time₁ msg = executeStackDrop
-⟦ opSwap   ⟧sˢ time₁ msg = executeStackSwap
-⟦ opHash   ⟧sˢ time₁ msg = executeOpHash
-⟦ opCHECKLOCKTIMEVERIFY ⟧sˢ time₁ msg = executeOpCHECKLOCKTIMEVERIFY time₁
-⟦ opCheckSig3 ⟧sˢ time₁ msg = executeStackCheckSig3Aux msg
-⟦ opMultiSig ⟧sˢ  time₁ msg =  executeMultiSig msg
+
 
 -- execute only the stack operations of a bitcoin script
 --  is correct only for non-if instructiosn
 ⟦_⟧ˢ : (prog : BitcoinScriptBasic)(time₁ : Time)(msg : Msg)(stack₁ : Stack) → Maybe Stack
 ⟦ []        ⟧ˢ time₁ msg stack₁ = just stack₁
-⟦ op ∷ []   ⟧ˢ time₁ msg stack₁ = ⟦ op ⟧sˢ time₁ msg stack₁
-⟦ op ∷ prog ⟧ˢ time₁ msg stack₁ =  ⟦ op ⟧sˢ time₁ msg stack₁ >>= ⟦ prog ⟧ˢ time₁ msg
+⟦ op ∷ []   ⟧ˢ time₁ msg stack₁ = ⟦ op ⟧ₛˢ time₁ msg stack₁
+⟦ op ∷ prog ⟧ˢ time₁ msg stack₁ =  ⟦ op ⟧ₛˢ time₁ msg stack₁ >>= ⟦ prog ⟧ˢ time₁ msg

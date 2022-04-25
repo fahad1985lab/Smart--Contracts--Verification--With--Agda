@@ -22,7 +22,6 @@ open import Agda.Builtin.Equality
 
 --our libraries
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 open import libraries.boolLib
 
@@ -31,7 +30,6 @@ open import stackPredicate
 open import semanticBasicOperations param
 open import instructionBasic
 open import verificationP2PKHbasic param
-
 open import verificationStackScripts.stackHoareTriple param
 open import verificationStackScripts.stackState
 open import verificationStackScripts.sPredicate
@@ -54,116 +52,121 @@ accept₂ = stackPred2SPred accept₂ˢ
 accept₃ : StackStatePred
 accept₃ = stackPred2SPred accept₃ˢ
 
+-- checked needs to be pbkh not pbk
 accept₄ : ℕ → StackStatePred
-accept₄ pbk  = stackPred2SPred (accept₄ˢ pbk)
+accept₄ pbkh  = stackPred2SPred (accept₄ˢ pbkh)
 
+-- checked needs to be pbkh not pbk
 accept₅ : ℕ → StackStatePred
-accept₅ pbk  = stackPred2SPred (accept₅ˢ pbk)
+accept₅ pbkh  = stackPred2SPred (accept₅ˢ pbkh)
 
--- accept-6 : ℕ → StackStatePred
--- accept-6 pbkHash  = stackPred2SPred (wPreCondP2PKHˢ pbkHash)
 
+-- checked needs to be pbkh not pbk
 wPreCondP2PKH : (pbkh : ℕ)  → StackStatePred
 wPreCondP2PKH pbkh  = stackPred2SPred (wPreCondP2PKHˢ pbkh)
 
-
-correct-1-to : (s : StackState) → accept₁ s → (accept-0 ⁺) (⟦ opCheckSig ⟧s s )
-correct-1-to ⟨ time , msg₁ , pbk  ∷ sig ∷ st ⟩ p =  boolToNatNotFalseLemma (isSigned  msg₁ sig pbk) p
-
-
-correct-1-from : (s : StackState) → (accept-0 ⁺) (⟦ opCheckSig ⟧s s ) → accept₁ s
-correct-1-from ⟨ time , msg₁ , pbk ∷ sig ∷ stack₁  ⟩ p = boolToNatNotFalseLemma2 (isSigned  msg₁ sig pbk) p
---correctone
-correct-1 : < accept₁ >iff  ([ opCheckSig ]) < acceptState >
-correct-1 .==> = correct-1-to
-correct-1 .<== = correct-1-from
+-- we use pbk and not pbkh because that is what is provided by the unlocking script
+correct-opCheckSig-to : (s : StackState) → accept₁ s → (accept-0 ⁺) (⟦ opCheckSig ⟧ₛ s )
+correct-opCheckSig-to ⟨ time , msg₁ , pbk  ∷ sig ∷ st ⟩ p =  boolToNatNotFalseLemma (isSigned  msg₁ sig pbk) p
 
 
-correct-2-to : (s : StackState) → accept₂ s → (accept₁ ⁺) (⟦ opVerify ⟧s s )
-correct-2-to ⟨ time , msg₁ , suc x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p = p
-
-correct-2-from : (s : StackState) → (accept₁ ⁺) (⟦ opVerify ⟧s s ) → accept₂ s
-correct-2-from ⟨ time , msg₁ , suc x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p = p
-
---correcttwo
-correct-2 : < accept₂ >iff  ([ opVerify ]) < accept₁ >
-correct-2 .==> = correct-2-to
-correct-2 .<== = correct-2-from
+correct-opCheckSig-from : (s : StackState) → (accept-0 ⁺) (⟦ opCheckSig ⟧ₛ s ) → accept₁ s
+correct-opCheckSig-from ⟨ time , msg₁ , pbk ∷ sig ∷ stack₁  ⟩ p = boolToNatNotFalseLemma2 (isSigned  msg₁ sig pbk) p
 
 
-correct-3-to : (s : StackState) → accept₃ s → (accept₂ ⁺) (⟦ opEqual ⟧s s )
-correct-3-to ⟨ time , msg₁ , pbk1  ∷ .pbk1 ∷ pbk2 ∷  sig ∷ []  ⟩ (conj refl checkSig)  rewrite ( lemmaCompareNat pbk1 ) =  checkSig
-correct-3-to ⟨ time , msg₁ , pbk1 ∷ .pbk1 ∷ pbk2  ∷ sig ∷ x ∷ rest  ⟩ (conj refl checkSig) rewrite  ( lemmaCompareNat pbk1 ) = checkSig
 
-correct-3-from  : (s : StackState)  → (accept₂ ⁺) (⟦ opEqual ⟧s s ) → accept₃ s
-correct-3-from ⟨ time , msg₁ , x ∷ x₁ ∷ pbk ∷ sig ∷ stack₁  ⟩ p rewrite ( lemmaCorrect3From x x₁ pbk sig time msg₁ p )
+correct-opCheckSig : < accept₁ >ⁱᶠᶠ  ([ opCheckSig ]) < acceptState >
+correct-opCheckSig .==> = correct-opCheckSig-to
+correct-opCheckSig .<== = correct-opCheckSig-from
+
+
+correct-opVerify-to : (s : StackState) → accept₂ s → (accept₁ ⁺) (⟦ opVerify ⟧ₛ s )
+correct-opVerify-to ⟨ time , msg₁ , suc x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p = p
+
+correct-opVerify-from : (s : StackState) → (accept₁ ⁺) (⟦ opVerify ⟧ₛ s ) → accept₂ s
+correct-opVerify-from ⟨ time , msg₁ , suc x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p = p
+
+
+correct-opVerify : < accept₂ >ⁱᶠᶠ  ([ opVerify ]) < accept₁ >
+correct-opVerify .==> = correct-opVerify-to
+correct-opVerify .<== = correct-opVerify-from
+
+
+
+correct-opEqual-to : (s : StackState) → accept₃ s → (accept₂ ⁺) (⟦ opEqual ⟧ₛ s )
+correct-opEqual-to ⟨ time , msg₁ , pbk1  ∷ .pbk1 ∷ pbk2 ∷  sig ∷ []  ⟩ (conj refl checkSig)  rewrite ( lemmaCompareNat pbk1 ) =  checkSig
+correct-opEqual-to ⟨ time , msg₁ , pbk1 ∷ .pbk1 ∷ pbk2  ∷ sig ∷ x ∷ rest  ⟩ (conj refl checkSig) rewrite  ( lemmaCompareNat pbk1 ) = checkSig
+
+correct-opEqual-from  : (s : StackState)  → (accept₂ ⁺) (⟦ opEqual ⟧ₛ s ) → accept₃ s
+correct-opEqual-from ⟨ time , msg₁ , x ∷ x₁ ∷ pbk ∷ sig ∷ stack₁  ⟩ p rewrite ( lemmaCorrect3From x x₁ pbk sig time msg₁ p )
   =   let
         q : True (isSigned  msg₁ sig pbk)
         q = correct3Aux2 (compareNaturals x x₁) pbk sig stack₁ time msg₁ p
       in (conj refl q)
 
---correctthree
-correct-3 : < accept₃ >iff  ([ opEqual ]) < accept₂ >
-correct-3 .==> = correct-3-to
-correct-3 .<== = correct-3-from
-
-correct-4-to : ( pbk : ℕ ) →  (s : StackState) → accept₄ pbk  s → (accept₃ ⁺) (⟦ opPush pbk ⟧s s )
-correct-4-to pbk ⟨ currentTime₁ , msg₁ , .pbk ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ (conj refl and4) = conj refl and4
 
 
-correct-4-from : ( pbk : ℕ ) →  (s : StackState) → (accept₃ ⁺) (⟦ opPush pbk ⟧s s ) → accept₄ pbk  s
-correct-4-from pbk ⟨ currentTime₁ , msg₁ , .pbk ∷ x₁ ∷ x₂ ∷ stack₁   ⟩ (conj refl and4) = conj refl and4
-
---correctfour
-correct-4 :( pbk : ℕ ) →  < accept₄ pbk >iff  ([ opPush pbk ]) < accept₃ >
-correct-4 pbk .==> = correct-4-to pbk
-correct-4 pbk .<== = correct-4-from pbk
-
-
-correct-5-to : (pbk : ℕ ) → (s : StackState) → accept₅ pbk s →  (( accept₄ pbk ) ⁺) (⟦ opHash ⟧s s )
-correct-5-to pbk ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ (conj refl checkSig) = (conj refl checkSig)
-
-correct-5-from : ( pbk : ℕ ) →  (s : StackState)  → (( accept₄ pbk) ⁺) (⟦ opHash ⟧s s ) → accept₅ pbk  s
-correct-5-from .(hashFun x) ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ (conj refl checkSig) = conj refl checkSig
-
---correctfive
-correct-5 :( pbk : ℕ ) →  < accept₅ pbk >iff  ([ opHash  ]) < accept₄ pbk >
-correct-5 pbk .==> = correct-5-to pbk
-correct-5 pbk .<== = correct-5-from pbk
-
-
-correct-6-to : (pbkHash : ℕ ) → (s : StackState) → wPreCondP2PKH pbkHash s →  (( accept₅ pbkHash ) ⁺) (⟦ opDup ⟧s s )
-correct-6-to pbkHash ⟨ time , msg₁ , x ∷ x₁ ∷ [] ⟩ p = p
-correct-6-to pbkHash ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p = p
-
-correct-6-from : ( pbkHash : ℕ ) →  (s : StackState)  → (( accept₅ pbkHash) ⁺) (⟦ opDup ⟧s s ) → wPreCondP2PKH pbkHash  s
-correct-6-from pbkHash ⟨ time , msg₁ , x ∷ x₁ ∷ stack₁ ⟩ p = p
-
---correctsix
-correct-6 :( pbk : ℕ ) →  < wPreCondP2PKH pbk >iff  ([ opDup  ]) < accept₅ pbk >
-correct-6 pbk .==> = correct-6-to pbk
-correct-6 pbk .<== = correct-6-from pbk
+correct-opEqual : < accept₃ >ⁱᶠᶠ  ([ opEqual ]) < accept₂ >
+correct-opEqual .==> = correct-opEqual-to
+correct-opEqual .<== = correct-opEqual-from
 
 
 
---scriptppkh
+-- needs to be pbkh since opPush refers to it
+correct-opPush-to : ( pbkh : ℕ ) →  (s : StackState) → accept₄ pbkh  s → (accept₃ ⁺) (⟦ opPush pbkh ⟧ₛ s )
+correct-opPush-to pbkh ⟨ currentTime₁ , msg₁ , .pbkh ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ (conj refl and4) = conj refl and4
+
+
+correct-opPush-from : ( pbkh : ℕ ) →  (s : StackState) → (accept₃ ⁺) (⟦ opPush pbkh ⟧ₛ s ) → accept₄ pbkh  s
+correct-opPush-from pbkh ⟨ currentTime₁ , msg₁ , .pbkh ∷ x₁ ∷ x₂ ∷ stack₁   ⟩ (conj refl and4) = conj refl and4
+
+
+correct-opPush :( pbkh : ℕ ) →  < accept₄ pbkh >ⁱᶠᶠ  ([ opPush pbkh ]) < accept₃ >
+correct-opPush pbkh .==> = correct-opPush-to pbkh
+correct-opPush pbkh .<== = correct-opPush-from pbkh
+
+
+
+-- needs to be pbkh since accept₄ and accept₅ refer to pbkh
+correct-opHash-to : (pbkh : ℕ ) → (s : StackState) → accept₅ pbkh s →  (( accept₄ pbkh ) ⁺) (⟦ opHash ⟧ₛ s )
+correct-opHash-to pbkh ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ (conj refl checkSig) = (conj refl checkSig)
+
+correct-opHash-from : ( pbkh : ℕ ) →  (s : StackState)  → (( accept₄ pbkh) ⁺) (⟦ opHash ⟧ₛ s ) → accept₅ pbkh  s
+correct-opHash-from .(hashFun x) ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ (conj refl checkSig) = conj refl checkSig
+
+
+correct-opHash :( pbkh : ℕ ) →  < accept₅ pbkh >ⁱᶠᶠ  ([ opHash  ]) < accept₄ pbkh >
+correct-opHash pbkh .==> = correct-opHash-to pbkh
+correct-opHash pbkh .<== = correct-opHash-from pbkh
+
+
+
+-- needs to be pbkh since accept₅ refer to pbkh
+correct-opDup-to : (pbkh : ℕ ) → (s : StackState) → wPreCondP2PKH pbkh s →  (( accept₅ pbkh ) ⁺) (⟦ opDup ⟧ₛ s )
+correct-opDup-to pbkh ⟨ time , msg₁ , x ∷ x₁ ∷ [] ⟩ p = p
+correct-opDup-to pbkh ⟨ time , msg₁ , x ∷ x₁ ∷ x₂ ∷ stack₁ ⟩ p = p
+
+correct-opDup-from : ( pbkh : ℕ ) →  (s : StackState)  → (( accept₅ pbkh) ⁺) (⟦ opDup ⟧ₛ s ) → wPreCondP2PKH pbkh  s
+correct-opDup-from pbkh ⟨ time , msg₁ , x ∷ x₁ ∷ stack₁ ⟩ p = p
+
+
+correct-opDup :( pbkh : ℕ ) →  < wPreCondP2PKH pbkh >ⁱᶠᶠ  ([ opDup  ]) < accept₅ pbkh >
+correct-opDup pbkh .==> = correct-opDup-to pbkh
+correct-opDup pbkh .<== = correct-opDup-from pbkh
+
+
+-- P2PKH script refers to pbkh not pbk
 scriptP2PKHᵇ : (pbkh : ℕ) → BitcoinScriptBasic
 scriptP2PKHᵇ pbkh = opDup ∷ opHash ∷ (opPush pbkh) ∷ opEqual ∷ opVerify ∷ [ opCheckSig ]
 
 
-
-
---main theorem P2PKH
-theoremP2PKH : (pbkh : ℕ) → < wPreCondP2PKH pbkh >iff scriptP2PKHᵇ pbkh < acceptState >
-theoremP2PKH pbkh  = wPreCondP2PKH pbkh <><>⟨ [ opDup ]   ⟩⟨  correct-6  pbkh  ⟩
-                     accept₅  pbkh  <><>⟨  [  opHash ]       ⟩⟨  correct-5  pbkh  ⟩
-                     accept₄  pbkh  <><>⟨  [  opPush pbkh ]  ⟩⟨  correct-4  pbkh  ⟩
-                     accept₃        <><>⟨  [  opEqual ]      ⟩⟨  correct-3  ⟩
-                     accept₂        <><>⟨  [  opVerify ]     ⟩⟨  correct-2  ⟩
-                     accept₁        <><>⟨  [  opCheckSig ]   ⟩⟨  correct-1  ⟩e  acceptState  ∎p
-
-
-
-
-
-
+--main theorem for P2PKH
+theoremP2PKH :  (pbkh : ℕ)
+                → < wPreCondP2PKH pbkh >ⁱᶠᶠ scriptP2PKHᵇ pbkh < acceptState >
+theoremP2PKH pbkh  = wPreCondP2PKH pbkh <><>⟨ [ opDup ]      ⟩⟨  correct-opDup  pbkh ⟩
+                     accept₅  pbkh  <><>⟨  [  opHash ]       ⟩⟨  correct-opHash pbkh ⟩
+                     accept₄  pbkh  <><>⟨  [  opPush pbkh ]  ⟩⟨  correct-opPush pbkh ⟩
+                     accept₃        <><>⟨  [  opEqual ]      ⟩⟨  correct-opEqual     ⟩
+                     accept₂        <><>⟨  [  opVerify ]     ⟩⟨  correct-opVerify    ⟩
+                     accept₁        <><>⟨  [  opCheckSig ]   ⟩⟨  correct-opCheckSig  ⟩e
+                                    acceptState  ∎p

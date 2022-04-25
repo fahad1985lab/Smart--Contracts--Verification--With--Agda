@@ -22,7 +22,6 @@ open import Agda.Builtin.Equality
 
 --our libraries
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 open import libraries.boolLib
 
@@ -37,21 +36,21 @@ open import verificationStackScripts.semanticsStackInstructions param
 
 liftCondOperation2Program-to-simple : (accept2 : StackStatePred)
   (op : InstructionBasic)  (s : StackState)
-  → (accept2 ⁺) (⟦ op ⟧s s )
+  → (accept2 ⁺) (⟦ op ⟧ₛ s )
   → (accept2 ⁺) (⟦ op ∷ [] ⟧ s )
-liftCondOperation2Program-to-simple accept2 op s x = x
+liftCondOperation2Program-to-simple accept2 op s a = a
 
 liftCondOperation2Program-from-simple : (accept2 : StackStatePred)
   (op : InstructionBasic)  (s : StackState)
   → (accept2 ⁺) (⟦ op ∷ [] ⟧ s )
-  → (accept2 ⁺) (⟦ op ⟧s s )
-liftCondOperation2Program-from-simple accept2 op s x = x
+  → (accept2 ⁺) (⟦ op ⟧ₛ s )
+liftCondOperation2Program-from-simple accept2 op s a = a
 
 
 
 liftCondOperation2Program-to : (accept1 accept2 : StackStatePred)
   (op : InstructionBasic)
-  (correct : (s : StackState) → accept1 s → (accept2 ⁺) (⟦ op ⟧s s ))
+  (correct : (s : StackState) → accept1 s → (accept2 ⁺) (⟦ op ⟧ₛ s ))
   (s : StackState)
   → accept1 s
   → (accept2 ⁺) (⟦ op ∷ [] ⟧ s )
@@ -60,7 +59,7 @@ liftCondOperation2Program-to accept1 accept2 op correct s a = correct s a
 
 liftCondOperation2Program-from : (accept1 accept2 : StackStatePred)
    (op : InstructionBasic)
-   (correct : (s : StackState) → (accept2 ⁺) (⟦ op ⟧s s ) → accept1 s)
+   (correct : (s : StackState) → (accept2 ⁺) (⟦ op ⟧ₛ s ) → accept1 s)
    (s : StackState)
    → (accept2 ⁺) (⟦ op ∷ [] ⟧ s ) → accept1 s
 liftCondOperation2Program-from accept1 accept2 op correct s a = correct s a
@@ -93,64 +92,64 @@ bindTransformeraux accept2 accept3 f correct2  (just s) correct1 = correct2 s co
 bindTransformer-toSingle : (accept1 accept2 accept3 : StackStatePred)
                (op : InstructionBasic)
                (p  : List InstructionBasic)
-               (correct1 : (s : StackState) → accept1 s → (accept2 ⁺) (⟦ op ⟧s s ))
+               (correct1 : (s : StackState) → accept1 s → (accept2 ⁺) (⟦ op ⟧ₛ s ))
                (correct2 : (s : StackState) → accept2 s → (accept3 ⁺) (⟦ p ⟧ s ))
                → (s : StackState)
                → accept1 s
                → (accept3 ⁺) (⟦ op ∷ p ⟧ s )
 bindTransformer-toSingle accept1 accept2 accept3 op [] correct1 correct2 s a
-                     = liftPredtransformerMaybe accept2 accept3 correct2 (⟦ op ⟧s s) (correct1 s a)
-bindTransformer-toSingle accept1 accept2 accept3 op ( p@(x ∷ p₁) ) correct1 correct2 s a
-                     = bindTransformeraux  accept2  accept3 ⟦ p  ⟧  correct2  (⟦ op ⟧s  s) (correct1 s a)
+                     = liftPredtransformerMaybe accept2 accept3 correct2 (⟦ op ⟧ₛ s) (correct1 s a)
+bindTransformer-toSingle accept1 accept2 accept3 op ( p@(op₁ ∷ p₁) ) correct1 correct2 s a
+                     = bindTransformeraux  accept2  accept3 ⟦ p  ⟧  correct2  (⟦ op ⟧ₛ  s) (correct1 s a)
 
 bindTransformer-fromSingle : (accept1 accept2 accept3 : StackStatePred)
               (op : InstructionBasic)
               (p  : List InstructionBasic)
-              (correct1 : (s : StackState) → (accept2 ⁺) (⟦ op ⟧s s ) → accept1 s)
+              (correct1 : (s : StackState) → (accept2 ⁺) (⟦ op ⟧ₛ s ) → accept1 s)
               (correct2 : (s : StackState) → (accept3 ⁺) (⟦ p ⟧ s ) → accept2 s) (s : StackState)
               → (accept3 ⁺) (⟦ op ∷ p ⟧ s ) → accept1 s
 bindTransformer-fromSingle accept1 accept2 accept3 op [] correct1 correct2 s a
-   = correct1 s (liftPredtransformerMaybe accept3 accept2 correct2 (⟦ op ⟧s s) a)
-bindTransformer-fromSingle accept1 accept2 accept3 op (p@(x ∷ p₁)) correct1 correct2 s a
-                    = correct1 s (bindTransformerBack accept2 accept3  ⟦ p ⟧  correct2 ( ⟦ op ⟧s s)  a )
+   = correct1 s (liftPredtransformerMaybe accept3 accept2 correct2 (⟦ op ⟧ₛ s) a)
+bindTransformer-fromSingle accept1 accept2 accept3 op (p@(op₁ ∷ p₁)) correct1 correct2 s a
+                    = correct1 s (bindTransformerBack accept2 accept3  ⟦ p ⟧  correct2 ( ⟦ op ⟧ₛ s)  a )
 
 
 
-p++xSemLem :  (x : InstructionBasic)(s : Maybe StackState) (p : BitcoinScriptBasic)
-        →  (⟦ p ⟧⁺ s  >>=  ⟦ x ⟧s)
+p++xSemLem :  (op : InstructionBasic)(s : Maybe StackState) (p : BitcoinScriptBasic)
+        →  (⟦ p ⟧⁺ s  >>=  ⟦ op ⟧ₛ)
                ≡
-           (⟦ p ++ (x ∷ []) ⟧⁺ s )
-p++xSemLem x nothing s = refl
-p++xSemLem x (just s) [] = refl
-p++xSemLem x (just s) (x₁ ∷ []) = refl
-p++xSemLem x (just s) (x₁ ∷ x₂ ∷ p) = p++xSemLem x (⟦ x₁ ⟧s s) (x₂ ∷ p)
+           (⟦ p ++ (op ∷ []) ⟧⁺ s )
+p++xSemLem op nothing s = refl
+p++xSemLem op (just s) [] = refl
+p++xSemLem op (just s) (op₁ ∷ []) = refl
+p++xSemLem op (just s) (op₁ ∷ op₂ ∷ p) = p++xSemLem op (⟦ op₁ ⟧ₛ s) (op₂ ∷ p)
 
-p++xSemLemb :  (x : InstructionBasic)(s : Maybe StackState) (p : BitcoinScriptBasic)
-        →  (⟦ p ++ (x ∷ []) ⟧⁺ s )
+p++xSemLemb :  (op : InstructionBasic)(s : Maybe StackState) (p : BitcoinScriptBasic)
+        →  (⟦ p ++ (op ∷ []) ⟧⁺ s )
                ≡
-            (⟦ p ⟧⁺ s >>=  ⟦ x ⟧s )
-p++xSemLemb x nothing s = refl
-p++xSemLemb x (just s) [] = refl
-p++xSemLemb x (just s) (x₁ ∷ []) = refl
-p++xSemLemb x (just s) (x₁ ∷ x₂ ∷ p) = p++xSemLemb x (⟦ x₁ ⟧s s ) ( x₂ ∷ p )
+            (⟦ p ⟧⁺ s >>=  ⟦ op ⟧ₛ )
+p++xSemLemb op nothing s = refl
+p++xSemLemb op (just s) [] = refl
+p++xSemLemb op (just s) (op₁ ∷ []) = refl
+p++xSemLemb op (just s) (op₁ ∷ op₂ ∷ p) = p++xSemLemb op (⟦ op₁ ⟧ₛ s ) ( op₂ ∷ p )
 
-p++x::qLem : (p1 p2 : BitcoinScriptBasic)(x : InstructionBasic) → p1 ++ x ∷' p2 ≡ (p1 ++ (x ∷ [])) ++ p2
-p++x::qLem [] p2 x = refl
-p++x::qLem (x₁ ∷ p1) p2 x = cong (λ p → x₁ ∷ p) (p++x::qLem p1 p2 x)
+p++x::qLem : (p1 p2 : BitcoinScriptBasic)(op : InstructionBasic) → p1 ++ op ∷' p2 ≡ (p1 ++ (op ∷ [])) ++ p2
+p++x::qLem [] p2 op = refl
+p++x::qLem (op₁ ∷ p1) p2 op = cong (λ p → op₁ ∷ p) (p++x::qLem p1 p2 op)
 
 ++[]lem : (p : BitcoinScriptBasic) → p ++ [] ≡ p
 ++[]lem [] = refl
-++[]lem (x ∷ p) = cong (λ q → x ∷ q) (++[]lem p)
+++[]lem (op ∷ p) = cong (λ q → op ∷ q) (++[]lem p)
 
 liftMaybeCompLemma : (f k : StackState → Maybe StackState)(s : Maybe StackState)
             → (s >>= λ s₁ → k s₁ >>= f ) ≡ ((s >>= k) >>= f)
 liftMaybeCompLemma f k nothing = refl
-liftMaybeCompLemma f k (just x) = refl
+liftMaybeCompLemma f k (just s) = refl
 
 liftMaybeCompLemma2 : (f k : StackState → Maybe StackState)(s : Maybe StackState)
             → ((s >>= k) >>= f)  ≡ (s >>= λ s₁ → k s₁ >>= f )
 liftMaybeCompLemma2 f k nothing = refl
-liftMaybeCompLemma2 f k (just x) = refl
+liftMaybeCompLemma2 f k (just s) = refl
 
 
 lemmaBindTransformerAux' : (p1 p2 : BitcoinScriptBasic)(s : Maybe  StackState)
@@ -162,20 +161,20 @@ lemmaBindTransformerAux' [] p2 s = ⟦ p2 ++ [] ⟧⁺ s
                                      (⟦ p2 ⟧⁺ s >>= just )
                                      ∎
 
-lemmaBindTransformerAux' (x ∷ []) p2 s = p++xSemLemb x s p2
+lemmaBindTransformerAux' (op ∷ []) p2 s = p++xSemLemb op s p2
 
-lemmaBindTransformerAux' (x ∷ p1@(x₁ ∷ p1')) p2 s
-        = ⟦ p2 ++ x ∷' p1 ⟧⁺ s
-                ≡⟨ cong (λ p → ⟦ p ⟧⁺ s  ) (p++x::qLem p2 p1 x)  ⟩
-             ⟦ (p2 ++ (x ∷ [])) ++ p1  ⟧⁺ s
-                ≡⟨ lemmaBindTransformerAux'  p1 (p2 ++ (x ∷ [])) s  ⟩
-             (⟦ p2 ++ (x ∷ []) ⟧⁺ s  >>= ⟦ p1 ⟧  )
-                ≡⟨ cong ⟦ p1 ⟧⁺ (p++xSemLemb x s p2)  ⟩
-             ((⟦ p2 ⟧⁺ s >>= ⟦ x ⟧s   ) >>= ⟦ p1 ⟧  )
-                ≡⟨ liftMaybeCompLemma2 ⟦ p1 ⟧  ⟦ x ⟧s (⟦ p2 ⟧⁺ s )  ⟩
-             ( ⟦ p2 ⟧⁺ s  >>= λ s₁ → ⟦ x ⟧s s₁ >>= ⟦ p1 ⟧ )
+lemmaBindTransformerAux' (op ∷ p1@(op₁ ∷ p1')) p2 s
+        = ⟦ p2 ++ op ∷' p1 ⟧⁺ s
+                ≡⟨ cong (λ p → ⟦ p ⟧⁺ s  ) (p++x::qLem p2 p1 op)  ⟩
+             ⟦ (p2 ++ (op ∷ [])) ++ p1  ⟧⁺ s
+                ≡⟨ lemmaBindTransformerAux'  p1 (p2 ++ (op ∷ [])) s  ⟩
+             (⟦ p2 ++ (op ∷ []) ⟧⁺ s  >>= ⟦ p1 ⟧  )
+                ≡⟨ cong ⟦ p1 ⟧⁺ (p++xSemLemb op s p2)  ⟩
+             ((⟦ p2 ⟧⁺ s >>= ⟦ op ⟧ₛ   ) >>= ⟦ p1 ⟧  )
+                ≡⟨ liftMaybeCompLemma2 ⟦ p1 ⟧  ⟦ op ⟧ₛ (⟦ p2 ⟧⁺ s )  ⟩
+             ( ⟦ p2 ⟧⁺ s  >>= λ s₁ → ⟦ op ⟧ₛ s₁ >>= ⟦ p1 ⟧ )
                 ≡⟨ refl  ⟩
-            (⟦ p2 ⟧⁺ s  >>= ⟦ x ∷ p1 ⟧ )
+            (⟦ p2 ⟧⁺ s  >>= ⟦ op ∷ p1 ⟧ )
              ∎
 
 
@@ -189,20 +188,20 @@ lemmaBindTransformer' p1 p2 s = lemmaBindTransformerAux' p1 p2 (just s)
 lemmaBindTransformerAux : (p1 p2 : BitcoinScriptBasic)(s : Maybe  StackState)
                           → ⟦ p2 ++ p1 ⟧⁺ s ≡ (⟦ p2 ⟧⁺ s >>= ⟦ p1 ⟧)
 lemmaBindTransformerAux p1 [] s = lemmaBindTransformerAux' p1 [] s
-lemmaBindTransformerAux p1 (x ∷ p2) s = lemmaBindTransformerAux' p1 (x ∷ p2) s
+lemmaBindTransformerAux p1 (op ∷ p2) s = lemmaBindTransformerAux' p1 (op ∷ p2) s
 
 lemmaBindTransformer : (p1 p2 : BitcoinScriptBasic)(s : StackState)
                                 → ⟦ p2 ++ p1 ⟧ s ≡ (⟦ p2 ⟧ s >>= ⟦ p1 ⟧ )
 lemmaBindTransformer p₁ [] s = refl
-lemmaBindTransformer [] (x ∷ []) s = liftJustIsIdLem (λ l → ⟦ x ⟧s s ≡ l) (⟦ x ⟧s s) refl
-lemmaBindTransformer (x₁ ∷ p₁) (x ∷ []) s = refl
-lemmaBindTransformer p₁ (x ∷ p₂@(x₁ ∷ p₂')) s = lemmaBindTransformerAux p₁ p₂ (⟦ x ⟧s s)
+lemmaBindTransformer [] (op ∷ []) s = liftJustIsIdLem (λ l → ⟦ op ⟧ₛ s ≡ l) (⟦ op ⟧ₛ s) refl
+lemmaBindTransformer (op₁ ∷ p₁) (op ∷ []) s = refl
+lemmaBindTransformer p₁ (op ∷ p₂@(op₁ ∷ p₂')) s = lemmaBindTransformerAux p₁ p₂ (⟦ op ⟧ₛ s)
 
 
 lemmaBindTransformereq : (p2 : BitcoinScriptBasic)(s : StackState)
                                → ⟦ p2  ⟧ s ≡ (⟦ p2 ⟧ s >>= ⟦ [] ⟧)
 lemmaBindTransformereq [] s = refl
-lemmaBindTransformereq (x ∷ p₂) s = liftJustEqLem2 (⟦ x ∷ p₂ ⟧ s)
+lemmaBindTransformereq (op ∷ p₂) s = liftJustEqLem2 (⟦ op ∷ p₂ ⟧ s)
 
 bindTransformer-toSequence : (accept1 accept2 accept3 : StackStatePred)
                                (p1 : BitcoinScriptBasic)

@@ -18,10 +18,8 @@ import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; module ≡-Reasoning; sym)
 open ≡-Reasoning
 open import Agda.Builtin.Equality
---open import Agda.Builtin.Equality.Rewrite
 
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 open import libraries.boolLib
 
@@ -29,7 +27,6 @@ open import stack
 open import stackPredicate
 open import instruction
 open import instructionBasic
--- open import ledger param
 open import semanticBasicOperations param
 
 
@@ -54,58 +51,56 @@ instruction-6 = opDup
 accept-0Basic : StackPredicate
 accept-0Basic = acceptStateˢ
 
---accept One
 accept₁ˢ : StackPredicate
 accept₁ˢ time m [] = ⊥
 accept₁ˢ time m (sig ∷ []) = ⊥
-accept₁ˢ time m ( pubKey  ∷ sig ∷ st) = IsSigned m  sig pubKey
---@END
-accept₂ˢCore : Time → Msg → ℕ → ℕ → ℕ → Set
-accept₂ˢCore time m zero pubKey sig = ⊥
-accept₂ˢCore time m (suc x) pubKey sig =  IsSigned  m sig pubKey
+accept₁ˢ time m ( pbk  ∷ sig ∷ st) = IsSigned m  sig pbk
 
---accept Two
+
+accept₂ˢCore : Time → Msg → ℕ → ℕ → ℕ → Set
+accept₂ˢCore time m zero pbk sig = ⊥
+accept₂ˢCore time m (suc x) pbk sig =  IsSigned  m sig pbk
+
+
 accept₂ˢ : StackPredicate
 accept₂ˢ time m [] = ⊥
 accept₂ˢ time m (x ∷ []) = ⊥
 accept₂ˢ time m (x ∷ x₁ ∷ []) = ⊥
-accept₂ˢ time m (x ∷ pubKey ∷ sig ∷ rest) = accept₂ˢCore time m x pubKey sig
+accept₂ˢ time m (x ∷ pbk ∷ sig ∷ rest) = accept₂ˢCore time m x pbk sig
 
 
---accept Three
+
 accept₃ˢ : StackPredicate
 accept₃ˢ time m [] = ⊥
 accept₃ˢ time m (x ∷ []) = ⊥
 accept₃ˢ time m (x ∷ x₁ ∷ []) = ⊥
 accept₃ˢ time m (x ∷ x₁ ∷ x2 ∷ []) = ⊥
-accept₃ˢ time m (pbkh2 ∷ pbkh1 ∷ pubKey ∷ sig ∷ rest)
-     =  (pbkh2 ≡  pbkh1) ∧ IsSigned  m sig pubKey
+accept₃ˢ time m (pbkh2 ∷ pbkh1 ∷ pbk ∷ sig ∷ rest)
+     =  (pbkh2 ≡  pbkh1) ∧ IsSigned  m sig pbk
 
 
---accept Four
-accept₄ˢ : ( pubKey : ℕ ) → StackPredicate
+
+accept₄ˢ : ( pbkh1 : ℕ ) → StackPredicate
 accept₄ˢ pbkh1 time m [] = ⊥
 accept₄ˢ pbkh1 time m (x ∷ []) = ⊥
 accept₄ˢ pbkh1 time m (x ∷ x1  ∷ []) = ⊥
-accept₄ˢ pbkh1 time m ( pbkh2   ∷ pubKey ∷ sig ∷ st)
-        = (pbkh2 ≡  pbkh1) ∧  IsSigned  m sig pubKey
+accept₄ˢ pbkh1 time m ( pbkh2   ∷ pbk ∷ sig ∷ st)
+        = (pbkh2 ≡  pbkh1) ∧  IsSigned  m sig pbk
 
 
---accept Five
-accept₅ˢ : ( pubKey : ℕ ) → StackPredicate
+accept₅ˢ : ( pbkh1 : ℕ ) → StackPredicate
 accept₅ˢ  pbkh1 time m [] = ⊥
 accept₅ˢ  pbkh1 time m (x ∷ []) = ⊥
 accept₅ˢ  pbkh1 time m (x ∷ x₁ ∷ []) = ⊥
-accept₅ˢ  pbkh1 time m ( pubKey1   ∷ pubKey ∷ sig ∷ st)
-       =  (hashFun pubKey1 ≡  pbkh1) ∧  IsSigned   m  sig  pubKey
+accept₅ˢ  pbkh1 time m ( pbk1   ∷ pbk2 ∷ sig ∷ st)
+       =  (hashFun pbk1 ≡  pbkh1) ∧  IsSigned   m  sig  pbk2
 
 
---weakest precondition
 wPreCondP2PKHˢ : (pbkh : ℕ ) → StackPredicate
 wPreCondP2PKHˢ  pbkh  time  m  []                    =  ⊥
 wPreCondP2PKHˢ  pbkh  time  m  (x ∷ [])              =  ⊥
-wPreCondP2PKHˢ  pbkh  time  m  ( pubKey ∷ sig ∷ st)  =
-                (hashFun pubKey ≡  pbkh ) ∧ IsSigned  m sig pubKey
+wPreCondP2PKHˢ  pbkh  time  m  ( pbk ∷ sig ∷ st)  =
+                (hashFun pbk ≡  pbkh ) ∧ IsSigned  m sig pbk
 
 
 
@@ -118,9 +113,9 @@ correct3Aux1 zero (suc x ∷ x₁ ∷ rest) time msg accept = accept
 correct3Aux1 (suc x) (x₁ ∷ rest) time msg accept = tt
 
 
-correct3Aux2 : ( x pubKey sig : ℕ )( rest : List ℕ)(time : Time)(m : Msg)
-                → accept₂ˢ time m (x ∷ pubKey ∷ sig ∷ rest)
-                → IsSigned  m sig pubKey
+correct3Aux2 : ( x pbk sig : ℕ )( rest : List ℕ)(time : Time)(m : Msg)
+                → accept₂ˢ time m (x ∷ pbk ∷ sig ∷ rest)
+                → IsSigned  m sig pbk
 correct3Aux2 (suc x) pubkey sig rest time m accept = accept
 
 
@@ -154,7 +149,7 @@ script-6-b : ℕ → BitcoinScriptBasic
 script-6-b pbkh  = opDup ∷ script-5-b pbkh
 
 
---new
+
 script-7-b : ℕ → BitcoinScriptBasic
 script-7-b pbkh = opMultiSig ∷ script-6-b pbkh
 

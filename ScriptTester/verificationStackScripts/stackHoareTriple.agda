@@ -25,7 +25,6 @@ open import libraries.listLib
 open import libraries.natLib
 open import libraries.boolLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 open import libraries.emptyLib
 open import libraries.equalityLib
@@ -47,21 +46,21 @@ open import verificationStackScripts.stackVerificationLemmas param
 
 
 _<_>_  : BStackStatePred →  BitcoinScriptBasic →  BStackStatePred →  Set
-ϕ < P > ψ = (s : StackState) → True (ϕ s) → True( (ψ ⁺ᵇ) ( ⟦ P ⟧ s))
+ϕ < p > ψ = (s : StackState) → True (ϕ s) → True( (ψ ⁺ᵇ) ( ⟦ p ⟧ s))
 
 
 weakestPreCond  :  (Postcond : BStackStatePred) → BitcoinScriptBasic →  BStackStatePred
-weakestPreCond ψ P state =  (ψ ⁺ᵇ) ( ⟦ P ⟧ state)
+weakestPreCond ψ p state =  (ψ ⁺ᵇ) ( ⟦ p ⟧ state)
 
 
 
-record <_>iff_<_>  (P : StackStatePred)(p : BitcoinScriptBasic)(Q : StackStatePred) : Set where
+record <_>ⁱᶠᶠ_<_>  (φ : StackStatePred)(p : BitcoinScriptBasic)(ψ : StackStatePred) : Set where
   constructor hoare3
   field
-    ==> : (s : StackState) → P s → (Q ⁺) (⟦ p ⟧ s )
-    <== : (s : StackState) → (Q ⁺) (⟦ p ⟧ s ) → P s
+    ==> : (s : StackState) → φ s → (ψ ⁺) (⟦ p ⟧ s )
+    <== : (s : StackState) → (ψ ⁺) (⟦ p ⟧ s ) → φ s
 
-open <_>iff_<_>  public
+open <_>ⁱᶠᶠ_<_>  public
 
 
 record _<=>p_ (φ ψ : StackStatePred) : Set where
@@ -96,9 +95,9 @@ trans<=> φ ψ ψ' (equivp ==>e₁ <==e₁) (equivp ==>e₂ <==e₂) .<==e s p =
 
 
 ⊎HoareLemma1 : {φ ψ ψ' : StackStatePred}(p : BitcoinScriptBasic)
-                  → < φ >iff  p  < ψ >
-                  → < ⊥p >iff  p  < ψ' >
-                  → < φ >iff p < ψ ⊎p ψ' >
+                  → < φ >ⁱᶠᶠ  p  < ψ >
+                  → < ⊥p >ⁱᶠᶠ  p  < ψ' >
+                  → < φ >ⁱᶠᶠ p < ψ ⊎p ψ' >
 ⊎HoareLemma1 {φ} {ψ} {ψ'} p (hoare3 c1 c2) c .==> s q = lemma⊎pleft ψ  ψ' (⟦ p ⟧ s) (c1 s q)
 ⊎HoareLemma1 {φ} {ψ} {ψ'} p (hoare3 ==>₁ <==₁) (hoare3 ==>₂ <==₂) .<== s q
           = let
@@ -108,9 +107,9 @@ trans<=> φ ψ ψ' (equivp ==>e₁ <==e₁) (equivp ==>e₂ <==e₂) .<==e s p =
 
 
 ⊎HoareLemma2 : {φ φ' ψ ψ' : StackStatePred}(p : BitcoinScriptBasic)
-                  → < φ >iff  p  < ψ >
-                  → < φ' >iff  p  < ψ' >
-                  → < φ ⊎p φ' >iff p < ψ ⊎p ψ' >
+                  → < φ >ⁱᶠᶠ  p  < ψ >
+                  → < φ' >ⁱᶠᶠ  p  < ψ' >
+                  → < φ ⊎p φ' >ⁱᶠᶠ p < ψ ⊎p ψ' >
 ⊎HoareLemma2 {φ} {φ'} {ψ} {ψ'} prog (hoare3 ==>₁ <==₁) (hoare3 ==>₂ <==₂) .==> s (inj₁ q)
           = lemma⊎pleft ψ ψ' (⟦ prog ⟧ s) (==>₁ s q)
 ⊎HoareLemma2 {φ} {φ'} {ψ} {ψ'} prog (hoare3 ==>₁ <==₁) (hoare3 ==>₂ <==₂) .==> s (inj₂ q)
@@ -128,9 +127,9 @@ trans<=> φ ψ ψ' (equivp ==>e₁ <==e₁) (equivp ==>e₂ <==e₂) .<==e s p =
 
 predEquivr : (φ ψ ψ' : StackStatePred)
              (prog : BitcoinScriptBasic)
-             → < φ >iff prog < ψ >
+             → < φ >ⁱᶠᶠ prog < ψ >
              → ψ <=>p ψ'
-             → < φ >iff prog < ψ' >
+             → < φ >ⁱᶠᶠ prog < ψ' >
 predEquivr φ ψ ψ' prog (hoare3 ==>₁ <==₁) (equivp ==>e <==e) .==> s p1
   = liftPredtransformerMaybe ψ ψ' ==>e (⟦ prog ⟧ s) (==>₁ s p1)
 predEquivr φ ψ ψ' prog (hoare3 ==>₁ <==₁) (equivp ==>e <==e) .<== s p1
@@ -144,8 +143,8 @@ predEquivr φ ψ ψ' prog (hoare3 ==>₁ <==₁) (equivp ==>e <==e) .<== s p1
 predEquivl : (φ φ' ψ : StackStatePred)
              (prog : BitcoinScriptBasic)
              → φ <=>p φ'
-             → < φ' >iff prog < ψ >
-             → < φ >iff prog < ψ >
+             → < φ' >ⁱᶠᶠ prog < ψ >
+             → < φ >ⁱᶠᶠ prog < ψ >
 predEquivl φ φ' ψ prog (equivp ==>e <==e) (hoare3 ==>₁ <==₁) .==> s p1
              = let
                  goal : (ψ ⁺) (⟦ prog ⟧ s)
@@ -177,34 +176,34 @@ equivPreds⊎Rev φ ψ ψ' .<==e s (conj and4 (inj₁ x)) = inj₁ (conj and4 x)
 equivPreds⊎Rev φ ψ ψ' .<==e s (conj and4 (inj₂ y)) = inj₂ (conj and4 y)
 
 
-_++ho_ : {P Q R : StackStatePred}{p q : BitcoinScriptBasic} → < P >iff p < Q >  → < Q >iff q < R > → < P >iff p ++  q < R >
-_++ho_ {P} {Q} {R} {p} {q} pproof qproof .==> = bindTransformer-toSequence P Q R p q (pproof .==>)  (qproof .==>)
-_++ho_ {P} {Q} {R} {p} {q} pproof qproof .<== = bindTransformer-fromSequence P Q R p q (pproof .<==)  (qproof .<==)
+_++ho_ : {φ ψ ρ : StackStatePred}{p q : BitcoinScriptBasic} → < φ >ⁱᶠᶠ p < ψ >  → < ψ >ⁱᶠᶠ q < ρ > → < φ >ⁱᶠᶠ p ++  q < ρ >
+_++ho_ {φ} {ψ} {ρ} {p} {q} pproof qproof .==> = bindTransformer-toSequence φ ψ ρ p q (pproof .==>)  (qproof .==>)
+_++ho_ {φ} {ψ} {ρ} {p} {q} pproof qproof .<== = bindTransformer-fromSequence φ ψ ρ p q (pproof .<==)  (qproof .<==)
 
-_++hoeq_ : {P Q R : StackStatePred}{p : BitcoinScriptBasic} → < P >iff p < Q >  → < Q >iff [] < R > → < P >iff p  < R >
-_++hoeq_ {P} {Q} {R} {p} pproof qproof .==> = bindTransformer-toSequenceeq P Q R p (pproof .==>)  (qproof .==>)
-_++hoeq_ {P} {Q} {R} {p} pproof qproof .<== = bindTransformer-fromSequenceeq P Q R p (pproof .<==)  (qproof .<==)
+_++hoeq_ : {φ ψ ρ : StackStatePred}{p : BitcoinScriptBasic} → < φ >ⁱᶠᶠ p < ψ >  → < ψ >ⁱᶠᶠ [] < ρ > → < φ >ⁱᶠᶠ p  < ρ >
+_++hoeq_ {φ} {ψ} {ρ} {p} pproof qproof .==> = bindTransformer-toSequenceeq φ ψ ρ p (pproof .==>)  (qproof .==>)
+_++hoeq_ {φ} {ψ} {ρ} {p} pproof qproof .<== = bindTransformer-fromSequenceeq φ ψ ρ p (pproof .<==)  (qproof .<==)
 
 
 module HoareReasoning  where
   infix  3 _∎p
   infixr 2 step-<><>  step-<><>e step-<=>
 
-  _∎p : ∀ (φ : StackStatePred) → < φ >iff [] < φ >
+  _∎p : ∀ (φ : StackStatePred) → < φ >ⁱᶠᶠ [] < φ >
   (φ ∎p) .==>  s p = p
   (φ ∎p) .<==  s p = p
 
 
   step-<><> : ∀ {φ ψ ρ : StackStatePred}(p : BitcoinScriptBasic){q : BitcoinScriptBasic}
-             → < φ >iff p < ψ >
-             → < ψ >iff q < ρ >
-             → < φ >iff p ++ q < ρ >
+             → < φ >ⁱᶠᶠ p < ψ >
+             → < ψ >ⁱᶠᶠ q < ρ >
+             → < φ >ⁱᶠᶠ p ++ q < ρ >
   step-<><>  {φ} {ψ} {ρ} p φpψ ψqρ = φpψ ++ho ψqρ
 
   step-<><>e : ∀ {φ ψ ρ : StackStatePred}(p : BitcoinScriptBasic)
-             → < φ >iff p < ψ >
-             → < ψ >iff [] < ρ >
-             → < φ >iff p  < ρ >
+             → < φ >ⁱᶠᶠ p < ψ >
+             → < ψ >ⁱᶠᶠ [] < ρ >
+             → < φ >ⁱᶠᶠ p  < ρ >
   step-<><>e  p φpψ ψqρ = φpψ ++hoeq ψqρ
 
 
@@ -213,8 +212,8 @@ module HoareReasoning  where
 
   step-<=> : ∀ {φ ψ ρ : StackStatePred}{p : BitcoinScriptBasic}
              → φ <=>p ψ
-             → < ψ >iff p < ρ >
-             → < φ >iff p < ρ >
+             → < ψ >ⁱᶠᶠ p < ρ >
+             → < φ >ⁱᶠᶠ p < ρ >
   step-<=>  {φ} {ψ} {ρ} {p} φψ ψqρ = predEquivl φ ψ ρ p φψ ψqρ
 
 
@@ -236,13 +235,13 @@ open HoareReasoning public
 
 
 ⊥Lemmap : (p : BitcoinScriptBasic)
-          → < ⊥p >iff  p  < ⊥p >
+          → < ⊥p >ⁱᶠᶠ  p  < ⊥p >
 ⊥Lemmap [] .==> s ()
 ⊥Lemmap p .<== s p' = liftToMaybeLemma⊥ (⟦ p ⟧ s)  p'
 
 
 lemmaHoare[] : {φ : StackStatePred}
-               → < φ >iff [] < φ >
+               → < φ >ⁱᶠᶠ [] < φ >
 lemmaHoare[]  .==> s p = p
 lemmaHoare[]  .<== s p = p
 
@@ -257,19 +256,15 @@ record <_>ssgen_<_> (φ : StackStatePred)(f : StackState → Maybe StackState)(�
 
 open <_>ssgen_<_>  public
 
-{-
-HoareTripleSSGen : (φ : StackStatePred)(f : StackState → Maybe StackState)(ψ : StackStatePred)
-                   → Set
-HoareTripleSSGen φ f ψ  = < φ >ssgen f < ψ  >
--}
+
 
 
 lemmaTransferHoareTripleGen : (φ ψ : StackStatePred)
                               (f g : StackState → Maybe StackState)
-                              (p : (s : StackState) → f s ≡ g s)
+                              (eq : (s : StackState) → f s ≡ g s)
                               → < φ >ssgen f < ψ >
                               → < φ >ssgen g < ψ >
-lemmaTransferHoareTripleGen φ ψ f g p (hoareTripleSSGen ==>g₁ <==g₁) .==>g s x₁
-          = transfer (λ x → (ψ ⁺) x) (p s) (==>g₁ s x₁)
-lemmaTransferHoareTripleGen φ ψ f g p (hoareTripleSSGen ==>g₁ <==g₁) .<==g s x₁
-          = <==g₁ s (transfer (λ x → (ψ ⁺) x) (sym (p s)) x₁)
+lemmaTransferHoareTripleGen φ ψ f g eq (hoareTripleSSGen ==>g₁ <==g₁) .==>g s x₁
+          = transfer (λ x → (ψ ⁺) x) (eq s) (==>g₁ s x₁)
+lemmaTransferHoareTripleGen φ ψ f g eq (hoareTripleSSGen ==>g₁ <==g₁) .<==g s x₁
+          = <==g₁ s (transfer (λ x → (ψ ⁺) x) (sym (eq s)) x₁)

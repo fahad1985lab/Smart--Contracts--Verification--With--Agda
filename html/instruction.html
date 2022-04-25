@@ -15,143 +15,90 @@
 <a id="529" class="Keyword">open</a> <a id="534" class="Keyword">import</a> <a id="541" href="libraries.natLib.html" class="Module">libraries.natLib</a>
 <a id="558" class="Keyword">open</a> <a id="563" class="Keyword">import</a> <a id="570" href="libraries.boolLib.html" class="Module">libraries.boolLib</a>
 <a id="588" class="Keyword">open</a> <a id="593" class="Keyword">import</a> <a id="600" href="libraries.andLib.html" class="Module">libraries.andLib</a>
-<a id="617" class="Keyword">open</a> <a id="622" class="Keyword">import</a> <a id="629" href="libraries.miscLib.html" class="Module">libraries.miscLib</a>
-<a id="647" class="Keyword">open</a> <a id="652" class="Keyword">import</a> <a id="659" href="libraries.maybeLib.html" class="Module">libraries.maybeLib</a>
+<a id="617" class="Keyword">open</a> <a id="622" class="Keyword">import</a> <a id="629" href="libraries.maybeLib.html" class="Module">libraries.maybeLib</a>
 
-<a id="679" class="Keyword">open</a> <a id="684" class="Keyword">import</a> <a id="691" href="stack.html" class="Module">stack</a>
-<a id="697" class="Keyword">open</a> <a id="702" class="Keyword">import</a> <a id="709" href="instructionBasic.html" class="Module">instructionBasic</a>
-<a id="726" class="Keyword">open</a> <a id="731" class="Keyword">import</a> <a id="738" href="basicBitcoinDataType.html" class="Module">basicBitcoinDataType</a>
-
-
-
-<a id="762" class="Comment">-------------------------------------------------------------------------------------------------------------------------------------------</a>
+<a id="649" class="Keyword">open</a> <a id="654" class="Keyword">import</a> <a id="661" href="stack.html" class="Module">stack</a>
+<a id="667" class="Keyword">open</a> <a id="672" class="Keyword">import</a> <a id="679" href="instructionBasic.html" class="Module">instructionBasic</a>
+<a id="696" class="Keyword">open</a> <a id="701" class="Keyword">import</a> <a id="708" href="basicBitcoinDataType.html" class="Module">basicBitcoinDataType</a>
 
 
 
-<a id="905" class="Comment">{-
 
--- list with flow control instructions
-data InstructionIf : Set where
-  opIf opElse opEndIf : InstructionIf
-  instruction : InstructionBasic → InstructionIf
-
--}</a>
-
-<a id="1071" class="Comment">--list with all instructions</a>
-<a id="1100" class="Keyword">data</a> <a id="InstructionAll"></a><a id="1105" href="instruction.html#1105" class="Datatype">InstructionAll</a> <a id="1120" class="Symbol">:</a> <a id="1122" href="Agda.Primitive.html#326" class="Primitive">Set</a> <a id="1126" class="Keyword">where</a>
-   <a id="InstructionAll.opEqual"></a><a id="1135" href="instruction.html#1135" class="InductiveConstructor">opEqual</a>  <a id="1144" class="Symbol">:</a> <a id="1146" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opAdd"></a><a id="1164" href="instruction.html#1164" class="InductiveConstructor">opAdd</a>    <a id="1173" class="Symbol">:</a> <a id="1175" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opPush"></a><a id="1193" href="instruction.html#1193" class="InductiveConstructor">opPush</a>   <a id="1202" class="Symbol">:</a> <a id="1204" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a> <a id="1206" class="Symbol">→</a> <a id="1208" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opSub"></a><a id="1226" href="instruction.html#1226" class="InductiveConstructor">opSub</a>    <a id="1235" class="Symbol">:</a> <a id="1237" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opVerify"></a><a id="1255" href="instruction.html#1255" class="InductiveConstructor">opVerify</a> <a id="1264" class="Symbol">:</a> <a id="1266" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opCheckSig"></a><a id="1284" href="instruction.html#1284" class="InductiveConstructor">opCheckSig</a> <a id="1295" class="Symbol">:</a> <a id="1297" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opEqualVerify"></a><a id="1315" href="instruction.html#1315" class="InductiveConstructor">opEqualVerify</a> <a id="1329" class="Symbol">:</a> <a id="1331" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opDup"></a><a id="1349" href="instruction.html#1349" class="InductiveConstructor">opDup</a> <a id="1355" class="Symbol">:</a> <a id="1357" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opDrop"></a><a id="1375" href="instruction.html#1375" class="InductiveConstructor">opDrop</a> <a id="1382" class="Symbol">:</a>  <a id="1385" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opSwap"></a><a id="1403" href="instruction.html#1403" class="InductiveConstructor">opSwap</a> <a id="1410" class="Symbol">:</a> <a id="1412" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opHash"></a><a id="1430" href="instruction.html#1430" class="InductiveConstructor">opHash</a> <a id="1437" class="Symbol">:</a> <a id="1439" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opCHECKLOCKTIMEVERIFY"></a><a id="1457" href="instruction.html#1457" class="InductiveConstructor">opCHECKLOCKTIMEVERIFY</a> <a id="1479" class="Symbol">:</a> <a id="1481" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opCheckSig3"></a><a id="1499" href="instruction.html#1499" class="InductiveConstructor">opCheckSig3</a> <a id="1511" class="Symbol">:</a> <a id="1513" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opMultiSig"></a><a id="1531" href="instruction.html#1531" class="InductiveConstructor">opMultiSig</a> <a id="1542" class="Symbol">:</a> <a id="1544" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-   <a id="InstructionAll.opIf"></a><a id="1562" href="instruction.html#1562" class="InductiveConstructor">opIf</a> <a id="InstructionAll.opElse"></a><a id="1567" href="instruction.html#1567" class="InductiveConstructor">opElse</a> <a id="InstructionAll.opEndIf"></a><a id="1574" href="instruction.html#1574" class="InductiveConstructor">opEndIf</a> <a id="1582" class="Symbol">:</a> <a id="1584" href="instruction.html#1105" class="Datatype">InstructionAll</a>
+<a id="733" class="Comment">--list with all instructions</a>
+<a id="762" class="Keyword">data</a> <a id="InstructionAll"></a><a id="767" href="instruction.html#767" class="Datatype">InstructionAll</a> <a id="782" class="Symbol">:</a> <a id="784" href="Agda.Primitive.html#326" class="Primitive">Set</a> <a id="788" class="Keyword">where</a>
+   <a id="InstructionAll.opEqual"></a><a id="797" href="instruction.html#797" class="InductiveConstructor">opEqual</a>  <a id="806" class="Symbol">:</a> <a id="808" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opAdd"></a><a id="826" href="instruction.html#826" class="InductiveConstructor">opAdd</a>    <a id="835" class="Symbol">:</a> <a id="837" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opPush"></a><a id="855" href="instruction.html#855" class="InductiveConstructor">opPush</a>   <a id="864" class="Symbol">:</a> <a id="866" href="Agda.Builtin.Nat.html#192" class="Datatype">ℕ</a> <a id="868" class="Symbol">→</a> <a id="870" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opSub"></a><a id="888" href="instruction.html#888" class="InductiveConstructor">opSub</a>    <a id="897" class="Symbol">:</a> <a id="899" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opVerify"></a><a id="917" href="instruction.html#917" class="InductiveConstructor">opVerify</a> <a id="926" class="Symbol">:</a> <a id="928" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opCheckSig"></a><a id="946" href="instruction.html#946" class="InductiveConstructor">opCheckSig</a> <a id="957" class="Symbol">:</a> <a id="959" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opEqualVerify"></a><a id="977" href="instruction.html#977" class="InductiveConstructor">opEqualVerify</a> <a id="991" class="Symbol">:</a> <a id="993" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opDup"></a><a id="1011" href="instruction.html#1011" class="InductiveConstructor">opDup</a> <a id="1017" class="Symbol">:</a> <a id="1019" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opDrop"></a><a id="1037" href="instruction.html#1037" class="InductiveConstructor">opDrop</a> <a id="1044" class="Symbol">:</a>  <a id="1047" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opSwap"></a><a id="1065" href="instruction.html#1065" class="InductiveConstructor">opSwap</a> <a id="1072" class="Symbol">:</a> <a id="1074" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opHash"></a><a id="1092" href="instruction.html#1092" class="InductiveConstructor">opHash</a> <a id="1099" class="Symbol">:</a> <a id="1101" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opCHECKLOCKTIMEVERIFY"></a><a id="1119" href="instruction.html#1119" class="InductiveConstructor">opCHECKLOCKTIMEVERIFY</a> <a id="1141" class="Symbol">:</a> <a id="1143" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opCheckSig3"></a><a id="1161" href="instruction.html#1161" class="InductiveConstructor">opCheckSig3</a> <a id="1173" class="Symbol">:</a> <a id="1175" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opMultiSig"></a><a id="1193" href="instruction.html#1193" class="InductiveConstructor">opMultiSig</a> <a id="1204" class="Symbol">:</a> <a id="1206" href="instruction.html#767" class="Datatype">InstructionAll</a>
+   <a id="InstructionAll.opIf"></a><a id="1224" href="instruction.html#1224" class="InductiveConstructor">opIf</a> <a id="InstructionAll.opElse"></a><a id="1229" href="instruction.html#1229" class="InductiveConstructor">opElse</a> <a id="InstructionAll.opEndIf"></a><a id="1236" href="instruction.html#1236" class="InductiveConstructor">opEndIf</a> <a id="1244" class="Symbol">:</a> <a id="1246" href="instruction.html#767" class="Datatype">InstructionAll</a>
 
 
-<a id="basicInstr2Instr"></a><a id="1601" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="1618" class="Symbol">:</a> <a id="1620" href="instructionBasic.html#775" class="Datatype">InstructionBasic</a> <a id="1637" class="Symbol">→</a> <a id="1639" href="instruction.html#1105" class="Datatype">InstructionAll</a>
-<a id="1654" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="1671" href="instructionBasic.html#806" class="InductiveConstructor">opEqual</a> <a id="1679" class="Symbol">=</a> <a id="1681" href="instruction.html#1135" class="InductiveConstructor">opEqual</a>
-<a id="1689" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="1706" href="instructionBasic.html#814" class="InductiveConstructor">opAdd</a> <a id="1712" class="Symbol">=</a> <a id="1714" href="instruction.html#1164" class="InductiveConstructor">opAdd</a>
-<a id="1720" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="1737" class="Symbol">(</a><a id="1738" href="instructionBasic.html#980" class="InductiveConstructor">opPush</a> <a id="1745" href="instruction.html#1745" class="Bound">x</a><a id="1746" class="Symbol">)</a> <a id="1748" class="Symbol">=</a> <a id="1750" class="Symbol">(</a><a id="1751" href="instruction.html#1193" class="InductiveConstructor">opPush</a> <a id="1758" href="instruction.html#1745" class="Bound">x</a><a id="1759" class="Symbol">)</a>
-<a id="1761" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="1778" href="instructionBasic.html#820" class="InductiveConstructor">opSub</a> <a id="1784" class="Symbol">=</a> <a id="1786" href="instruction.html#1226" class="InductiveConstructor">opSub</a>
-<a id="1792" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="1809" href="instructionBasic.html#826" class="InductiveConstructor">opVerify</a> <a id="1818" class="Symbol">=</a> <a id="1820" href="instruction.html#1255" class="InductiveConstructor">opVerify</a>
-<a id="1829" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="1846" href="instructionBasic.html#945" class="InductiveConstructor">opCheckSig</a> <a id="1857" class="Symbol">=</a> <a id="1859" href="instruction.html#1284" class="InductiveConstructor">opCheckSig</a>
-<a id="1870" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="1887" href="instructionBasic.html#835" class="InductiveConstructor">opEqualVerify</a> <a id="1901" class="Symbol">=</a> <a id="1903" href="instruction.html#1315" class="InductiveConstructor">opEqualVerify</a>
-<a id="1917" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="1934" href="instructionBasic.html#863" class="InductiveConstructor">opDup</a> <a id="1940" class="Symbol">=</a> <a id="1942" href="instruction.html#1349" class="InductiveConstructor">opDup</a>
-<a id="1948" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="1965" href="instructionBasic.html#849" class="InductiveConstructor">opDrop</a> <a id="1972" class="Symbol">=</a> <a id="1974" href="instruction.html#1375" class="InductiveConstructor">opDrop</a>
-<a id="1981" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="1998" href="instructionBasic.html#856" class="InductiveConstructor">opSwap</a> <a id="2005" class="Symbol">=</a> <a id="2007" href="instruction.html#1403" class="InductiveConstructor">opSwap</a>
-<a id="2014" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="2031" href="instructionBasic.html#893" class="InductiveConstructor">opHash</a> <a id="2038" class="Symbol">=</a> <a id="2040" href="instruction.html#1430" class="InductiveConstructor">opHash</a>
-<a id="2047" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="2064" href="instructionBasic.html#911" class="InductiveConstructor">opCHECKLOCKTIMEVERIFY</a> <a id="2086" class="Symbol">=</a> <a id="2088" href="instruction.html#1457" class="InductiveConstructor">opCHECKLOCKTIMEVERIFY</a>
-<a id="2110" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="2127" href="instructionBasic.html#933" class="InductiveConstructor">opCheckSig3</a> <a id="2139" class="Symbol">=</a> <a id="2141" href="instruction.html#1499" class="InductiveConstructor">opCheckSig3</a>
-<a id="2153" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="2170" href="instructionBasic.html#900" class="InductiveConstructor">opMultiSig</a> <a id="2181" class="Symbol">=</a> <a id="2183" href="instruction.html#1531" class="InductiveConstructor">opMultiSig</a>
+<a id="basicInstr2Instr"></a><a id="1263" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1280" class="Symbol">:</a> <a id="1282" href="instructionBasic.html#745" class="Datatype">InstructionBasic</a> <a id="1299" class="Symbol">→</a> <a id="1301" href="instruction.html#767" class="Datatype">InstructionAll</a>
+<a id="1316" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1333" href="instructionBasic.html#776" class="InductiveConstructor">opEqual</a> <a id="1341" class="Symbol">=</a> <a id="1343" href="instruction.html#797" class="InductiveConstructor">opEqual</a>
+<a id="1351" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1368" href="instructionBasic.html#784" class="InductiveConstructor">opAdd</a> <a id="1374" class="Symbol">=</a> <a id="1376" href="instruction.html#826" class="InductiveConstructor">opAdd</a>
+<a id="1382" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1399" class="Symbol">(</a><a id="1400" href="instructionBasic.html#950" class="InductiveConstructor">opPush</a> <a id="1407" href="instruction.html#1407" class="Bound">x</a><a id="1408" class="Symbol">)</a> <a id="1410" class="Symbol">=</a> <a id="1412" class="Symbol">(</a><a id="1413" href="instruction.html#855" class="InductiveConstructor">opPush</a> <a id="1420" href="instruction.html#1407" class="Bound">x</a><a id="1421" class="Symbol">)</a>
+<a id="1423" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1440" href="instructionBasic.html#790" class="InductiveConstructor">opSub</a> <a id="1446" class="Symbol">=</a> <a id="1448" href="instruction.html#888" class="InductiveConstructor">opSub</a>
+<a id="1454" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1471" href="instructionBasic.html#796" class="InductiveConstructor">opVerify</a> <a id="1480" class="Symbol">=</a> <a id="1482" href="instruction.html#917" class="InductiveConstructor">opVerify</a>
+<a id="1491" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1508" href="instructionBasic.html#915" class="InductiveConstructor">opCheckSig</a> <a id="1519" class="Symbol">=</a> <a id="1521" href="instruction.html#946" class="InductiveConstructor">opCheckSig</a>
+<a id="1532" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1549" href="instructionBasic.html#805" class="InductiveConstructor">opEqualVerify</a> <a id="1563" class="Symbol">=</a> <a id="1565" href="instruction.html#977" class="InductiveConstructor">opEqualVerify</a>
+<a id="1579" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1596" href="instructionBasic.html#833" class="InductiveConstructor">opDup</a> <a id="1602" class="Symbol">=</a> <a id="1604" href="instruction.html#1011" class="InductiveConstructor">opDup</a>
+<a id="1610" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1627" href="instructionBasic.html#819" class="InductiveConstructor">opDrop</a> <a id="1634" class="Symbol">=</a> <a id="1636" href="instruction.html#1037" class="InductiveConstructor">opDrop</a>
+<a id="1643" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1660" href="instructionBasic.html#826" class="InductiveConstructor">opSwap</a> <a id="1667" class="Symbol">=</a> <a id="1669" href="instruction.html#1065" class="InductiveConstructor">opSwap</a>
+<a id="1676" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1693" href="instructionBasic.html#863" class="InductiveConstructor">opHash</a> <a id="1700" class="Symbol">=</a> <a id="1702" href="instruction.html#1092" class="InductiveConstructor">opHash</a>
+<a id="1709" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1726" href="instructionBasic.html#881" class="InductiveConstructor">opCHECKLOCKTIMEVERIFY</a> <a id="1748" class="Symbol">=</a> <a id="1750" href="instruction.html#1119" class="InductiveConstructor">opCHECKLOCKTIMEVERIFY</a>
+<a id="1772" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1789" href="instructionBasic.html#903" class="InductiveConstructor">opCheckSig3</a> <a id="1801" class="Symbol">=</a> <a id="1803" href="instruction.html#1161" class="InductiveConstructor">opCheckSig3</a>
+<a id="1815" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="1832" href="instructionBasic.html#870" class="InductiveConstructor">opMultiSig</a> <a id="1843" class="Symbol">=</a> <a id="1845" href="instruction.html#1193" class="InductiveConstructor">opMultiSig</a>
 
 
 
-<a id="BitcoinScript"></a><a id="2197" href="instruction.html#2197" class="Function">BitcoinScript</a> <a id="2211" class="Symbol">:</a> <a id="2213" href="Agda.Primitive.html#326" class="Primitive">Set</a>
-<a id="2217" href="instruction.html#2197" class="Function">BitcoinScript</a>  <a id="2232" class="Symbol">=</a> <a id="2234" href="Agda.Builtin.List.html#148" class="Datatype">List</a> <a id="2239" href="instruction.html#1105" class="Datatype">InstructionAll</a>
+<a id="BitcoinScript"></a><a id="1859" href="instruction.html#1859" class="Function">BitcoinScript</a> <a id="1873" class="Symbol">:</a> <a id="1875" href="Agda.Primitive.html#326" class="Primitive">Set</a>
+<a id="1879" href="instruction.html#1859" class="Function">BitcoinScript</a>  <a id="1894" class="Symbol">=</a> <a id="1896" href="Agda.Builtin.List.html#148" class="Datatype">List</a> <a id="1901" href="instruction.html#767" class="Datatype">InstructionAll</a>
 
 
 
-<a id="basicBScript2BScript"></a><a id="2257" href="instruction.html#2257" class="Function">basicBScript2BScript</a> <a id="2278" class="Symbol">:</a> <a id="2280" href="instructionBasic.html#1072" class="Function">BitcoinScriptBasic</a> <a id="2299" class="Symbol">→</a> <a id="2301" href="instruction.html#2197" class="Function">BitcoinScript</a>
-<a id="2315" href="instruction.html#2257" class="Function">basicBScript2BScript</a> <a id="2336" href="Agda.Builtin.List.html#185" class="InductiveConstructor">[]</a> <a id="2339" class="Symbol">=</a> <a id="2341" href="Agda.Builtin.List.html#185" class="InductiveConstructor">[]</a>
-<a id="2344" href="instruction.html#2257" class="Function">basicBScript2BScript</a> <a id="2365" class="Symbol">(</a><a id="2366" href="instruction.html#2366" class="Bound">x</a> <a id="2368" href="Agda.Builtin.List.html#200" class="InductiveConstructor Operator">∷</a> <a id="2370" href="instruction.html#2370" class="Bound">s</a><a id="2371" class="Symbol">)</a> <a id="2373" class="Symbol">=</a> <a id="2375" href="instruction.html#1601" class="Function">basicInstr2Instr</a> <a id="2392" href="instruction.html#2366" class="Bound">x</a> <a id="2394" href="Agda.Builtin.List.html#200" class="InductiveConstructor Operator">∷</a> <a id="2396" href="instruction.html#2257" class="Function">basicBScript2BScript</a> <a id="2417" href="instruction.html#2370" class="Bound">s</a>
-
-<a id="2420" class="Comment">{-
--- function that maps all the instructions
-mapInstruction : InstructionAll → InstructionIf
-mapInstruction opEqual = instruction opEqual
-mapInstruction opSwap = instruction opSwap
-mapInstruction opAdd =  instruction opAdd
-mapInstruction (opPush x) = instruction (opPush x)
-mapInstruction opSub =  instruction opSub
-mapInstruction opVerify =  instruction opVerify
-mapInstruction opCheckSig =  instruction opCheckSig
-mapInstruction opEqualVerify =  instruction opEqualVerify
-mapInstruction opDup =  instruction  opDup
-mapInstruction opDrop =  instruction  opDrop
-mapInstruction opHash = instruction opHash
-mapInstruction opIf = opIf
-mapInstruction opElse =  opElse
-mapInstruction opEndIf =  opEndIf
-mapInstruction opCHECKLOCKTIMEVERIFY =  instruction  opCHECKLOCKTIMEVERIFY
-mapInstruction  opCheckSig3 =  instruction opCheckSig3
-mapInstruction  opMultiSig =  instruction  opMultiSig
--}</a>
-
-<a id="3307" class="Comment">--------------------------------------------------------------------------------------------------------------------------</a>
-
-<a id="3431" class="Comment">-------------------------------------------------------------------------------------------------------------------------------------------------------------------</a>
-<a id="3595" class="Comment">-- true if the instruction is not  an if then else operation</a>
-<a id="nonIfInstr"></a><a id="3656" href="instruction.html#3656" class="Function">nonIfInstr</a> <a id="3667" class="Symbol">:</a> <a id="3669" href="instruction.html#1105" class="Datatype">InstructionAll</a> <a id="3684" class="Symbol">→</a> <a id="3686" href="Agda.Builtin.Bool.html#163" class="Datatype">Bool</a>
-<a id="3691" href="instruction.html#3656" class="Function">nonIfInstr</a> <a id="3702" href="instruction.html#1562" class="InductiveConstructor">opIf</a> <a id="3707" class="Symbol">=</a> <a id="3709" href="Agda.Builtin.Bool.html#182" class="InductiveConstructor">false</a>
-<a id="3715" href="instruction.html#3656" class="Function">nonIfInstr</a> <a id="3726" href="instruction.html#1567" class="InductiveConstructor">opElse</a> <a id="3733" class="Symbol">=</a> <a id="3735" href="Agda.Builtin.Bool.html#182" class="InductiveConstructor">false</a>
-<a id="3741" href="instruction.html#3656" class="Function">nonIfInstr</a> <a id="3752" href="instruction.html#1574" class="InductiveConstructor">opEndIf</a> <a id="3760" class="Symbol">=</a> <a id="3762" href="Agda.Builtin.Bool.html#182" class="InductiveConstructor">false</a>
-<a id="3768" href="instruction.html#3656" class="CatchallClause Function">nonIfInstr</a><a id="3778" class="CatchallClause"> </a><a id="3779" href="instruction.html#3779" class="CatchallClause Bound">s</a> <a id="3781" class="Symbol">=</a> <a id="3783" href="Agda.Builtin.Bool.html#188" class="InductiveConstructor">true</a>
-
-<a id="NonIfInstr"></a><a id="3789" href="instruction.html#3789" class="Function">NonIfInstr</a> <a id="3800" class="Symbol">:</a> <a id="3802" href="instruction.html#1105" class="Datatype">InstructionAll</a> <a id="3817" class="Symbol">→</a> <a id="3819" href="Agda.Primitive.html#326" class="Primitive">Set</a>
-<a id="3823" href="instruction.html#3789" class="Function">NonIfInstr</a> <a id="3834" href="instruction.html#3834" class="Bound">s</a> <a id="3836" class="Symbol">=</a> <a id="3838" href="instruction.html#253" class="Function">True</a> <a id="3843" class="Symbol">(</a><a id="3844" href="instruction.html#3656" class="Function">nonIfInstr</a> <a id="3855" href="instruction.html#3834" class="Bound">s</a><a id="3856" class="Symbol">)</a>
+<a id="basicBScript2BScript"></a><a id="1919" href="instruction.html#1919" class="Function">basicBScript2BScript</a> <a id="1940" class="Symbol">:</a> <a id="1942" href="instructionBasic.html#1042" class="Function">BitcoinScriptBasic</a> <a id="1961" class="Symbol">→</a> <a id="1963" href="instruction.html#1859" class="Function">BitcoinScript</a>
+<a id="1977" href="instruction.html#1919" class="Function">basicBScript2BScript</a> <a id="1998" href="Agda.Builtin.List.html#185" class="InductiveConstructor">[]</a> <a id="2001" class="Symbol">=</a> <a id="2003" href="Agda.Builtin.List.html#185" class="InductiveConstructor">[]</a>
+<a id="2006" href="instruction.html#1919" class="Function">basicBScript2BScript</a> <a id="2027" class="Symbol">(</a><a id="2028" href="instruction.html#2028" class="Bound">op</a> <a id="2031" href="Agda.Builtin.List.html#200" class="InductiveConstructor Operator">∷</a> <a id="2033" href="instruction.html#2033" class="Bound">p</a><a id="2034" class="Symbol">)</a> <a id="2036" class="Symbol">=</a> <a id="2038" href="instruction.html#1263" class="Function">basicInstr2Instr</a> <a id="2055" href="instruction.html#2028" class="Bound">op</a> <a id="2058" href="Agda.Builtin.List.html#200" class="InductiveConstructor Operator">∷</a> <a id="2060" href="instruction.html#1919" class="Function">basicBScript2BScript</a> <a id="2081" href="instruction.html#2033" class="Bound">p</a>
 
 
-<a id="3860" class="Comment">-- check whether a script consists of nonif instructions only</a>
-<a id="nonIfScript"></a><a id="3922" href="instruction.html#3922" class="Function">nonIfScript</a> <a id="3934" class="Symbol">:</a> <a id="3936" href="instruction.html#2197" class="Function">BitcoinScript</a> <a id="3950" class="Symbol">→</a> <a id="3952" href="Agda.Builtin.Bool.html#163" class="Datatype">Bool</a>
-<a id="3957" href="instruction.html#3922" class="Function">nonIfScript</a>  <a id="3970" href="Agda.Builtin.List.html#185" class="InductiveConstructor">[]</a> <a id="3973" class="Symbol">=</a> <a id="3975" href="Agda.Builtin.Bool.html#188" class="InductiveConstructor">true</a>
-<a id="3980" href="instruction.html#3922" class="Function">nonIfScript</a> <a id="3992" class="Symbol">(</a><a id="3993" href="instruction.html#3993" class="Bound">op</a> <a id="3996" href="Agda.Builtin.List.html#200" class="InductiveConstructor Operator">∷</a> <a id="3998" href="instruction.html#3998" class="Bound">rest</a><a id="4002" class="Symbol">)</a> <a id="4004" class="Symbol">=</a> <a id="4006" href="instruction.html#3656" class="Function">nonIfInstr</a> <a id="4017" href="instruction.html#3993" class="Bound">op</a> <a id="4020" href="instruction.html#227" class="Function Operator">∧b</a> <a id="4023" href="instruction.html#3922" class="Function">nonIfScript</a> <a id="4035" href="instruction.html#3998" class="Bound">rest</a>
+<a id="2085" class="Comment">-- true if the instruction is not  an if then else operation</a>
+<a id="nonIfInstr"></a><a id="2146" href="instruction.html#2146" class="Function">nonIfInstr</a> <a id="2157" class="Symbol">:</a> <a id="2159" href="instruction.html#767" class="Datatype">InstructionAll</a> <a id="2174" class="Symbol">→</a> <a id="2176" href="Agda.Builtin.Bool.html#163" class="Datatype">Bool</a>
+<a id="2181" href="instruction.html#2146" class="Function">nonIfInstr</a> <a id="2192" href="instruction.html#1224" class="InductiveConstructor">opIf</a> <a id="2197" class="Symbol">=</a> <a id="2199" href="Agda.Builtin.Bool.html#182" class="InductiveConstructor">false</a>
+<a id="2205" href="instruction.html#2146" class="Function">nonIfInstr</a> <a id="2216" href="instruction.html#1229" class="InductiveConstructor">opElse</a> <a id="2223" class="Symbol">=</a> <a id="2225" href="Agda.Builtin.Bool.html#182" class="InductiveConstructor">false</a>
+<a id="2231" href="instruction.html#2146" class="Function">nonIfInstr</a> <a id="2242" href="instruction.html#1236" class="InductiveConstructor">opEndIf</a> <a id="2250" class="Symbol">=</a> <a id="2252" href="Agda.Builtin.Bool.html#182" class="InductiveConstructor">false</a>
+<a id="2258" href="instruction.html#2146" class="CatchallClause Function">nonIfInstr</a><a id="2268" class="CatchallClause"> </a><a id="2269" href="instruction.html#2269" class="CatchallClause Bound">op</a> <a id="2272" class="Symbol">=</a> <a id="2274" href="Agda.Builtin.Bool.html#188" class="InductiveConstructor">true</a>
 
-<a id="NonIfScript"></a><a id="4041" href="instruction.html#4041" class="Function">NonIfScript</a> <a id="4053" class="Symbol">:</a> <a id="4055" href="instruction.html#2197" class="Function">BitcoinScript</a> <a id="4069" class="Symbol">→</a> <a id="4071" href="Agda.Primitive.html#326" class="Primitive">Set</a>
-<a id="4075" href="instruction.html#4041" class="Function">NonIfScript</a> <a id="4087" href="instruction.html#4087" class="Bound">s</a> <a id="4089" class="Symbol">=</a> <a id="4091" href="instruction.html#253" class="Function">True</a> <a id="4096" class="Symbol">(</a><a id="4097" href="instruction.html#3922" class="Function">nonIfScript</a> <a id="4109" href="instruction.html#4087" class="Bound">s</a><a id="4110" class="Symbol">)</a>
-
-
-<a id="nonIfScript2NonIf2Head"></a><a id="4114" href="instruction.html#4114" class="Function">nonIfScript2NonIf2Head</a> <a id="4137" class="Symbol">:</a> <a id="4139" class="Symbol">(</a><a id="4140" href="instruction.html#4140" class="Bound">op</a> <a id="4143" class="Symbol">:</a> <a id="4145" href="instruction.html#1105" class="Datatype">InstructionAll</a><a id="4159" class="Symbol">)(</a><a id="4161" href="instruction.html#4161" class="Bound">rest</a> <a id="4166" class="Symbol">:</a> <a id="4168" href="instruction.html#2197" class="Function">BitcoinScript</a><a id="4181" class="Symbol">)</a>
-                        <a id="4207" class="Symbol">→</a> <a id="4209" href="instruction.html#4041" class="Function">NonIfScript</a> <a id="4221" class="Symbol">(</a><a id="4222" href="instruction.html#4140" class="Bound">op</a> <a id="4225" class="InductiveConstructor Operator">∷</a> <a id="4227" href="instruction.html#4161" class="Bound">rest</a><a id="4231" class="Symbol">)</a>
-                        <a id="4257" class="Symbol">→</a> <a id="4259" href="instruction.html#3789" class="Function">NonIfInstr</a> <a id="4270" href="instruction.html#4140" class="Bound">op</a>
-<a id="4273" href="instruction.html#4114" class="Function">nonIfScript2NonIf2Head</a> <a id="4296" href="instruction.html#4296" class="Bound">op</a> <a id="4299" href="instruction.html#4299" class="Bound">rest</a> <a id="4304" href="instruction.html#4304" class="Bound">p</a> <a id="4306" class="Symbol">=</a> <a id="4308" href="libraries.boolLib.html#331" class="Function">∧bproj₁</a> <a id="4316" href="instruction.html#4304" class="Bound">p</a>
+<a id="NonIfInstr"></a><a id="2280" href="instruction.html#2280" class="Function">NonIfInstr</a> <a id="2291" class="Symbol">:</a> <a id="2293" href="instruction.html#767" class="Datatype">InstructionAll</a> <a id="2308" class="Symbol">→</a> <a id="2310" href="Agda.Primitive.html#326" class="Primitive">Set</a>
+<a id="2314" href="instruction.html#2280" class="Function">NonIfInstr</a> <a id="2325" href="instruction.html#2325" class="Bound">op</a> <a id="2328" class="Symbol">=</a> <a id="2330" href="instruction.html#253" class="Function">True</a> <a id="2335" class="Symbol">(</a><a id="2336" href="instruction.html#2146" class="Function">nonIfInstr</a> <a id="2347" href="instruction.html#2325" class="Bound">op</a><a id="2349" class="Symbol">)</a>
 
 
-<a id="nonIfScript2NonIf2Tail"></a><a id="4320" href="instruction.html#4320" class="Function">nonIfScript2NonIf2Tail</a> <a id="4343" class="Symbol">:</a> <a id="4345" class="Symbol">(</a><a id="4346" href="instruction.html#4346" class="Bound">op</a> <a id="4349" class="Symbol">:</a> <a id="4351" href="instruction.html#1105" class="Datatype">InstructionAll</a><a id="4365" class="Symbol">)(</a><a id="4367" href="instruction.html#4367" class="Bound">rest</a> <a id="4372" class="Symbol">:</a> <a id="4374" href="instruction.html#2197" class="Function">BitcoinScript</a><a id="4387" class="Symbol">)</a>
-                        <a id="4413" class="Symbol">→</a> <a id="4415" href="instruction.html#4041" class="Function">NonIfScript</a> <a id="4427" class="Symbol">(</a><a id="4428" href="instruction.html#4346" class="Bound">op</a> <a id="4431" class="InductiveConstructor Operator">∷</a> <a id="4433" href="instruction.html#4367" class="Bound">rest</a><a id="4437" class="Symbol">)</a>
-                        <a id="4463" class="Symbol">→</a> <a id="4465" href="instruction.html#4041" class="Function">NonIfScript</a> <a id="4477" href="instruction.html#4367" class="Bound">rest</a>
-<a id="4482" href="instruction.html#4320" class="Function">nonIfScript2NonIf2Tail</a> <a id="4505" href="instruction.html#4505" class="Bound">op</a> <a id="4508" href="instruction.html#4508" class="Bound">rest</a> <a id="4513" href="instruction.html#4513" class="Bound">p</a> <a id="4515" class="Symbol">=</a> <a id="4517" href="libraries.boolLib.html#412" class="Function">∧bproj₂</a> <a id="4525" href="instruction.html#4513" class="Bound">p</a>
+<a id="2353" class="Comment">-- check whether a script consists of nonif instructions only</a>
+<a id="nonIfScript"></a><a id="2415" href="instruction.html#2415" class="Function">nonIfScript</a> <a id="2427" class="Symbol">:</a> <a id="2429" href="instruction.html#1859" class="Function">BitcoinScript</a> <a id="2443" class="Symbol">→</a> <a id="2445" href="Agda.Builtin.Bool.html#163" class="Datatype">Bool</a>
+<a id="2450" href="instruction.html#2415" class="Function">nonIfScript</a>  <a id="2463" href="Agda.Builtin.List.html#185" class="InductiveConstructor">[]</a> <a id="2466" class="Symbol">=</a> <a id="2468" href="Agda.Builtin.Bool.html#188" class="InductiveConstructor">true</a>
+<a id="2473" href="instruction.html#2415" class="Function">nonIfScript</a> <a id="2485" class="Symbol">(</a><a id="2486" href="instruction.html#2486" class="Bound">op</a> <a id="2489" href="Agda.Builtin.List.html#200" class="InductiveConstructor Operator">∷</a> <a id="2491" href="instruction.html#2491" class="Bound">rest</a><a id="2495" class="Symbol">)</a> <a id="2497" class="Symbol">=</a> <a id="2499" href="instruction.html#2146" class="Function">nonIfInstr</a> <a id="2510" href="instruction.html#2486" class="Bound">op</a> <a id="2513" href="instruction.html#227" class="Function Operator">∧b</a> <a id="2516" href="instruction.html#2415" class="Function">nonIfScript</a> <a id="2528" href="instruction.html#2491" class="Bound">rest</a>
+
+<a id="NonIfScript"></a><a id="2534" href="instruction.html#2534" class="Function">NonIfScript</a> <a id="2546" class="Symbol">:</a> <a id="2548" href="instruction.html#1859" class="Function">BitcoinScript</a> <a id="2562" class="Symbol">→</a> <a id="2564" href="Agda.Primitive.html#326" class="Primitive">Set</a>
+<a id="2568" href="instruction.html#2534" class="Function">NonIfScript</a> <a id="2580" href="instruction.html#2580" class="Bound">p</a> <a id="2582" class="Symbol">=</a> <a id="2584" href="instruction.html#253" class="Function">True</a> <a id="2589" class="Symbol">(</a><a id="2590" href="instruction.html#2415" class="Function">nonIfScript</a> <a id="2602" href="instruction.html#2580" class="Bound">p</a><a id="2603" class="Symbol">)</a>
 
 
-<a id="4529" class="Comment">{-
-record InstructionBasic : Set where
-  constructor  _,,_
-  field
-    instr : InstructionAll
-    nonif : NonIfInstr instr
+<a id="nonIfScript2NonIf2Head"></a><a id="2607" href="instruction.html#2607" class="Function">nonIfScript2NonIf2Head</a> <a id="2630" class="Symbol">:</a> <a id="2632" class="Symbol">(</a><a id="2633" href="instruction.html#2633" class="Bound">op</a> <a id="2636" class="Symbol">:</a> <a id="2638" href="instruction.html#767" class="Datatype">InstructionAll</a><a id="2652" class="Symbol">)(</a><a id="2654" href="instruction.html#2654" class="Bound">rest</a> <a id="2659" class="Symbol">:</a> <a id="2661" href="instruction.html#1859" class="Function">BitcoinScript</a><a id="2674" class="Symbol">)</a>
+                        <a id="2700" class="Symbol">→</a> <a id="2702" href="instruction.html#2534" class="Function">NonIfScript</a> <a id="2714" class="Symbol">(</a><a id="2715" href="instruction.html#2633" class="Bound">op</a> <a id="2718" class="InductiveConstructor Operator">∷</a> <a id="2720" href="instruction.html#2654" class="Bound">rest</a><a id="2724" class="Symbol">)</a>
+                        <a id="2750" class="Symbol">→</a> <a id="2752" href="instruction.html#2280" class="Function">NonIfInstr</a> <a id="2763" href="instruction.html#2633" class="Bound">op</a>
+<a id="2766" href="instruction.html#2607" class="Function">nonIfScript2NonIf2Head</a> <a id="2789" href="instruction.html#2789" class="Bound">op</a> <a id="2792" href="instruction.html#2792" class="Bound">rest</a> <a id="2797" href="instruction.html#2797" class="Bound">p</a> <a id="2799" class="Symbol">=</a> <a id="2801" href="libraries.boolLib.html#331" class="Function">∧bproj₁</a> <a id="2809" href="instruction.html#2797" class="Bound">p</a>
 
 
-record BitcoinScriptBasic : Set where
-  constructor  _,,_
-  field
-    script : BitcoinScript
-    nonif : NonIfScript script
--}</a>
+<a id="nonIfScript2NonIf2Tail"></a><a id="2813" href="instruction.html#2813" class="Function">nonIfScript2NonIf2Tail</a> <a id="2836" class="Symbol">:</a> <a id="2838" class="Symbol">(</a><a id="2839" href="instruction.html#2839" class="Bound">op</a> <a id="2842" class="Symbol">:</a> <a id="2844" href="instruction.html#767" class="Datatype">InstructionAll</a><a id="2858" class="Symbol">)(</a><a id="2860" href="instruction.html#2860" class="Bound">rest</a> <a id="2865" class="Symbol">:</a> <a id="2867" href="instruction.html#1859" class="Function">BitcoinScript</a><a id="2880" class="Symbol">)</a>
+                        <a id="2906" class="Symbol">→</a> <a id="2908" href="instruction.html#2534" class="Function">NonIfScript</a> <a id="2920" class="Symbol">(</a><a id="2921" href="instruction.html#2839" class="Bound">op</a> <a id="2924" class="InductiveConstructor Operator">∷</a> <a id="2926" href="instruction.html#2860" class="Bound">rest</a><a id="2930" class="Symbol">)</a>
+                        <a id="2956" class="Symbol">→</a> <a id="2958" href="instruction.html#2534" class="Function">NonIfScript</a> <a id="2970" href="instruction.html#2860" class="Bound">rest</a>
+<a id="2975" href="instruction.html#2813" class="Function">nonIfScript2NonIf2Tail</a> <a id="2998" href="instruction.html#2998" class="Bound">op</a> <a id="3001" href="instruction.html#3001" class="Bound">rest</a> <a id="3006" href="instruction.html#3006" class="Bound">p</a> <a id="3008" class="Symbol">=</a> <a id="3010" href="libraries.boolLib.html#412" class="Function">∧bproj₂</a> <a id="3018" href="instruction.html#3006" class="Bound">p</a>
 </pre></body></html>

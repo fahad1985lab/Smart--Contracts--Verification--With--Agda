@@ -20,7 +20,6 @@ open import libraries.listLib
 open import libraries.natLib
 open import libraries.boolLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 
@@ -44,10 +43,8 @@ truePredaux φ time msg (zero ∷ st) = ⊥
 truePredaux φ time msg (suc x ∷ st) = φ time msg  st
 
 
-
---stack Predicate acceptState
-
 acceptStateˢ : StackPredicate
 acceptStateˢ  time  msg₁  []            =  ⊥
 acceptStateˢ  time  msg₁  (x ∷ stack₁)  =  NotFalse x
+
 

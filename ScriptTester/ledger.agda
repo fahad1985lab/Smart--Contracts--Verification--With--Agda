@@ -17,7 +17,6 @@ open import libraries.listLib
 open import libraries.natLib
 open import libraries.boolLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 open import stack
@@ -99,7 +98,7 @@ open TXNew public
 
 
 --record for a ledger
-record ledgerEntryNew : Set where   -- should be LedgerEnry
+record ledgerEntryNew : Set where   
   constructor ledgerEntrNew
   field ins       : BitcoinScript
         amount    : ℕ
@@ -134,7 +133,7 @@ testLedgerNew .entries = testLedgerNewEntries
 testLedgerNew .currentTime = 31
 
 -- record for transaction
-record transactionNew : Set where -- replace by Transaction
+record transactionNew : Set where 
   constructor transactNew
   field txid      : ℕ
         inputs    : TXEntryNew

@@ -29,7 +29,6 @@ open import libraries.natLib
 open import libraries.boolLib
 open import libraries.emptyLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 open import stack
@@ -50,27 +49,22 @@ open import verificationStackScripts.stackVerificationP2PKHindexed param
 open import verificationStackScripts.stackVerificationP2PKHextractedProgram param
 open import verificationStackScripts.hoareTripleStackBasic param
 open import verificationStackScripts.stackVerificationLemmasPart2 param
+
+
+
+
 -------------------------------------------------------
--- The symbolic execution has been moved to
+-- The symbolic execution can be found in
 --
 --     stackVerificationP2PKHsymbolicExecution.agda
 --
--- The extracted program obtained by the symbolic execution has been moved to
+-- The extracted program obtained by the symbolic execution can be found in
 --
 --  stackVerificationP2PKHextractedProgram.agda
 --
 ------------------------------------------------------------------------------
 
 
-
-{-   Discussion with Arnold:
-       maybe better not to create the optimized program because we obtained this program in a systematic way
-       and can from it read off the weakest pre condition already
-       Discussion of further improvement (permutative conversions in a systematic way) for future work
--}
-
-
---stack Verification P2PKH Using Equality Of Programs p2pkh NonEmpty Stack Abstr
 p2PKHNonEmptyStackAbstr : (msg₁ : Msg)(pbk : ℕ)(stack₁ : Stack)(cmp : ℕ) → Maybe Stack
 p2PKHNonEmptyStackAbstr msg₁ pbk stack₁ cmp =  executeStackVerify (cmp ∷  pbk ∷ stack₁) >>=
                                                executeStackCheckSig msg₁
@@ -94,14 +88,15 @@ stackfunP2PKHNonEmptyStackAbstractedCor :  (pubKeyHash : ℕ)(time₁ : Time)(ms
 stackfunP2PKHNonEmptyStackAbstractedCor pubKeyHash time₁ msg₁ pbk stack₁ = refl
 
 
-p2pkhFunctionDecodedaux1cor : (pbk : ℕ)(msg₁ : Msg)(stack₁ : Stack)(cpRes : ℕ)
- → p2PKHNonEmptyStackAbstr msg₁ pbk stack₁ cpRes ≡ p2pkhFunctionDecodedaux1 pbk msg₁ stack₁ cpRes
+p2pkhFunctionDecodedAux1Cor : (pbk : ℕ)(msg₁ : Msg)(stack₁ : Stack)(cpRes : ℕ)
+ → p2PKHNonEmptyStackAbstr msg₁ pbk stack₁ cpRes ≡ p2pkhFunctionDecodedAux1 pbk msg₁ stack₁ cpRes
 
-p2pkhFunctionDecodedaux1cor pbk₁ msg₁ [] cpRes = stackfunP2PKHNonEmptyStackAbstractedCorEmptysNothing msg₁ pbk₁ cpRes
-p2pkhFunctionDecodedaux1cor pbk₁ msg₁ (x ∷ stack₁) zero = refl
-p2pkhFunctionDecodedaux1cor pbk₁ msg₁ (x ∷ stack₁) (suc cpRes) = refl
+p2pkhFunctionDecodedAux1Cor pbk₁ msg₁ [] cpRes = stackfunP2PKHNonEmptyStackAbstractedCorEmptysNothing msg₁ pbk₁ cpRes
+p2pkhFunctionDecodedAux1Cor pbk₁ msg₁ (x ∷ stack₁) zero = refl
+p2pkhFunctionDecodedAux1Cor pbk₁ msg₁ (x ∷ stack₁) (suc cpRes) = refl
 
---stack Verification P2PKH Using Equality Of Programs p2pkh Function Decodedcor
+
+
 p2pkhFunctionDecodedcor : (time₁ : ℕ) (pbkh : ℕ)(msg₁ : Msg)(stack₁ : Stack)
  → ⟦ scriptP2PKHᵇ pbkh ⟧ˢ time₁ msg₁ stack₁  ≡ p2pkhFunctionDecoded pbkh  msg₁ stack₁
 p2pkhFunctionDecodedcor time₁ pbkh msg₁ [] = refl
@@ -109,17 +104,15 @@ p2pkhFunctionDecodedcor time₁ pbkh msg₁ (pbk ∷ stack₁) =
        ⟦ scriptP2PKHᵇ pbkh ⟧ˢ time₁ msg₁ (pbk ∷ stack₁)
           ≡⟨ stackfunP2PKHNonEmptyStackAbstractedCor pbkh time₁ msg₁ pbk stack₁ ⟩
        p2PKHNonEmptyStackAbstr  msg₁ pbk stack₁ (compareNaturals pbkh (hashFun pbk))
-          ≡⟨ p2pkhFunctionDecodedaux1cor pbk msg₁ stack₁ (compareNaturals pbkh (hashFun pbk)) ⟩
-       p2pkhFunctionDecodedaux1 pbk msg₁ stack₁    (compareNaturals pbkh (hashFun pbk))
+          ≡⟨ p2pkhFunctionDecodedAux1Cor pbk msg₁ stack₁ (compareNaturals pbkh (hashFun pbk)) ⟩
+       p2pkhFunctionDecodedAux1 pbk msg₁ stack₁    (compareNaturals pbkh (hashFun pbk))
        ∎
 
-{- Now we just verify the   hoare triple for the function we have found we have decoded
-
--}
+-- Now we just verify the hoare triple for the function we have found
 
 lemmaPHKcoraux3 : (x₁ : ℕ)(time : Time) (msg₁ : Msg) (x₂ : ℕ)(s : Stack) (x : ℕ) →
                  liftPred2Maybe (λ s₁ → acceptStateˢ time msg₁ s₁)
-                  (p2pkhFunctionDecodedaux1 x₁ msg₁ (x₂ ∷ s) x)
+                  (p2pkhFunctionDecodedAux1 x₁ msg₁ (x₂ ∷ s) x)
                   → ¬ (x ≡ 0 )
 lemmaPHKcoraux3 x₁ time msg₁ x₂ s zero () x₄
 lemmaPHKcoraux3 x₁ time msg₁ x₂ s (suc x) x₃ ()
@@ -133,17 +126,12 @@ lemmaCompareNat2 (suc x) (suc y) p = cong suc (lemmaCompareNat2 x y p)
 
 lemmaPHKcoraux2 : (pbk : ℕ)(time : Time) (msg₁ : Msg) (sig : ℕ)(s : Stack) (cpRes : ℕ) →
                  liftPred2Maybe (λ s₁ → acceptStateˢ time msg₁ s₁)
-                  (p2pkhFunctionDecodedaux1 pbk msg₁ (sig ∷ s) cpRes)
+                  (p2pkhFunctionDecodedAux1 pbk msg₁ (sig ∷ s) cpRes)
                   → NotFalse (boolToNat (isSigned  msg₁ sig pbk))
 lemmaPHKcoraux2 pbk time msg₁ sig s (suc cpRes) p = p
 
 
-{- This lemma  is actually for the paper 1
-   and follows because
-    ⟦ scriptP2PKHᵇ pbkh ⟧stack  =  (λ time msg₁ s → p2pkhFunctionDecoded pbkh msg₁ s)
--}
 
---stack Verification P2PKH Using Equality Of Programs lemmaPTKHcoraux
 
 lemmaPTKHcoraux : (pbkh : ℕ) →  < weakestPreConditionP2PKHˢ pbkh >gˢ
                                 (λ time msg₁ s → p2pkhFunctionDecoded pbkh msg₁ s)
@@ -170,34 +158,9 @@ LemmaPTPKHcor pbkh
         (lemmaPTKHcoraux pbkh)
 
 
---stack Verification P2PKH Using Equality Of Programs theoremPTPKHcor
 
-theoremPTPKHcor :  (pbkh : ℕ)
-                   → < wPreCondP2PKH pbkh >iff scriptP2PKHᵇ pbkh < acceptState >
-theoremPTPKHcor pbkh =
+theoPTPKHcor :  (pbkh : ℕ)
+                   → < wPreCondP2PKH pbkh >ⁱᶠᶠ scriptP2PKHᵇ pbkh < acceptState >
+theoPTPKHcor pbkh =
    hoareTripleStack2HoareTriple (scriptP2PKHᵇ pbkh)
       (wPreCondP2PKHˢ pbkh) acceptStateˢ (LemmaPTPKHcor pbkh)
-
-
-
-
-
-
-
--- Some test cases used in the development
--- shows how to check for each step  what the functions are and how they compute
-
-------------------------------------------- Tests ------------------------------------------------------------
-
-
-
-
-
-
-{-
-  stackfunP2PKHemptyNotCorrectPbkIsNothing : (pubKeyHash : ℕ)(time₁ : Time)(msg₁ : Msg)(stack₁ : State1)
-        → ( neg (pubKeyHash ≡ hashFun pbk)  )
-        → ⟦ scriptP2PKHᵇ pubKeyHash ⟧ˢ time₁ msg₁ (pbk ∷ []) ≡ nothing
-  stackfunP2PKHemptyNotCorrectPbkIsNothing pubKeyHash time₁ msg₁ stack₁ = {!!}
-
--}

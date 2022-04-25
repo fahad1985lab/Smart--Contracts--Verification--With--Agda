@@ -1,4 +1,3 @@
-{- OPTIONS --allow-unsolved-metas #-}
 open import basicBitcoinDataType
 
 module loadStackVersionInNaturalOrder (param : GlobalParameters) where
@@ -11,11 +10,11 @@ open import libraries.listLib
 open import libraries.natLib
 open import libraries.boolLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 
 open import exampleBasicData
+open import exampleGeneratedWeakPreCond
 open import stack
 open import semanticBasicOperations param
 open import stackPredicate
@@ -27,7 +26,6 @@ open import stackSemanticsInstructions param
 
 open import verificationStackScripts.stackState
 open import verificationStackScripts.sPredicate
-open import verificationStackScripts.stackInstruction
 open import verificationStackScripts.stackSemanticsInstructionsBasic param
 open import verificationStackScripts.semanticsStackInstructions param
 open import verificationStackScripts.stackVerificationLemmas param
@@ -43,6 +41,5 @@ open import verificationStackScripts.stackVerificationP2PKHUsingEqualityOfProgra
 open import verificationStackScripts.verificationMultiSigBasicSymbolicExecution param
 open import verificationStackScripts.stackVerificationP2PKHsymbolicExecution param
 open import verificationStackScripts.stackVerificationP2PKHextractedProgram param
-open import verificationStackScripts.verificationMultiSigBasicEqualityOfProgram param
 open import verificationStackScripts.verificationMultiSigBasic param
 open import verificationMultiSig param

@@ -14,7 +14,6 @@ open import libraries.listLib
 open import libraries.natLib
 open import libraries.boolLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 open import stack
@@ -23,18 +22,6 @@ open import basicBitcoinDataType
 
 
 
--------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-{-
-
--- list with flow control instructions
-data InstructionIf : Set where
-  opIf opElse opEndIf : InstructionIf
-  instruction : InstructionBasic → InstructionIf
-
--}
 
 --list with all instructions
 data InstructionAll : Set where
@@ -80,42 +67,18 @@ BitcoinScript  = List InstructionAll
 
 basicBScript2BScript : BitcoinScriptBasic → BitcoinScript
 basicBScript2BScript [] = []
-basicBScript2BScript (x ∷ s) = basicInstr2Instr x ∷ basicBScript2BScript s
+basicBScript2BScript (op ∷ p) = basicInstr2Instr op ∷ basicBScript2BScript p
 
-{-
--- function that maps all the instructions
-mapInstruction : InstructionAll → InstructionIf
-mapInstruction opEqual = instruction opEqual
-mapInstruction opSwap = instruction opSwap
-mapInstruction opAdd =  instruction opAdd
-mapInstruction (opPush x) = instruction (opPush x)
-mapInstruction opSub =  instruction opSub
-mapInstruction opVerify =  instruction opVerify
-mapInstruction opCheckSig =  instruction opCheckSig
-mapInstruction opEqualVerify =  instruction opEqualVerify
-mapInstruction opDup =  instruction  opDup
-mapInstruction opDrop =  instruction  opDrop
-mapInstruction opHash = instruction opHash
-mapInstruction opIf = opIf
-mapInstruction opElse =  opElse
-mapInstruction opEndIf =  opEndIf
-mapInstruction opCHECKLOCKTIMEVERIFY =  instruction  opCHECKLOCKTIMEVERIFY
-mapInstruction  opCheckSig3 =  instruction opCheckSig3
-mapInstruction  opMultiSig =  instruction  opMultiSig
--}
 
---------------------------------------------------------------------------------------------------------------------------
-
--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- true if the instruction is not  an if then else operation
 nonIfInstr : InstructionAll → Bool
 nonIfInstr opIf = false
 nonIfInstr opElse = false
 nonIfInstr opEndIf = false
-nonIfInstr s = true
+nonIfInstr op = true
 
 NonIfInstr : InstructionAll → Set
-NonIfInstr s = True (nonIfInstr s)
+NonIfInstr op = True (nonIfInstr op)
 
 
 -- check whether a script consists of nonif instructions only
@@ -124,7 +87,7 @@ nonIfScript  [] = true
 nonIfScript (op ∷ rest) = nonIfInstr op ∧b nonIfScript rest
 
 NonIfScript : BitcoinScript → Set
-NonIfScript s = True (nonIfScript s)
+NonIfScript p = True (nonIfScript p)
 
 
 nonIfScript2NonIf2Head : (op : InstructionAll)(rest : BitcoinScript)
@@ -137,19 +100,3 @@ nonIfScript2NonIf2Tail : (op : InstructionAll)(rest : BitcoinScript)
                         → NonIfScript (op ∷ rest)
                         → NonIfScript rest
 nonIfScript2NonIf2Tail op rest p = ∧bproj₂ p
-
-
-{-
-record InstructionBasic : Set where
-  constructor  _,,_
-  field
-    instr : InstructionAll
-    nonif : NonIfInstr instr
-
-
-record BitcoinScriptBasic : Set where
-  constructor  _,,_
-  field
-    script : BitcoinScript
-    nonif : NonIfScript script
--}

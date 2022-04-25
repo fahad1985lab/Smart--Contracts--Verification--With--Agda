@@ -20,8 +20,4 @@ if false then n else m =  m
 ¬bLem : {b : Bool} → True (not b) → ¬ (True b)
 ¬bLem {false} x ()
 
-{-
-isTrue : Bool →  Set
-isTrue true = ⊤
-isTrue false = ⊥
--}
+

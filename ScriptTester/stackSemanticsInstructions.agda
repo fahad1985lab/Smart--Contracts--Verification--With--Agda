@@ -9,21 +9,18 @@ open import Data.Empty
 open import Data.Bool  hiding (_≤_ ; if_then_else_ ) renaming (_∧_ to _∧b_ ; _∨_ to _∨b_ ; T to True)
 open import Data.Product renaming (_,_ to _,,_ )
 open import Data.Nat.Base hiding (_≤_)
--- open import Data.List.NonEmpty hiding (head)
 open import Data.Maybe
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; module ≡-Reasoning; sym)
 open ≡-Reasoning
 open import Agda.Builtin.Equality
---open import Agda.Builtin.Equality.Rewrite
 
 
 open import libraries.listLib
 open import libraries.natLib
 open import libraries.boolLib
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 
 open import stack
@@ -31,14 +28,6 @@ open import instruction
 open import semanticBasicOperations param
 
 
--- The stack operation of type
---   Time → Msg →  Stack → Maybe Stack
--- on which the semantics is based
--- we have (see next lemma) for nonif instructions
--- ⟦ op ⟧s  ≡ stackTransform2StateTransform ⟦ op ⟧stacks
-
--- The stacks operations is only corret for non-if instructions
--- original name was   executeStackPartOfInstr
 
 ⟦_⟧stacks : InstructionAll →  Time → Msg →  Stack → Maybe Stack
 ⟦ opEqual  ⟧stacks time₁ msg = executeStackEquality
@@ -59,9 +48,11 @@ open import semanticBasicOperations param
 ⟦ opCheckSig3 ⟧stacks time₁ msg = executeStackCheckSig3Aux msg
 ⟦ opMultiSig ⟧stacks  time₁ msg =  executeMultiSig msg
 
+
+
 -- execute only the stack operations of a bitcoin script
 --  is correct only for non-if instructiosn
-⟦_⟧stack : (prog : BitcoinScript)(time₁ : Time)(msg : Msg)(stack₁ : Stack) → Maybe Stack
+⟦_⟧stack : (p : BitcoinScript)(time₁ : Time)(msg : Msg)(stack₁ : Stack) → Maybe Stack
 ⟦ []        ⟧stack time₁ msg stack₁ = just stack₁
 ⟦ op ∷ []   ⟧stack time₁ msg stack₁ = ⟦ op ⟧stacks time₁ msg stack₁
-⟦ op ∷ prog ⟧stack time₁ msg stack₁ = ⟦ op ⟧stacks time₁ msg stack₁ >>=  ⟦ prog ⟧stack time₁ msg
+⟦ op ∷ p    ⟧stack time₁ msg stack₁ = ⟦ op ⟧stacks time₁ msg stack₁ >>=  ⟦ p ⟧stack time₁ msg

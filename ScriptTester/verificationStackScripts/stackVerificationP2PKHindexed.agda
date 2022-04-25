@@ -19,7 +19,6 @@ open import Agda.Builtin.Equality
 
 --our libraries
 open import libraries.andLib
-open import libraries.miscLib
 open import libraries.maybeLib
 open import libraries.boolLib
 open import libraries.listLib
@@ -50,14 +49,14 @@ instructions pubKeyHash 5 _ = opDup
 
 script : (pubKeyHash : ℕ) (n : ℕ) → n ≤ 6 → BitcoinScriptBasic
 script pubKeyHash 0 _ = []
-script pubKeyHash (suc n) p
-   = instructions pubKeyHash n  p ∷ script pubKeyHash  n (leqSucLemma n 5 p)
+script pubKeyHash (suc n) n≤6
+   = instructions pubKeyHash n  n≤6 ∷ script pubKeyHash  n (leqSucLemma n 5 n≤6)
 
 
 script' : (pubKeyHash : ℕ) (n : ℕ) → n ≤ 6 → BitcoinScriptBasic
 script' pubKeyHash 0 _ = []
-script' pubKeyHash (suc n) p
-   = (instructions pubKeyHash n  p ∷ [] ) ++ script' pubKeyHash  n (leqSucLemma n 5 p)
+script' pubKeyHash (suc n) n≤6
+   = (instructions pubKeyHash n  n≤6 ∷ [] ) ++ script' pubKeyHash  n (leqSucLemma n 5 n≤6)
 
 
 conditionBasic : (pubKeyHash : ℕ)  (n : ℕ) → n ≤ 6 → StackPredicate
@@ -70,75 +69,79 @@ conditionBasic pubKeyHash 5 _ = accept₅ˢ pubKeyHash
 conditionBasic pubKeyHash 6 _ = wPreCondP2PKHˢ pubKeyHash
 
 condition : (pubKeyHash : ℕ)  (n : ℕ) → n ≤ 6 → (s : StackState) → Set
-condition pubKeyHash n p = stackPred2SPred (conditionBasic pubKeyHash n p)
+condition pubKeyHash n n≤6 = stackPred2SPred (conditionBasic pubKeyHash n n≤6)
 
 
-correct-1-to' : (s : StackState) → accept₁ s
-                →  (acceptState ⁺) (⟦ opCheckSig ⟧s s)
-correct-1-to' ⟨ time , msg₁ , pubKey  ∷ sig ∷ st  ⟩ p
-     = boolToNatNotFalseLemma (isSigned  msg₁ sig pubKey) p
+correct-opCheckSig-to' : (s : StackState) → accept₁ s
+                →  (acceptState ⁺) (⟦ opCheckSig ⟧ₛ s)
+correct-opCheckSig-to' ⟨ time , msg₁ , pubKey  ∷ sig ∷ st  ⟩ a
+     = boolToNatNotFalseLemma (isSigned  msg₁ sig pubKey) a
 
 
 
 
-correct-1-from' : (s : StackState)
-                 →  (acceptState ⁺) (⟦ opCheckSig ⟧s s)
+correct-opCheckSig-from' : (s : StackState)
+                 →  (acceptState ⁺) (⟦ opCheckSig ⟧ₛ s)
                  → accept₁ s
-correct-1-from' ⟨ time , msg₁ , pubKey ∷ sig ∷ stack₁ ⟩ p
-        = boolToNatNotFalseLemma2 (isSigned  msg₁ sig pubKey) p
+correct-opCheckSig-from' ⟨ time , msg₁ , pubKey ∷ sig ∷ stack₁ ⟩ a
+        = boolToNatNotFalseLemma2 (isSigned  msg₁ sig pubKey) a
 
-correctStep-to  : (pubKeyHash : ℕ)  (n : ℕ) (p : n ≤ 5)
+
+
+correctStep-to  : (pubKeyHash : ℕ)  (n : ℕ) (n≤5 : n ≤ 5)
   (s : StackState)
-  → condition pubKeyHash (suc n) p s
-  → ( (condition pubKeyHash n (leqSucLemma n 5 p)) ⁺)
-                    (⟦ instructions pubKeyHash n p ⟧s s)
-correctStep-to pubKeyHash 0 _ = correct-1-to'
-correctStep-to pubKeyHash 1 _ = correct-2-to
-correctStep-to pubKeyHash 2 _ = correct-3-to
-correctStep-to pubKeyHash 3 _ = correct-4-to pubKeyHash
-correctStep-to pubKeyHash 4 _ = correct-5-to pubKeyHash
-correctStep-to pubKeyHash 5 _ = correct-6-to pubKeyHash
+  → condition pubKeyHash (suc n) n≤5 s
+  → ( (condition pubKeyHash n (leqSucLemma n 5 n≤5)) ⁺)
+                    (⟦ instructions pubKeyHash n n≤5 ⟧ₛ s)
+correctStep-to pubKeyHash 0 _ = correct-opCheckSig-to'
+correctStep-to pubKeyHash 1 _ = correct-opVerify-to
+correctStep-to pubKeyHash 2 _ = correct-opEqual-to
+correctStep-to pubKeyHash 3 _ = correct-opPush-to pubKeyHash
+correctStep-to pubKeyHash 4 _ = correct-opHash-to pubKeyHash
+correctStep-to pubKeyHash 5 _ = correct-opDup-to pubKeyHash
 
 
-correctStep-from :  (pubKeyHash : ℕ)  (n : ℕ)(p : n ≤ 5)(s : StackState)
-    → ( (condition pubKeyHash n (leqSucLemma n 5 p)) ⁺)
-                        (⟦ instructions pubKeyHash n p ⟧s s)
-    → condition pubKeyHash (suc n) p s
-correctStep-from pubKeyHash 0 _ = correct-1-from'
-correctStep-from pubKeyHash 1 _ = correct-2-from
-correctStep-from pubKeyHash 2 _ = correct-3-from
-correctStep-from pubKeyHash 3 _ = correct-4-from pubKeyHash
-correctStep-from pubKeyHash 4 _ = correct-5-from pubKeyHash
-correctStep-from pubKeyHash 5 _ = correct-6-from pubKeyHash
+correctStep-from :  (pubKeyHash : ℕ)  (n : ℕ)(n≤5 : n ≤ 5)(s : StackState)
+    → ( (condition pubKeyHash n (leqSucLemma n 5 n≤5)) ⁺)
+                        (⟦ instructions pubKeyHash n n≤5 ⟧ₛ s)
+    → condition pubKeyHash (suc n) n≤5 s
+correctStep-from pubKeyHash 0 _ = correct-opCheckSig-from'
+correctStep-from pubKeyHash 1 _ =  correct-opVerify-from
+correctStep-from pubKeyHash 2 _ = correct-opEqual-from
+correctStep-from pubKeyHash 3 _ = correct-opPush-from pubKeyHash
+correctStep-from pubKeyHash 4 _ = correct-opHash-from pubKeyHash
+correctStep-from pubKeyHash 5 _ = correct-opDup-from pubKeyHash
 
 
 
 
-correct-from : (pubKeyHash : ℕ) (n : ℕ)  (p : n ≤ 6)(s : StackState)
-               → (acceptState ⁺) ( ⟦ script pubKeyHash n p ⟧ s)
-               → condition pubKeyHash n p s
-correct-from pubKeyHash 0 p s st
+
+
+correct-from : (pubKeyHash : ℕ) (n : ℕ)  (n≤6 : n ≤ 6)(s : StackState)
+               → (acceptState ⁺) ( ⟦ script pubKeyHash n n≤6 ⟧ s)
+               → condition pubKeyHash n n≤6 s
+correct-from pubKeyHash 0 n≤6 s st
        = emptyProgramCorrect-from (condition pubKeyHash 0 tt) s st
-correct-from pubKeyHash (suc n) p s st
+correct-from pubKeyHash (suc n) n≤6 s st
        = bindTransformer-fromSingle
-         (condition pubKeyHash (suc n) p)
-         (condition pubKeyHash n (leqSucLemma n 5 p))
+         (condition pubKeyHash (suc n) n≤6)
+         (condition pubKeyHash n (leqSucLemma n 5 n≤6))
          acceptState
-         (instructions pubKeyHash n p)
-         (script pubKeyHash n (leqSucLemma n 5 p))
-         (correctStep-from pubKeyHash n p)
-         (correct-from pubKeyHash n (leqSucLemma n 5 p)) s st
+         (instructions pubKeyHash n n≤6)
+         (script pubKeyHash n (leqSucLemma n 5 n≤6))
+         (correctStep-from pubKeyHash n n≤6)
+         (correct-from pubKeyHash n (leqSucLemma n 5 n≤6)) s st
 
-correct-to  : (pubKeyHash : ℕ)  (n : ℕ) (p : n ≤ 6)(s : StackState)
-           → condition pubKeyHash n p s
-           → (acceptState ⁺) (⟦ script pubKeyHash n p ⟧ s)
-correct-to pubKeyHash 0 p = emptyProgramCorrect-to (condition pubKeyHash 0 tt)
-correct-to pubKeyHash (suc n) p = bindTransformer-toSingle (condition pubKeyHash (suc n) p)
-     (condition pubKeyHash n (leqSucLemma n 5 p)) acceptState
-     (instructions pubKeyHash n p)
-     (script pubKeyHash n (leqSucLemma n 5 p))
-     (correctStep-to pubKeyHash n p)
-     (correct-to pubKeyHash n (leqSucLemma n 5 p))
+correct-to  : (pubKeyHash : ℕ)  (n : ℕ) (n≤6 : n ≤ 6)(s : StackState)
+           → condition pubKeyHash n n≤6 s
+           → (acceptState ⁺) (⟦ script pubKeyHash n n≤6 ⟧ s)
+correct-to pubKeyHash 0 n≤6 = emptyProgramCorrect-to (condition pubKeyHash 0 tt)
+correct-to pubKeyHash (suc n) n≤6 = bindTransformer-toSingle (condition pubKeyHash (suc n) n≤6)
+     (condition pubKeyHash n (leqSucLemma n 5 n≤6)) acceptState
+     (instructions pubKeyHash n n≤6)
+     (script pubKeyHash n (leqSucLemma n 5 n≤6))
+     (correctStep-to pubKeyHash n n≤6)
+     (correct-to pubKeyHash n (leqSucLemma n 5 n≤6))
 
 
 
@@ -146,28 +149,28 @@ correct-to pubKeyHash (suc n) p = bindTransformer-toSingle (condition pubKeyHash
 
 completeCorrect-1-to : (s : StackState) → accept₁ s
      →  (acceptState ⁺) (⟦ script-1-b ⟧ s)
-completeCorrect-1-to ⟨ time , msg₁ , pubKey  ∷ sig ∷ st ⟩ p
-     = boolToNatNotFalseLemma (isSigned  msg₁ sig pubKey) p
+completeCorrect-1-to ⟨ time , msg₁ , pubKey  ∷ sig ∷ st ⟩ n≤6
+     = boolToNatNotFalseLemma (isSigned  msg₁ sig pubKey) n≤6
 
 
 completeCorrect-1-from : (s : StackState)
                          → (acceptState ⁺) (⟦ script-1-b ⟧ s )
                          → accept₁ s
-completeCorrect-1-from ⟨ time , msg₁ , pubKey ∷ sig ∷ stack₁ ⟩ p
-         = boolToNatNotFalseLemma2 (isSigned  msg₁ sig pubKey) p
+completeCorrect-1-from ⟨ time , msg₁ , pubKey ∷ sig ∷ stack₁ ⟩ n≤6
+         = boolToNatNotFalseLemma2 (isSigned  msg₁ sig pubKey) n≤6
 
 
 completeCorrect-2-to : (s : StackState) → accept₂ s
                       →  (acceptState ⁺) (⟦ script-2-b ⟧ s)
 completeCorrect-2-to  s a
     = bindTransformer-toSingle accept₂ accept₁ acceptState instruction-2
-      script-1-b correct-2-to completeCorrect-1-to  s a
+      script-1-b correct-opVerify-to completeCorrect-1-to  s a
 
 
 completeCorrect-2-from : (s : StackState) →  (acceptState ⁺) (⟦ script-2-b ⟧ s) → accept₂ s
 completeCorrect-2-from  s a =
                  bindTransformer-fromSingle accept₂ accept₁
-                 acceptState instruction-2 script-1-b correct-2-from
+                 acceptState instruction-2 script-1-b correct-opVerify-from
                   completeCorrect-1-from  s a
 
 
@@ -175,14 +178,14 @@ completeCorrect-2-from  s a =
 completeCorrect-3-to : (s : StackState) → accept₃ s →  (acceptState ⁺) (⟦ script-3-b ⟧ s)
 completeCorrect-3-to  s a =
                  bindTransformer-toSingle accept₃ accept₂
-                 acceptState instruction-3 script-2-b correct-3-to
+                 acceptState instruction-3 script-2-b correct-opEqual-to
                   completeCorrect-2-to s a
 
 
 completeCorrect-3-from : (s : StackState) →  (acceptState ⁺) (⟦ script-3-b ⟧ s) → accept₃ s
 completeCorrect-3-from  s a =
                  bindTransformer-fromSingle accept₃ accept₂
-                 acceptState instruction-3 script-2-b correct-3-from
+                 acceptState instruction-3 script-2-b correct-opEqual-from
                   completeCorrect-2-from  s a
 
 
@@ -190,7 +193,7 @@ completeCorrect-4-to : (pubKeyHash : ℕ )(s : StackState) → accept₄ pubKeyH
                      →  (acceptState ⁺) (⟦ script-4-b pubKeyHash ⟧ s)
 completeCorrect-4-to pubKeyHash s a  =
                  bindTransformer-toSingle (accept₄ pubKeyHash) accept₃
-                 acceptState (instruction-4 pubKeyHash) script-3-b (correct-4-to pubKeyHash)
+                 acceptState (instruction-4 pubKeyHash) script-3-b (correct-opPush-to pubKeyHash)
                   completeCorrect-3-to s a
 
 
@@ -199,7 +202,7 @@ completeCorrect-4-from :(pubKeyHash : ℕ )(s : StackState) →  (acceptState �
                        → accept₄ pubKeyHash s
 completeCorrect-4-from pubKeyHash s a =
                  bindTransformer-fromSingle (accept₄ pubKeyHash) accept₃
-                 acceptState (instruction-4 pubKeyHash) script-3-b (correct-4-from pubKeyHash)
+                 acceptState (instruction-4 pubKeyHash) script-3-b (correct-opPush-from pubKeyHash)
                   completeCorrect-3-from s a
 
 
@@ -207,7 +210,7 @@ completeCorrect-5-to : (pubKeyHash : ℕ )(s : StackState) → accept₅ pubKeyH
                       →  (acceptState ⁺) (⟦ script-5-b pubKeyHash ⟧ s)
 completeCorrect-5-to pubKeyHash s a  =
                  bindTransformer-toSingle (accept₅ pubKeyHash) (accept₄ pubKeyHash)
-                 acceptState instruction-5 (script-4-b pubKeyHash) (correct-5-to pubKeyHash)
+                 acceptState instruction-5 (script-4-b pubKeyHash) (correct-opHash-to pubKeyHash)
                       (completeCorrect-4-to pubKeyHash) s  a
 
 
@@ -216,7 +219,7 @@ completeCorrect-5-from :(pubKeyHash : ℕ )(s : StackState) →  (acceptState �
                       → accept₅ pubKeyHash s
 completeCorrect-5-from pubKeyHash s a =
                    bindTransformer-fromSingle (accept₅ pubKeyHash) (accept₄ pubKeyHash)
-                   acceptState instruction-5 (script-4-b pubKeyHash) (correct-5-from pubKeyHash)
+                   acceptState instruction-5 (script-4-b pubKeyHash) (correct-opHash-from pubKeyHash)
                      (completeCorrect-4-from  pubKeyHash) s a
 
 
@@ -225,7 +228,7 @@ completecorrect-6-to : (pubKeyHash : ℕ ) → (s : StackState) → wPreCondP2PK
                      →  (acceptState ⁺) (⟦ script-6-b pubKeyHash ⟧ s )
 completecorrect-6-to pubKeyHash s a =
                   bindTransformer-toSingle (wPreCondP2PKH pubKeyHash) (accept₅ pubKeyHash)
-                  acceptState instruction-6 (script-5-b pubKeyHash) (correct-6-to pubKeyHash)
+                  acceptState instruction-6 (script-5-b pubKeyHash) (correct-opDup-to pubKeyHash)
                    (completeCorrect-5-to pubKeyHash) s a
 
 
@@ -235,90 +238,98 @@ completeCorrect-6-from :(pubKeyHash : ℕ )(s : StackState) →  (acceptState �
                     → wPreCondP2PKH pubKeyHash s
 completeCorrect-6-from pubKeyHash s a =
                   bindTransformer-fromSingle (wPreCondP2PKH pubKeyHash) (accept₅ pubKeyHash)
-                  acceptState instruction-6 (script-5-b pubKeyHash) (correct-6-from pubKeyHash)
+                  acceptState instruction-6 (script-5-b pubKeyHash) (correct-opDup-from pubKeyHash)
                    (completeCorrect-5-from  pubKeyHash) s a
 
 
+
+
 instructionSequence : (pubKeyHash : ℕ) (n : ℕ) → n ≤ 5 → BitcoinScriptBasic
-instructionSequence pubKeyHash n p = instructions pubKeyHash n p ∷ []
+instructionSequence pubKeyHash n n≤6 = instructions pubKeyHash n n≤6 ∷ []
+
+
 
 scriptSequence : (pubKeyHash : ℕ) (n : ℕ) → n ≤ 6 → BitcoinScriptBasic
 scriptSequence pubKeyHash 0 _ = []
-scriptSequence pubKeyHash (suc n) p = instructionSequence pubKeyHash n  p ++ scriptSequence pubKeyHash  n (leqSucLemma n 5 p)
+scriptSequence pubKeyHash (suc n) n≤6 = instructionSequence pubKeyHash n  n≤6 ++ scriptSequence pubKeyHash  n (leqSucLemma n 5 n≤6)
 
 
 
 
 
-correctStep-toSequence'  : (pubKeyHash : ℕ)  (n : ℕ) → (p : n ≤ 5)
-               (s : StackState) → condition pubKeyHash (suc n) p s
-                            → ((condition pubKeyHash n (leqSucLemma n 5 p)) ⁺)
-                                              (⟦ instructionSequence pubKeyHash n p ⟧ s)
+correctStep-toSequence'  : (pubKeyHash : ℕ)  (n : ℕ) → (n≤6 : n ≤ 5)
+               (s : StackState) → condition pubKeyHash (suc n) n≤6 s
+                            → ((condition pubKeyHash n (leqSucLemma n 5 n≤6)) ⁺)
+                                              (⟦ instructionSequence pubKeyHash n n≤6 ⟧ s)
 correctStep-toSequence' pubKeyHash 0 _  = liftCondOperation2Program-to (condition pubKeyHash 1 tt)
                                               (condition pubKeyHash 0 tt) (instructions pubKeyHash 0 tt)
-                                              correct-1-to'
+                                              correct-opCheckSig-to'
 correctStep-toSequence' pubKeyHash 1 _ = liftCondOperation2Program-to (condition pubKeyHash 2 tt)
                                               (condition pubKeyHash 1 tt) (instructions pubKeyHash 1 tt)
-                                              correct-2-to
+                                              correct-opVerify-to
 correctStep-toSequence' pubKeyHash 2 _ = liftCondOperation2Program-to (condition pubKeyHash 3 tt)
                                               (condition pubKeyHash 2 tt) (instructions pubKeyHash 2 tt)
-                                              correct-3-to
+                                              correct-opEqual-to
 correctStep-toSequence' pubKeyHash 3 _ = liftCondOperation2Program-to (condition pubKeyHash 4 tt)
                                               (condition pubKeyHash 3 tt) (instructions pubKeyHash 3 tt)
-                                              (correct-4-to pubKeyHash)
+                                              (correct-opPush-to pubKeyHash)
 correctStep-toSequence' pubKeyHash 4 _ = liftCondOperation2Program-to (condition pubKeyHash 5 tt)
                                               (condition pubKeyHash 4 tt) (instructions pubKeyHash 4 tt)
-                                              (correct-5-to pubKeyHash)
+                                              (correct-opHash-to pubKeyHash)
 correctStep-toSequence' pubKeyHash 5 _ = liftCondOperation2Program-to (condition pubKeyHash 6 tt)
                                               (condition pubKeyHash 5 tt) (instructions pubKeyHash 5 tt)
-                                              (correct-6-to pubKeyHash)
+                                              (correct-opDup-to pubKeyHash)
 
 
-correctStep-FromSequence'  : (pubKeyHash : ℕ)  (n : ℕ) → (p : n ≤ 5)
-                        (s : StackState) → ( (condition pubKeyHash n (leqSucLemma n 5 p)) ⁺) (⟦ instructionSequence pubKeyHash n p ⟧ s)
-                                  → condition pubKeyHash (suc n) p s
+
+
+correctStep-FromSequence'  : (pubKeyHash : ℕ)  (n : ℕ) → (n≤6 : n ≤ 5)
+                        (s : StackState) → ( (condition pubKeyHash n (leqSucLemma n 5 n≤6)) ⁺) (⟦ instructionSequence pubKeyHash n n≤6 ⟧ s)
+                                  → condition pubKeyHash (suc n) n≤6 s
 
 correctStep-FromSequence' pubKeyHash 0 _ = liftCondOperation2Program-from (condition pubKeyHash 1 tt)
                                               (condition pubKeyHash 0 tt) (instructions pubKeyHash 0 tt)
-                                               correct-1-from'
+                                               correct-opCheckSig-from'
 correctStep-FromSequence' pubKeyHash 1 _ = liftCondOperation2Program-from (condition pubKeyHash 2 tt)
                                               (condition pubKeyHash 1 tt) (instructions pubKeyHash 1 tt)
-                                               correct-2-from
+                                               correct-opVerify-from
 correctStep-FromSequence' pubKeyHash 2 _ = liftCondOperation2Program-from (condition pubKeyHash 3 tt)
                                               (condition pubKeyHash 2 tt) (instructions pubKeyHash 2 tt)
-                                               correct-3-from
+                                               correct-opEqual-from
 correctStep-FromSequence' pubKeyHash 3 _ = liftCondOperation2Program-from (condition pubKeyHash 4 tt)
                                               (condition pubKeyHash 3 tt) (instructions pubKeyHash 3 tt)
-                                               (correct-4-from pubKeyHash)
+                                               (correct-opPush-from pubKeyHash)
 correctStep-FromSequence' pubKeyHash 4 _ = liftCondOperation2Program-from (condition pubKeyHash 5 tt)
                                                (condition pubKeyHash 4 tt) (instructions pubKeyHash 4 tt)
-                                               (correct-5-from  pubKeyHash)
+                                               (correct-opHash-from  pubKeyHash)
 correctStep-FromSequence' pubKeyHash 5 _ = liftCondOperation2Program-from (condition pubKeyHash 6 tt)
                                                (condition pubKeyHash 5 tt) (instructions pubKeyHash 5 tt)
-                                               (correct-6-from pubKeyHash)
-
-
-correct-toSequence  : (pubKeyHash : ℕ)  (n : ℕ) (p : n ≤ 6)(s : StackState)
-           → condition pubKeyHash n p s
-           → (acceptState ⁺) (⟦ scriptSequence pubKeyHash n p ⟧ s)
-correct-toSequence pubKeyHash 0 p = emptyProgramCorrect-to (condition pubKeyHash 0 tt)
-correct-toSequence pubKeyHash (suc n) p = bindTransformer-toSequence ( (condition pubKeyHash (suc n) p))
-                                                       ( (condition pubKeyHash n (leqSucLemma n 5 p)))  acceptState
-                                                       ((instructionSequence pubKeyHash n p)) (scriptSequence  pubKeyHash n (leqSucLemma n 5 p))
-                                                       (correctStep-toSequence' pubKeyHash n p)
-                                                       (correct-toSequence pubKeyHash n (leqSucLemma n 5 p))
+                                               (correct-opDup-from pubKeyHash)
 
 
 
-correct-fromSequence  : (pubKeyHash : ℕ)  (n : ℕ) (p : n ≤ 6)(s : StackState)
-             → (acceptState ⁺) (⟦ scriptSequence pubKeyHash n p ⟧ s)
-            → condition pubKeyHash n p s
-correct-fromSequence pubKeyHash zero p s st =  emptyProgramCorrect-from (condition pubKeyHash 0 tt) s st
-correct-fromSequence pubKeyHash (suc n) p s st =
-                      bindTransformer-fromSequence (condition pubKeyHash (suc n) p)
-                      (condition pubKeyHash n (leqSucLemma n 5 p)) acceptState
-                      (instructionSequence pubKeyHash n p) (scriptSequence pubKeyHash n (leqSucLemma n 5 p))
-                      (correctStep-FromSequence' pubKeyHash n p) (correct-fromSequence pubKeyHash n (leqSucLemma n 5 p)) s st
+
+correct-toSequence  : (pubKeyHash : ℕ)  (n : ℕ) (n≤6 : n ≤ 6)(s : StackState)
+           → condition pubKeyHash n n≤6 s
+           → (acceptState ⁺) (⟦ scriptSequence pubKeyHash n n≤6 ⟧ s)
+correct-toSequence pubKeyHash 0 n≤6 = emptyProgramCorrect-to (condition pubKeyHash 0 tt)
+correct-toSequence pubKeyHash (suc n) n≤6 = bindTransformer-toSequence ( (condition pubKeyHash (suc n) n≤6))
+                                                       ( (condition pubKeyHash n (leqSucLemma n 5 n≤6)))  acceptState
+                                                       ((instructionSequence pubKeyHash n n≤6)) (scriptSequence  pubKeyHash n (leqSucLemma n 5 n≤6))
+                                                       (correctStep-toSequence' pubKeyHash n n≤6)
+                                                       (correct-toSequence pubKeyHash n (leqSucLemma n 5 n≤6))
+
+
+
+correct-fromSequence  : (pubKeyHash : ℕ)  (n : ℕ) (n≤6 : n ≤ 6)(s : StackState)
+             → (acceptState ⁺) (⟦ scriptSequence pubKeyHash n n≤6 ⟧ s)
+            → condition pubKeyHash n n≤6 s
+correct-fromSequence pubKeyHash zero n≤6 s st =  emptyProgramCorrect-from (condition pubKeyHash 0 tt) s st
+correct-fromSequence pubKeyHash (suc n) n≤6 s st =
+                      bindTransformer-fromSequence (condition pubKeyHash (suc n) n≤6)
+                      (condition pubKeyHash n (leqSucLemma n 5 n≤6)) acceptState
+                      (instructionSequence pubKeyHash n n≤6) (scriptSequence pubKeyHash n (leqSucLemma n 5 n≤6))
+                      (correctStep-FromSequence' pubKeyHash n n≤6) (correct-fromSequence pubKeyHash n (leqSucLemma n 5 n≤6)) s st
 
 
 
@@ -335,7 +346,7 @@ correctComplete-to : (pubKeyHash : ℕ)(s : StackState) → weakestPreConditionP
 correctComplete-to pubKeyHash = correct-to pubKeyHash 6 tt
 
 correctnessP2PKH : (pubKeyHash : ℕ)
-                   → <  weakestPreConditionP2PKH pubKeyHash >iff
+                   → <  weakestPreConditionP2PKH pubKeyHash >ⁱᶠᶠ
                       scriptP2PKHᵇ pubKeyHash
                      < acceptState  >
 correctnessP2PKH pubKeyHash .==> = correctComplete-to   pubKeyHash
