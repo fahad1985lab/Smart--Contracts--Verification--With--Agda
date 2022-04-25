@@ -1,4 +1,4 @@
-# Verification of Bitcoin's Smart Contracts in Agda using Weakest Preconditions for Access Control
+# Verification of Bitcoin Script in Agda using Weakest Preconditions for Access Control
 
 
 ## Code in Agda
