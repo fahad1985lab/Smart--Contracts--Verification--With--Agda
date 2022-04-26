@@ -49,6 +49,25 @@ open import verificationStackScripts.stackHoareTriple param
 <_>stackb_<_> : StackPredicate → BitcoinScriptBasic → StackPredicate → Set
 < φ >stackb prog < ψ > = < φ >gˢ (⟦ prog  ⟧ˢ ) < ψ >
 
+-- Generalisation of <_>_<_>   by referring instead of Bitcoin Scripts
+--                to functions of type StackState → Maybe StackState
+-- Note that there is a version <_>gˢ_<_> in module hoareTripleStack for StackPredicate
+--      which refers to StackPredicate instead of StackStatePred
+
+
+record <_>g_<_>  (φ : StackStatePred) (stackfun : StackState → Maybe StackState)
+                 (ψ : StackStatePred) : Set where
+  constructor hoareTripleStackGenStackState
+  field
+    ==>stg : (s : StackState)
+            → φ s
+            → liftPred2Maybe ψ (stackfun s)
+    <==stg : (s : StackState)
+            → liftPred2Maybe ψ (stackfun s)
+            → φ s
+open <_>g_<_> public
+
+
 
 
 

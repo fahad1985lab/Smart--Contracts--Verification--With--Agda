@@ -41,7 +41,7 @@ open import verificationStackScripts.stackSemanticsInstructionsBasic param
 --executeOpHash, executeStackVerify etc.. defined in
 open import semanticBasicOperations param
 
---⟦ _ ⟧ₛ and ⟦ _ ⟧⁺ are defined in 
+--⟦ _ ⟧ₛ and ⟦ _ ⟧⁺ are defined in
 open import verificationStackScripts.semanticsStackInstructions param
 
 -- StackStatePred and stackPred2SPred are defined in
@@ -51,7 +51,7 @@ open import verificationStackScripts.sPredicate
 open import stackPredicate
 
 
--- 4. Specifying Security of Bitcoin Scripts 
+-- 4. Specifying Security of Bitcoin Scripts
 -- 4.1.  Weakest Precondition for Security
 -- 4.2.  Formalising Weakest Preconditions in Agda
 
@@ -78,7 +78,7 @@ open import exampleGeneratedWeakPreCond
 -- <_>ⁱᶠᶠ_<_> and  _<=>ᵖ_ defined in
 open import verificationStackScripts.stackHoareTriple param
 
---proof1, proof2, proof3, proof4, and theorem defined in 
+--proof1, proof2, proof3, proof4, and theorem defined in
 open import paperTypes2021PostProceed.demoEqualityReasoning param
 
 
@@ -106,10 +106,13 @@ open import verificationStackScripts.stackHoareTriple param
 --abstrFun etc.. defined in
 open import paperTypes2021PostProceed.stackVerificationP2PKHsymbolicExecutionPaperVersion param
 
---p2pkhFunctionDecoded and p2pkhFunctionDecodedaux1 defined in 
+--p2pkhFunctionDecoded and p2pkhFunctionDecodedaux1 defined in
 open import verificationStackScripts.stackVerificationP2PKHextractedProgram param
 
---<_>gˢ_<_> defined in 
+--<_>g_<_> defined in
+open import verificationStackScripts.hoareTripleStackBasic param
+
+--<_>gˢ_<_> defined in
 open import hoareTripleStack param
 
 --p2pkhFunctionDecodedcor, lemmaPTKHcoraux, and theoremPTPKHcor defined in
@@ -118,10 +121,10 @@ open import verificationStackScripts.stackVerificationP2PKHUsingEqualityOfProgra
 
 -- 6.2. Example: MultiSig Script (P2MS)
 
---cmpMultiSigs and cmpMultiSigsAux defined in 
+--cmpMultiSigs and cmpMultiSigsAux defined in
 open import paperTypes2021PostProceed.semanticBasicOperationsForTypeSetting param
 
--- opPushLis and multiSigScriptm-nᵇ defined in 
+-- opPushLis and multiSigScriptm-nᵇ defined in
 open import verificationMultiSig param
 
 -- Symbolic execution defined in
@@ -138,7 +141,7 @@ open import verificationStackScripts.sPredicate
 
 -- 6.3. Example: Combining the two Methods
 
---checkTimeScript and timeCheckPreCond defined in 
+--checkTimeScript and timeCheckPreCond defined in
 open import verificationMultiSig param
 
 --theoremCorrectnessTimeChec and theoremCorrectnessCombinedMultiSigTimeChec defined in
@@ -153,4 +156,3 @@ open import verificationStackScripts.verificationMultiSigBasic param
 open import verificationStackScripts.verificationMultiSigBasic param
 
 -- Bibliography
-
