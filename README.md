@@ -13,4 +13,10 @@
  * Verification of Bitcoin Script in Agda using Weakest Preconditions for Access Control - by 
  Fahad F. Alhabardi, Arnold Beckmann, Bogdan Lazar, and [Anotn Setzer](https://www.cs.swan.ac.uk/~csetzer/).
  
+ * The paper is available at this [link]( https://drops.dagstuhl.de/opus/volltexte/2022/16770/pdf/LIPIcs-TYPES-2021-1.pdf) 
+ 
  * Licensed under a [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html).
+ 
+ 
+ 
+ 
