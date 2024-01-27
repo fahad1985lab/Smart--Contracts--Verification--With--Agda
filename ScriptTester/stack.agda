@@ -2,7 +2,7 @@ module stack where
 
 open import Data.Nat  hiding (_≤_)
 open import Data.List hiding (_++_)
-open import Data.Unit  hiding (_≤_)
+open import Data.Unit  
 open import Data.Empty
 open import Data.Maybe
 open import Data.Bool  hiding (_≤_ ; if_then_else_ ) renaming (_∧_ to _∧b_ ; _∨_ to _∨b_ ; T to True)

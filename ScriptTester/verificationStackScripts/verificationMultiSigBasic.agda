@@ -7,7 +7,7 @@ open import Data.List.Base hiding (_++_ )
 open import Data.Nat  renaming (_≤_ to _≤'_ ; _<_ to _<'_)
 open import Data.List hiding (_++_  )
 open import Data.Sum
-open import Data.Unit  hiding (_≤_)
+open import Data.Unit  
 open import Data.Empty
 open import Data.Maybe
 open import Data.Bool  hiding (_≤_ ; _<_ ; if_then_else_  )  renaming (_∧_ to _∧b_ ; _∨_ to _∨b_ ; T to True)

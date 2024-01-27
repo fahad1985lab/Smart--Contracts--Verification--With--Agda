@@ -2,7 +2,7 @@ module libraries.natLib where
 
 open import Data.Nat  hiding (_≤_ ; _<_ )
 open import Data.Bool  hiding (_≤_ ; _<_ ; if_then_else_ ) renaming (_∧_ to _∧b_ ; _∨_ to _∨b_ ; T to True)
-open import Data.Unit hiding (_≤_ )
+open import Data.Unit 
 open import Data.Empty
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; module ≡-Reasoning; sym)

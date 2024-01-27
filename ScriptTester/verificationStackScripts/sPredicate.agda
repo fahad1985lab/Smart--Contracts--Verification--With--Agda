@@ -4,7 +4,7 @@ module verificationStackScripts.sPredicate where
 
 open import Data.Nat  hiding (_≤_)
 open import Data.List hiding (_++_)
-open import Data.Unit  hiding (_≤_)
+open import Data.Unit  
 open import Data.Empty
 open import Data.Sum
 open import Data.Maybe

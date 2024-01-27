@@ -1,8 +1,8 @@
 module libraries.boolLib where
 open import Data.Bool  hiding (_≤_ ; _<_ ; if_then_else_ ) renaming (_∧_ to _∧b_ ; _∨_ to _∨b_ ; T to True)
-open import Data.Unit  hiding (_≤_)
+open import Data.Unit   
 open import Data.Empty
-open import Relation.Nullary
+open import Relation.Nullary hiding (True)
 
 if_then_else_ : {A : Set }→ Bool →  A → A → A
 if true  then n else m = n

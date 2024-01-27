@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html><head><meta charset="utf-8"><title>guidelines</title><link rel="stylesheet" href="Agda.css"></head><body><pre class="Agda"><a id="1" class="Keyword">open</a> <a id="6" class="Keyword">import</a> <a id="13" href="basicBitcoinDataType.html" class="Module">basicBitcoinDataType</a>
+
+<a id="35" class="Keyword">module</a> <a id="42" href="guidelines.html" class="Module">guidelines</a> <a id="53" class="Symbol">(</a><a id="54" href="guidelines.html#54" class="Bound">param</a> <a id="60" class="Symbol">:</a> <a id="62" href="basicBitcoinDataType.html#1157" class="Record">GlobalParameters</a><a id="78" class="Symbol">)</a> <a id="80" class="Keyword">where</a>
+
+
+<a id="88" class="Comment">-- The file guidelines.agda shows the code in the order as it appears in the paper.</a>
+<a id="172" class="Comment">-- The authors:  Fahad F. Alhabardi, Arnold Beckmann, Bogdan Lazar, and Anton Setzer</a>
+<a id="257" class="Comment">-- The title of the paper: Verification of Bitcoin Script in Agda using Weakest Preconditions for Access Control</a>
+
+
+<a id="372" class="Comment">-- Abstract</a>
+
+<a id="385" class="Comment">-- 1. Introduction</a>
+
+<a id="405" class="Comment">-- 2. Related work</a>
+
+
+
+<a id="427" class="Comment">-- 3 Operational Semantics for Bitcoin SCRIPT</a>
+<a id="473" class="Comment">-- 3.1.  Introduction to Bitcoin SCRIPT</a>
+<a id="513" class="Comment">-- 3.2.  Operational Semantics</a>
+
+<a id="545" class="Comment">-- Stack defined in</a>
+<a id="565" class="Keyword">open</a> <a id="570" class="Keyword">import</a> <a id="577" href="stack.html" class="Module">stack</a>
+
+<a id="584" class="Comment">--Time and Msg are defined in</a>
+<a id="614" class="Keyword">open</a> <a id="619" class="Keyword">import</a> <a id="626" href="basicBitcoinDataType.html" class="Module">basicBitcoinDataType</a>
+
+<a id="648" class="Comment">--StackState defined in</a>
+<a id="672" class="Keyword">open</a> <a id="677" class="Keyword">import</a> <a id="684" href="verificationStackScripts.stackState.html" class="Module">verificationStackScripts.stackState</a>
+
+<a id="721" class="Comment">--InstructionBasic and BitcoinScriptBasic are defined in</a>
+<a id="778" class="Keyword">open</a> <a id="783" class="Keyword">import</a> <a id="790" href="instructionBasic.html" class="Module">instructionBasic</a>
+
+<a id="808" class="Comment">-- Maybe X defined in</a>
+<a id="830" class="Keyword">open</a> <a id="835" class="Keyword">import</a> <a id="842" href="paperTypes2021PostProceed.maybeDef.html" class="Module">paperTypes2021PostProceed.maybeDef</a>
+
+<a id="878" class="Comment">--⟦_⟧ₛˢ defined in</a>
+<a id="897" class="Keyword">open</a> <a id="902" class="Keyword">import</a> <a id="909" href="verificationStackScripts.stackSemanticsInstructionsBasic.html" class="Module">verificationStackScripts.stackSemanticsInstructionsBasic</a> <a id="966" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="973" class="Comment">--executeOpHash, executeStackVerify etc.. defined in</a>
+<a id="1026" class="Keyword">open</a> <a id="1031" class="Keyword">import</a> <a id="1038" href="semanticBasicOperations.html" class="Module">semanticBasicOperations</a> <a id="1062" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="1069" class="Comment">--⟦ _ ⟧ₛ and ⟦ _ ⟧⁺ are defined in</a>
+<a id="1104" class="Keyword">open</a> <a id="1109" class="Keyword">import</a> <a id="1116" href="verificationStackScripts.semanticsStackInstructions.html" class="Module">verificationStackScripts.semanticsStackInstructions</a> <a id="1168" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="1175" class="Comment">-- StackStatePred and stackPred2SPred are defined in</a>
+<a id="1228" class="Keyword">open</a> <a id="1233" class="Keyword">import</a> <a id="1240" href="verificationStackScripts.sPredicate.html" class="Module">verificationStackScripts.sPredicate</a>
+
+<a id="1277" class="Comment">-- stackPredicate defined in</a>
+<a id="1306" class="Keyword">open</a> <a id="1311" class="Keyword">import</a> <a id="1318" href="stackPredicate.html" class="Module">stackPredicate</a>
+
+
+<a id="1335" class="Comment">-- 4. Specifying Security of Bitcoin Scripts</a>
+<a id="1380" class="Comment">-- 4.1.  Weakest Precondition for Security</a>
+<a id="1423" class="Comment">-- 4.2.  Formalising Weakest Preconditions in Agda</a>
+
+<a id="1475" class="Comment">--StackState defined in</a>
+<a id="1499" class="Keyword">open</a> <a id="1504" class="Keyword">import</a> <a id="1511" href="verificationStackScripts.stackState.html" class="Module">verificationStackScripts.stackState</a>
+
+<a id="1548" class="Comment">-- &lt; φ &gt;ⁱᶠᶠ p &lt; ψ &gt; :=∀ s ∈ StackState.φ(s) ⇔ (ψ⁺) (⟦ p ⟧ s) and &lt;_&gt;ⁱᶠᶠ_&lt;_&gt; are defined in</a>
+<a id="1639" class="Keyword">open</a> <a id="1644" class="Keyword">import</a> <a id="1651" href="verificationStackScripts.stackHoareTriple.html" class="Module">verificationStackScripts.stackHoareTriple</a> <a id="1693" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="1700" class="Comment">--StackState → Set and acceptState defined in</a>
+<a id="1746" class="Keyword">open</a> <a id="1751" class="Keyword">import</a> <a id="1758" href="verificationStackScripts.sPredicate.html" class="Module">verificationStackScripts.sPredicate</a>
+
+<a id="1795" class="Comment">-- _⁺ defined in</a>
+<a id="1812" class="Keyword">open</a> <a id="1817" class="Keyword">import</a> <a id="1824" href="libraries.maybeLib.html" class="Module">libraries.maybeLib</a>
+
+
+
+<a id="1846" class="Comment">-- 4.3.  Automatically Generated Weakest Preconditions</a>
+
+<a id="1902" class="Keyword">open</a> <a id="1907" class="Keyword">import</a> <a id="1914" href="exampleGeneratedWeakPreCond.html" class="Module">exampleGeneratedWeakPreCond</a>
+
+<a id="1943" class="Comment">-- 4.4.  Equational Reasoning with Hoare Triples</a>
+
+<a id="1993" class="Comment">-- &lt;_&gt;ⁱᶠᶠ_&lt;_&gt; and  _&lt;=&gt;ᵖ_ defined in</a>
+<a id="2030" class="Keyword">open</a> <a id="2035" class="Keyword">import</a> <a id="2042" href="verificationStackScripts.stackHoareTriple.html" class="Module">verificationStackScripts.stackHoareTriple</a> <a id="2084" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="2091" class="Comment">--proof1, proof2, proof3, proof4, and theorem defined in</a>
+<a id="2148" class="Keyword">open</a> <a id="2153" class="Keyword">import</a> <a id="2160" href="paperTypes2021PostProceed.demoEqualityReasoning.html" class="Module">paperTypes2021PostProceed.demoEqualityReasoning</a> <a id="2208" href="guidelines.html#54" class="Bound">param</a>
+
+
+<a id="2216" class="Comment">-- 5. Proof of Correctness of the P2PKH script using the Step-by-Step Approach</a>
+
+<a id="2296" class="Comment">--scriptP2PKHᵇ, wPreCondP2PKH, accept₁, accept₂, correct-opCheckSig, theoremP2PKH  etc.. defined in</a>
+<a id="2396" class="Keyword">open</a> <a id="2401" class="Keyword">import</a> <a id="2408" href="verificationStackScripts.stackVerificationP2PKH.html" class="Module">verificationStackScripts.stackVerificationP2PKH</a> <a id="2456" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="2463" class="Comment">--acceptStateˢ defined in</a>
+<a id="2489" class="Keyword">open</a> <a id="2494" class="Keyword">import</a> <a id="2501" href="stackPredicate.html" class="Module">stackPredicate</a>
+
+<a id="2517" class="Comment">--wPreCondP2PKHˢ defined in</a>
+<a id="2545" class="Keyword">open</a> <a id="2550" class="Keyword">import</a> <a id="2557" href="verificationP2PKHbasic.html" class="Module">verificationP2PKHbasic</a> <a id="2580" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="2587" class="Comment">--acceptState defined in</a>
+<a id="2612" class="Keyword">open</a> <a id="2617" class="Keyword">import</a> <a id="2624" href="verificationStackScripts.sPredicate.html" class="Module">verificationStackScripts.sPredicate</a>
+
+
+<a id="2662" class="Comment">--&lt;&gt;&lt;&gt;⟨_⟩⟨_⟩e defined in</a>
+<a id="2687" class="Keyword">open</a> <a id="2692" class="Keyword">import</a> <a id="2699" href="verificationStackScripts.stackHoareTriple.html" class="Module">verificationStackScripts.stackHoareTriple</a> <a id="2741" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="2748" class="Comment">-- 6. Proof of Correctness using Symbolic Execution</a>
+<a id="2800" class="Comment">-- 6.1. Example: P2PKH Script</a>
+
+<a id="2831" class="Comment">--abstrFun etc.. defined in</a>
+<a id="2859" class="Keyword">open</a> <a id="2864" class="Keyword">import</a> <a id="2871" href="paperTypes2021PostProceed.stackVerificationP2PKHsymbolicExecutionPaperVersion.html" class="Module">paperTypes2021PostProceed.stackVerificationP2PKHsymbolicExecutionPaperVersion</a> <a id="2949" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="2956" class="Comment">--p2pkhFunctionDecoded and p2pkhFunctionDecodedaux1 defined in</a>
+<a id="3019" class="Keyword">open</a> <a id="3024" class="Keyword">import</a> <a id="3031" href="verificationStackScripts.stackVerificationP2PKHextractedProgram.html" class="Module">verificationStackScripts.stackVerificationP2PKHextractedProgram</a> <a id="3095" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="3102" class="Comment">--&lt;_&gt;g_&lt;_&gt; defined in</a>
+<a id="3124" class="Keyword">open</a> <a id="3129" class="Keyword">import</a> <a id="3136" href="verificationStackScripts.hoareTripleStackBasic.html" class="Module">verificationStackScripts.hoareTripleStackBasic</a> <a id="3183" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="3190" class="Comment">--&lt;_&gt;gˢ_&lt;_&gt; defined in</a>
+<a id="3213" class="Keyword">open</a> <a id="3218" class="Keyword">import</a> <a id="3225" href="hoareTripleStack.html" class="Module">hoareTripleStack</a> <a id="3242" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="3249" class="Comment">--p2pkhFunctionDecodedcor, lemmaPTKHcoraux, and theoremPTPKHcor defined in</a>
+<a id="3324" class="Keyword">open</a> <a id="3329" class="Keyword">import</a> <a id="3336" href="verificationStackScripts.stackVerificationP2PKHUsingEqualityOfPrograms.html" class="Module">verificationStackScripts.stackVerificationP2PKHUsingEqualityOfPrograms</a> <a id="3407" href="guidelines.html#54" class="Bound">param</a>
+
+
+<a id="3415" class="Comment">-- 6.2. Example: MultiSig Script (P2MS)</a>
+
+<a id="3456" class="Comment">--cmpMultiSigs and cmpMultiSigsAux defined in</a>
+<a id="3502" class="Keyword">open</a> <a id="3507" class="Keyword">import</a> <a id="3514" href="paperTypes2021PostProceed.semanticBasicOperationsForTypeSetting.html" class="Module">paperTypes2021PostProceed.semanticBasicOperationsForTypeSetting</a> <a id="3578" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="3585" class="Comment">-- opPushLis and multiSigScriptm-nᵇ defined in</a>
+<a id="3632" class="Keyword">open</a> <a id="3637" class="Keyword">import</a> <a id="3644" href="verificationMultiSig.html" class="Module">verificationMultiSig</a> <a id="3665" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="3672" class="Comment">-- Symbolic execution defined in</a>
+<a id="3705" class="Keyword">open</a> <a id="3710" class="Keyword">import</a> <a id="3717" href="paperTypes2021PostProceed.verificationMultiSigBasicSymbolicExecutionPaper.html" class="Module">paperTypes2021PostProceed.verificationMultiSigBasicSymbolicExecutionPaper</a> <a id="3791" href="guidelines.html#54" class="Bound">param</a>
+
+
+<a id="3799" class="Comment">--theoremCorrectnessMultiSig-2-4 and weakestPreConditionMultiSig-2-4 defined in</a>
+<a id="3879" class="Keyword">open</a> <a id="3884" class="Keyword">import</a> <a id="3891" href="verificationStackScripts.verificationMultiSigBasic.html" class="Module">verificationStackScripts.verificationMultiSigBasic</a> <a id="3942" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="3949" class="Comment">--stackPred2SPred defined in</a>
+<a id="3978" class="Keyword">open</a> <a id="3983" class="Keyword">import</a> <a id="3990" href="verificationStackScripts.sPredicate.html" class="Module">verificationStackScripts.sPredicate</a>
+
+
+
+<a id="4029" class="Comment">-- 6.3. Example: Combining the two Methods</a>
+
+<a id="4073" class="Comment">--checkTimeScript and timeCheckPreCond defined in</a>
+<a id="4123" class="Keyword">open</a> <a id="4128" class="Keyword">import</a> <a id="4135" href="verificationMultiSig.html" class="Module">verificationMultiSig</a> <a id="4156" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="4163" class="Comment">--theoremCorrectnessTimeChec and theoremCorrectnessCombinedMultiSigTimeChec defined in</a>
+<a id="4250" class="Keyword">open</a> <a id="4255" class="Keyword">import</a> <a id="4262" href="verificationStackScripts.verificationMultiSigBasic.html" class="Module">verificationStackScripts.verificationMultiSigBasic</a> <a id="4313" href="guidelines.html#54" class="Bound">param</a>
+
+
+<a id="4321" class="Comment">-- 7. Practical Usage of Agda</a>
+
+<a id="4352" class="Comment">-- 8. Conclusion</a>
+
+<a id="4370" class="Comment">--theoremCorrectnessMultiSig-2-4 defined in</a>
+<a id="4414" class="Keyword">open</a> <a id="4419" class="Keyword">import</a> <a id="4426" href="verificationStackScripts.verificationMultiSigBasic.html" class="Module">verificationStackScripts.verificationMultiSigBasic</a> <a id="4477" href="guidelines.html#54" class="Bound">param</a>
+
+<a id="4484" class="Comment">-- Bibliography</a>
+</pre></body></html>
